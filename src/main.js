@@ -30,13 +30,13 @@ VueAMap.initAMapApiLoader({
 /* eslint-disable no-new */
 Vue.prototype.$axios = axios
 // Vue.prototype.$axios.defaults.baseURL = 'http://localhost:8088/api/';
-Vue.prototype.$axios.defaults.baseURL = 'http://tzsgyc.iok.la/api/'
+Vue.prototype.$axios.defaults.baseURL = 'http://tzsgyc.iok.la:47521/api/'
 // 添加请求拦截器
 const self = Vue.prototype
 Vue.prototype.$axios.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
-  if (self.$cookies.get('TZManage')) {
-    config.headers.common['Authorization'] = 'Bearer ' + self.$cookies.get('TZManage')
+  if (self.$cookies.get('TZOldManage')) {
+    config.headers.common['Authorization'] = 'Bearer ' + self.$cookies.get('TZOldManage')
   } else {
     parent.location.href = '#/login'
   }

@@ -18,32 +18,24 @@ export default new Router({
           component: resolve => require(['../components/page/Home.vue'], resolve)
         },
         {
-          path: '/ptable:fid-:sid-:tid-:btid',
+          path: '/otable:fid-:sid-:tid-:btid',
           component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
         },
         {
-          path: '/ptable:fid-:sid-:btid',
+          path: '/otable:fid-:sid-:btid',
           component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
         },
         {
-          path: '/ptable:fid-:btid',
+          path: '/otable:fid-:btid',
           component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
-        },
-        {
-          path: '/dtable:fid-:sid-:tid-:btid',
-          component: resolve => require(['../components/page/DemoProjectTable.vue'], resolve)
-        },
-        {
-          path: '/dtable:fid-:sid-:btid',
-          component: resolve => require(['../components/page/DemoProjectTable.vue'], resolve)
-        },
-        {
-          path: '/dtable:fid-:btid',
-          component: resolve => require(['../components/page/DemoProjectTable.vue'], resolve)
         },
         {
           path: '/null:fid-:btid',
           component: resolve => require(['../components/page/notfound.vue'], resolve)
+        },
+        {
+          path: '/otable:fid-:btid/add',
+          component: resolve => require(['../components/page/add.vue'], resolve)
         }
         // {
         //   path: '/btable:fid-:sid-:tid-:btid',

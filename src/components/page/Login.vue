@@ -1,7 +1,7 @@
 <template>
   <div class="login-wrap">
-    <div class="ms-title">“四边三化”信息管理系统</div>
-    <div class="ms-subtitle">Sibiansanhua Information Management System</div>
+    <div class="ms-title">“老旧城区改造”信息管理系统</div>
+    <div class="ms-subtitle">Old City Reconstruction Information Management System</div>
     <div class="ms-login">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
         <el-form-item prop="username">
@@ -42,39 +42,38 @@ export default {
   methods: {
     submitForm (formName) {
       const self = this
-      // self.$refs[formName].validate((valid) => {
-      //     if (valid) {
-      //         localStorage.setItem('ms_username',self.ruleForm.username)
-      //         self.$router.push('/readme')
-      //     } else {
-      //         console.log('error submit!!')
-      //         return false
-      //     }
-      // })
-      this.$axios.post('Login/GetUserInfo', {
-        UserName: self.ruleForm.username,
-        UserPwd: self.ruleForm.password
-      })
-        .then(function (response) {
-          let data = response.data
-          console.log(data)
-          if (data.code === 1) {
-            self.$cookies.set('TZManage', data.object, {expires: 12})
-            localStorage.setItem('ms_username', self.ruleForm.username)
-            self.$router.push('/home')
-          } else {
-            self.$alert(data.message, '温馨提示', {
-              confirmButtonText: '确定'
-            })
-            return false
-          }
-        })
-        .catch(function (error) {
-          console.log(error)
-          self.$alert(error.message, '温馨提示', {
-            confirmButtonText: '确定'
+      self.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$axios.post('Login/GetUserInfo', {
+            UserName: self.ruleForm.username,
+            UserPwd: self.ruleForm.password,
+            FProject: 2
           })
-        })
+            .then(function (response) {
+              let data = response.data
+              console.log(data)
+              if (data.code === 1) {
+                self.$cookies.set('TZOldManage', data.object, {expires: 12})
+                localStorage.setItem('ms_username', self.ruleForm.username)
+                self.$router.push('/home')
+              } else {
+                self.$alert(data.message, '温馨提示', {
+                  confirmButtonText: '确定'
+                })
+                return false
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+              self.$alert(error.message, '温馨提示', {
+                confirmButtonText: '确定'
+              })
+            })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     }
   }
 }

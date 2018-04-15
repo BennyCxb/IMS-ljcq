@@ -389,8 +389,13 @@ export default {
      * 新增问题点位
      */
     addProblem () {
-      this.proAddShow = true
+      // this.proAddShow = true
+      let blist = [].concat(this.breadcrumb)
+      blist.push('新增改造信息')
+      sessionStorage.setItem('breadcrumb', JSON.stringify(blist))
       this.editFid = ''
+      console.log(this.$route.fullPath)
+      this.$router.push({path: this.$route.fullPath + '/add'})
     },
     /**
      * 修改问题点位

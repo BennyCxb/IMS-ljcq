@@ -70,15 +70,18 @@ export default {
   },
   computed: {
     onRoutes () {
-      return this.$route.path.replace('/', '')
+      let str = this.$route.path
+      let idx = str.indexOf('/', 1)
+      if (idx > -1) {
+        str = str.substring(0, idx)
+      }
+      return str
     }
   },
   methods: {
     routerTo (index, f, s, t) {
-      // console.log(f,s,t)
       let path = index
       let breadcrumb = []
-      // let billTypeID
       if (f.url === undefined) {
         breadcrumb.push(f.title)
         if (s.url === undefined) {
@@ -87,15 +90,12 @@ export default {
             breadcrumb.push(t.title)
           } else {
             breadcrumb.push(t.title)
-            // billTypeID = t.billTypeID
           }
         } else {
           breadcrumb.push(s.title)
-          // billTypeID = s.billTypeID
         }
       } else {
         breadcrumb.push(f.title)
-        // billTypeID = f.billTypeID
       }
       sessionStorage.setItem('breadcrumb', JSON.stringify(breadcrumb))
       if (path !== '') {
@@ -134,7 +134,7 @@ export default {
                 })
                 items2.push({
                   id: obj2.FID,
-                  index: obj2.FUrlPath + obj1.FID.toString() + '-' + obj2.FID.toString() + '-' + obj2.FBillTypeID,
+                  index: '/' + obj2.FUrlPath + obj1.FID.toString() + '-' + obj2.FID.toString() + '-' + obj2.FBillTypeID,
                   parentId: obj2.FParentID,
                   title: obj2.FName,
                   subs: items3,
@@ -144,7 +144,7 @@ export default {
                 items2.push({
                   id: obj2.FID,
                   billTypeID: obj2.FBillTypeID,
-                  index: obj2.FUrlPath + obj1.FID.toString() + '-' + obj2.FID.toString() + '-' + obj2.FBillTypeID,
+                  index: '/' + obj2.FUrlPath + obj1.FID.toString() + '-' + obj2.FID.toString() + '-' + obj2.FBillTypeID,
                   parentId: obj2.FParentID,
                   title: obj2.FName,
                   url: obj2.FUrlPath,
@@ -155,7 +155,7 @@ export default {
             items1.push({
               id: obj1.FID,
               icon: 'el-icon-menu',
-              index: obj1.FUrlPath + obj1.FID.toString() + '-' + obj1.FBillTypeID,
+              index: '/' + obj1.FUrlPath + obj1.FID.toString() + '-' + obj1.FBillTypeID,
               parentId: obj1.FParentID.toString(),
               title: obj1.FName,
               subs: items2,
@@ -166,7 +166,7 @@ export default {
               id: obj1.FID,
               billTypeID: obj1.FBillTypeID,
               icon: 'el-icon-menu',
-              index: obj1.FUrlPath + obj1.FID.toString() + '-' + obj1.FBillTypeID,
+              index: '/' + obj1.FUrlPath + obj1.FID.toString() + '-' + obj1.FBillTypeID,
               parentId: obj1.FParentID.toString(),
               title: obj1.FName,
               url: obj1.FUrlPath,
