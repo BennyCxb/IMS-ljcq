@@ -11,8 +11,8 @@
       <el-form :model="form"
                :rules="rules"
                :disabled="isDisabled"
-               ref="probForm"
-               class="demo-form-inline">
+               ref="old"
+               class="demo-form-inline demo-ruleForm">
         <el-row>
           <el-col :span="24">
             <el-form-item>
@@ -23,13 +23,13 @@
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="区块名称" :label-width="formLabelWidth" prop="FPorjectName">
-              <el-input v-model="form.FAreaName" placeholder="请输入项目名称"></el-input>
+            <el-form-item label="区块名称" :label-width="formLabelWidth" prop="FAreaName">
+              <el-input v-model="form.FAreaName" placeholder="请输入区块名称"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="行政区划" :label-width="formLabelWidth" prop="FAgencyValue">
-              <el-select v-model="form.FAgencyValue" @change="getCounty">
+              <el-select v-model="form.FAgencyValue" @change="getCounty" placeholder="请选择行政区划">
                 <el-option
                   v-for="(item,i) in adcdOptions"
                   :key="i"
@@ -40,70 +40,70 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="乡镇街道" :label-width="formLabelWidth" prop="FTwon">
-              <el-select v-model="form.FTownValue">
+            <el-form-item label="乡镇街道" :label-width="formLabelWidth" prop="FTownValue">
+              <el-select v-model="form.FTownValue" placeholder="请选择乡镇街道">
                 <el-option
                   v-for="(item,i) in countyOptions"
                   :key="i"
-                  :label="item.FName"
-                  :value="item.FValue">
+                  :label="item.label"
+                  :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="详细地址" :label-width="formLabelWidth" prop="FMileage">
+            <el-form-item label="详细地址" :label-width="formLabelWidth" prop="FPosition">
               <el-input v-model="form.FPosition" placeholder="请输入详细地址"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="主要产业" :label-width="formLabelWidth" prop="FLength">
+            <el-form-item label="主要产业" :label-width="formLabelWidth" prop="FIndustry">
               <el-input v-model="form.FIndustry" placeholder="请输入主要产业"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="企业家数" :label-width="formLabelWidth" prop="FLength">
+            <el-form-item label="企业家数" :label-width="formLabelWidth" prop="FEntrepreneurCount">
               <el-input v-model="form.FEntrepreneurCount" placeholder="请输入企业家数"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="总占地(万㎡)" :label-width="formLabelWidth" prop="FInvestment">
+            <el-form-item label="总占地(万㎡)" :label-width="formLabelWidth" prop="FOccupy">
               <el-input v-model="form.FOccupy" placeholder="请输入投资金额"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="总建筑面积(万㎡)" :label-width="formLabelWidth" prop="FInvestment">
+            <el-form-item label="总建筑面积(万㎡)" :label-width="formLabelWidth" prop="FTotalAcreage">
               <el-input v-model="form.FTotalAcreage" placeholder="请输入投资金额"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="违建面积(万m²)" :label-width="formLabelWidth" prop="FAcreage">
-              <el-input v-model="form.FNonConBuildingArea" placeholder="请输入利用面积"></el-input>
+            <el-form-item label="违建面积(万m²)" :label-width="formLabelWidth" prop="FNonConBuildingArea">
+              <el-input v-model="form.FNonConBuildingArea" placeholder="请输入违建面积"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="负责单位" :label-width="formLabelWidth" prop="FAccountabilityUnit">
-              <el-input v-model="form.FRespLeader" placeholder="请输入负责单位"></el-input>
+            <el-form-item label="责任领导" :label-width="formLabelWidth" prop="FRespLeader">
+              <el-input v-model="form.FRespLeader" placeholder="请输入责任领导"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="联系人" :label-width="formLabelWidth" prop="FLiablePerson">
+            <el-form-item label="联系人" :label-width="formLabelWidth" prop="FLinkMan">
               <el-input v-model="form.FLinkMan" placeholder="请输入联系人"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="联系方式" :label-width="formLabelWidth" prop="FMobile">
+            <el-form-item label="联系方式" :label-width="formLabelWidth" prop="FLinkMobile">
               <el-input v-model="form.FLinkMobile" placeholder="请输入联系方式"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="改造前区块情况简介" :label-width="formLabelWidth" prop="FSynopsis">
+            <el-form-item label="改造前区块情况简介" :label-width="formLabelWidth" prop="FRemark">
               <el-input v-model="form.FRemark"
                         type="textarea"
                         :rows="3"
@@ -135,79 +135,80 @@
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="改造方式(按台州市办法分类)" :label-width="formLabelWidth" prop="FPorjectName">
-              <el-select v-model="form.FAgencyValue">
+            <el-form-item label="市级改造方式" :label-width="formLabelWidth" prop="FCityChangeType">
+              <el-select v-model="form.FCityChangeType" placeholder="请选择市级改造方式">
                 <el-option
                   v-for="(item,i) in cityTypeOptions"
                   :key="i"
-                  :label="item.label"
-                  :value="item.value">
+                  :label="item.FName"
+                  :value="item.FValue">
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="改造方式(按县市区自定义分类)" :label-width="formLabelWidth" prop="FAgencyValue">
-              <el-select v-model="form.FAgencyValue"
+            <el-form-item label="县级改造方式" :label-width="formLabelWidth" prop="FTownChangeType">
+              <el-select v-model="form.FTownChangeType"
                          filterable
                          allow-create
-                         default-first-option>
+                         default-first-option
+                         placeholder="请选择或输入改造方式">
                 <el-option
                   v-for="(item,i) in countyTypeOptions"
                   :key="i"
-                  :label="item.label"
-                  :value="item.value">
+                  :label="item.FName"
+                  :value="item.FValue">
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="改造后用途" :label-width="formLabelWidth" prop="FTwon">
-              <el-select v-model="form.FAgencyValue">
+            <el-form-item label="改造后用途" :label-width="formLabelWidth" prop="FAfterChange">
+              <el-select v-model="form.FAfterChange" placeholder="请选择改造后用途">
                 <el-option
                   v-for="(item,i) in purposeOptions"
                   :key="i"
-                  :label="item.label"
-                  :value="item.value">
+                  :label="item.FName"
+                  :value="item.FValue">
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="拟总投资额(万元)" :label-width="formLabelWidth" prop="FMileage">
-              <el-input v-model="form.address" placeholder="请输入拟总投资额"></el-input>
+            <el-form-item label="拟总投资额(万元)" :label-width="formLabelWidth" prop="FTotalInvestAmount">
+              <el-input v-model="form.FTotalInvestAmount" placeholder="请输入拟总投资额"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="改造后总建筑面积(㎡)" :label-width="formLabelWidth" prop="FPorjectName">
-              <el-input v-model="form.address" placeholder="请输入改造后总建筑面积"></el-input>
+            <el-form-item label="改造后总建筑面积(㎡)" :label-width="formLabelWidth" prop="FAfterChangeArea">
+              <el-input v-model="form.FAfterChangeArea" placeholder="请输入改造后总建筑面积"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="拟启动时间" :label-width="formLabelWidth" prop="FAgencyValue">
+            <el-form-item label="拟启动时间" :label-width="formLabelWidth" prop="FChangeBeginDate">
               <el-date-picker
-                v-model="form.month"
+                v-model="form.FChangeBeginDate"
                 type="month"
-                placeholder="选择年度月份">
+                placeholder="请选择拟启动时间">
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="拟完成时间" :label-width="formLabelWidth" prop="FTwon">
+            <el-form-item label="拟完成时间" :label-width="formLabelWidth" prop="FChangeEndDate">
               <el-date-picker
-                v-model="form.month"
+                v-model="form.FChangeEndDate"
                 type="month"
-                placeholder="选择年度月份">
+                placeholder="请选择拟完成时间">
               </el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="改造方案简介" :label-width="formLabelWidth" prop="FSynopsis">
-              <el-input v-model="form.FSynopsis"
+            <el-form-item label="改造方案简介" :label-width="formLabelWidth" prop="FChangeRemark">
+              <el-input v-model="form.FChangeRemark"
                         type="textarea"
                         :rows="3"
                         placeholder="请输入改造方案简介"></el-input>
@@ -266,8 +267,8 @@
       <div slot="footer" class="dialog-footer" v-cloak>
         <el-button @click="handleClose">关 闭</el-button>
         <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && submitPossession && isDisabled">编 辑</el-button>
-        <el-button @click="resetForm('probForm')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
-        <el-button type="primary" @click="submit('probForm')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
+        <el-button @click="resetForm('old')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
+        <el-button type="primary" @click="submit('old')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
         <el-button type="primary" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled">整改完成</el-button>
         <el-button type="primary" @click="openAudit" v-if="isEdit && auditPossession && isDisabled">立即审核</el-button>
         <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>
@@ -325,19 +326,22 @@ export default {
         FOccupy: '',
         FTotalAcreage: '',
         FNonConBuildingArea: '',
-        FAccountabilityUnit: '',
         FRespLeader: '',
         FLinkMan: '',
         FLinkMobile: '',
-        FRemark: ''
+        FRemark: '',
+        FCityChangeType: '',
+        FTownChangeType: '',
+        FAfterChange: '',
+        FTotalInvestAmount: '',
+        FAfterChangeArea: '',
+        FChangeBeginDate: '',
+        FChangeEndDate: '',
+        FChangeRemark: ''
       },
       zoom: 14,
       center: [121.420866, 28.655815],
-      markers: [
-        {
-          position: [121.420866, 28.655815]
-        }
-      ],
+      markers: [],
       files: [
         {
           label: '改造前影像图',
@@ -353,63 +357,80 @@ export default {
         }
       ],
       rules: {
-        name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        FAreaName: [
+          {required: true, message: '请输入区块名称', trigger: 'blur'}
         ],
-        region: [
-          { required: true, message: '请选择活动区域', trigger: 'change' }
+        FAgencyValue: [
+          {type: 'number', required: true, message: '请选择行政区划', trigger: 'change'}
         ],
-        date1: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        FTownValue: [
+          {type: 'number', required: true, message: '请选择乡镇街道', trigger: 'change'}
         ],
-        date2: [
-          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+        FPosition: [
+          {required: true, message: '请输入详细地址', trigger: 'blur'}
         ],
-        type: [
-          { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
+        FGPS: [
+          {required: false, message: '请选择定位', trigger: 'blur'}
         ],
-        resource: [
-          { required: true, message: '请选择活动资源', trigger: 'change' }
+        FIndustry: [
+          {required: false, message: '请选择主要产业', trigger: 'blur'}
         ],
-        desc: [
-          { required: true, message: '请填写活动形式', trigger: 'blur' }
+        FInvestment: [
+          {required: false, message: '请输入投资金额', trigger: 'blur'}
+        ],
+        FEntrepreneurCount: [
+          {required: false, message: '请输入企业家数', trigger: 'blur'}
+        ],
+        FOccupy: [
+          {required: false, message: '请输入总占地', trigger: 'blur'}
+        ],
+        FTotalAcreage: [
+          {required: false, message: '请输入总建筑面积', trigger: 'blur'}
+        ],
+        FNonConBuildingArea: [
+          {required: false, message: '请输入违建面积', trigger: 'blur'}
+        ],
+        FRespLeader: [
+          {required: false, message: '请输入负责单位', trigger: 'blur'}
+        ],
+        FLinkMan: [
+          {required: false, message: '请输入联系人', trigger: 'blur'}
+        ],
+        FLinkMobile: [
+          {required: false, message: '请输入联系方式', trigger: 'blur'}
+        ],
+        FRemark: [
+          {required: true, message: '请输入改造前区块情况简介', trigger: 'blur'}
+        ],
+        FCityChangeType: [
+          {type: 'number', required: true, message: '请选择市级改造方式', trigger: 'change'}
+        ],
+        FTownChangeType: [
+          {type: 'number', required: false, message: '请选择县级改造方式', trigger: 'change'}
+        ],
+        FChangeBeginDate: [
+          {type: 'date', required: true, message: '请选择拟启动日期', trigger: 'change'}
+        ],
+        FChangeEndDate: [
+          {type: 'date', required: true, message: '请选择拟完成日期', trigger: 'change'}
+        ],
+        FAfterChange: [
+          {type: 'number', required: true, message: '请选择改造后用途', trigger: 'change'}
+        ],
+        FTotalInvestAmount: [
+          {required: false, message: '请输入拟投资总金额', trigger: 'blur'}
+        ],
+        FAfterChangeArea: [
+          {required: false, message: '请输入改造后总建筑面积', trigger: 'blur'}
+        ],
+        FChangeRemark: [
+          {required: true, message: '请输入改造方案简介', trigger: 'blur'}
         ]
       },
       adcdOptions: [],
       countyOptions: [],
-      cityTypeOptions: [
-        {
-          value: 1,
-          label: '整体(大部分)拆后退出工业用途'
-        },
-        {
-          value: 2,
-          label: '整体(大部分)拆后重建用于工业'
-        },
-        {
-          value: 3,
-          label: '综合整治(含部分拆除)用于产业提升或转型'
-        }
-      ],
-      countyTypeOptions: [
-        {
-          value: 1,
-          label: '“退”(拆后退出)'
-        },
-        {
-          value: 2,
-          label: '"转"(退二进三)'
-        },
-        {
-          value: 3,
-          label: '"改"(退二优二)'
-        },
-        {
-          value: 4,
-          label: '"聚"(小微园区)'
-        }
-      ],
+      cityTypeOptions: [],
+      countyTypeOptions: [],
       purposeOptions: [
         {
           value: 1,
@@ -478,10 +499,13 @@ export default {
     setPosition (msg) {
       this.form.FGPS = msg.lng + ',' + msg.lat
       this.center = [].concat([msg.lng, msg.lat])
-      this.markers = [].concat({
+      this.markers = [].concat([{
         position: [msg.lng, msg.lat]
-      })
+      }])
     },
+    /**
+     * 获取行政区划
+     */
     getAdcd () {
       let self = this
       this.$axios.get('Common/GetAgencyList')
@@ -513,6 +537,9 @@ export default {
           })
         })
     },
+    /**
+     * 获取乡镇街道
+     */
     getCounty () {
       let self = this
       this.form.FTownValue = ''
@@ -523,7 +550,80 @@ export default {
       })
         .then(response => {
           let data = response.data
-          self.countyOptions = [].concat(data.object)
+          let countyList = []
+          _.each(data.object, (obj) => {
+            countyList.push({
+              value: Number(obj.FValue),
+              label: obj.FName
+            })
+          })
+          self.countyOptions = [].concat(countyList)
+        })
+        .catch(error => {
+          console.log(error)
+          self.$alert(error.message, '温馨提示', {
+            confirmButtonText: '确定'
+          })
+        })
+    },
+    /**
+     * 获取市级改造方案
+     */
+    getCityChangeType () {
+      let self = this
+      this.form.FTownValue = ''
+      this.$axios.get('Common/GetEnumList', {
+        params: {
+          EnumType: '按台州市办法分类'
+        }
+      })
+        .then(response => {
+          let data = response.data
+          self.cityTypeOptions = [].concat(data.object)
+        })
+        .catch(error => {
+          console.log(error)
+          self.$alert(error.message, '温馨提示', {
+            confirmButtonText: '确定'
+          })
+        })
+    },
+    /**
+     * 获取县级改造方案
+     */
+    getCountyChangeType () {
+      let self = this
+      this.form.FTownValue = ''
+      this.$axios.get('Common/GetEnumList', {
+        params: {
+          EnumType: '按县市区自定义分类'
+        }
+      })
+        .then(response => {
+          let data = response.data
+          self.countyTypeOptions = [].concat(data.object)
+        })
+        .catch(error => {
+          console.log(error)
+          self.$alert(error.message, '温馨提示', {
+            confirmButtonText: '确定'
+          })
+        })
+    },
+    /**
+     * 获取改造后用途
+     */
+    getPurpose () {
+      let self = this
+      this.form.FTownValue = ''
+      this.$axios.get('Common/GetEnumList', {
+        params: {
+          EnumType: '改造后用途'
+        }
+      })
+        .then(response => {
+          let data = response.data
+          self.purposeOptions = [].concat(data.object)
         })
         .catch(error => {
           console.log(error)
@@ -627,20 +727,11 @@ export default {
             }
             _.each(data.object, obj => {
               switch (obj.FName) {
-                case '创建（利用）前照片':
+                case '改造前影像图':
                   switchFiles(obj, 0)
                   break
-                case '创建（利用）规划设计效果图':
+                case '效果图':
                   switchFiles(obj, 1)
-                  break
-                case '创建（利用）中照片':
-                  switchFiles(obj, 2)
-                  break
-                case '创建（利用）后照片':
-                  switchFiles(obj, 3)
-                  break
-                case '创建报告（文件形式）':
-                  switchFiles(obj, 4)
                   break
               }
             })
@@ -701,9 +792,6 @@ export default {
     submitUpload () {
       this.$refs.upload0[0].submit()
       this.$refs.upload1[0].submit()
-      this.$refs.upload2[0].submit()
-      this.$refs.upload3[0].submit()
-      this.$refs.upload4[0].submit()
     },
     beforeAvatarUpload (file) {
       var testmsg = file.type.substring(0, file.type.lastIndexOf('/') + 1)
@@ -798,6 +886,9 @@ export default {
   created () {
     this.getBreadcrumb()
     this.getAdcd()
+    this.getCityChangeType()
+    this.getCountyChangeType()
+    this.getPurpose()
   },
   props: ['fid', 'billTypeId']
 }
