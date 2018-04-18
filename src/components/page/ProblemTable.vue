@@ -7,21 +7,7 @@
       </el-breadcrumb>
     </div>
     <div class="handle-box">
-      <el-date-picker
-        class="handle-select"
-        v-model="select_years"
-        align="right"
-        type="year"
-        placeholder="选择年">
-      </el-date-picker>
-      <el-date-picker
-        class="handle-select"
-        v-model="select_mouths"
-        format="MM"
-        type="month"
-        placeholder="选择月">
-      </el-date-picker>
-      <el-select v-model="select_adcd" class="handle-select" placeholder="行政区划" clearable>
+      <el-select v-model="FAgencyValue" class="handle-select" placeholder="行政区划" @change="getCounty" clearable>
         <el-option
           v-for="item in adlist"
           :key="item.value"
@@ -31,33 +17,49 @@
           <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
         </el-option>
       </el-select>
-      <el-select v-model="select_edge" placeholder="四边" class="handle-select mr10" clearable>
-        <el-option v-for="(item, i) in edgeOptions" :key="i" :label="item.label" :value="item.value"></el-option>
+      <el-select v-model="FTownValue" class="handle-select" placeholder="乡镇街道" clearable>
+        <el-option
+          v-for="item in countyOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+          {{ item.label }}
+        </el-option>
       </el-select>
-      <el-select v-model="select_problem" placeholder="存在问题" class="handle-select mr10" clearable>
-        <el-option v-for="(item, i) in proOptions" :key="i" :label="item.label" :value="item.value"></el-option>
+      <el-select v-model="FCityChangeType" placeholder="市级整改方式" class="handle-select mr10" clearable>
+        <el-option v-for="(item, i) in cityTypeOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>
       </el-select>
-      <el-select v-model="select_status" placeholder="审核状态" class="handle-select mr10" clearable>
-        <el-option v-for="(item, i) in staOptions" :key="i" :label="item.label" :value="item.value"></el-option>
+      <el-select v-model="FTownChangeType" placeholder="县级整改方式" class="handle-select mr10" clearable>
+        <el-option v-for="(item, i) in countyTypeOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>
       </el-select>
-      <!--<el-select v-model="select_cttatus" placeholder="整改状态" class="handle-select mr10" clearable>-->
+      <el-date-picker
+        v-model="FChangeDate"
+        type="daterange"
+        value-format="yyyy-MM-dd"
+        range-separator="至"
+        start-placeholder="拟开始时间"
+        end-placeholder="拟结束时间">
+      </el-date-picker>
+      <!--<el-select v-model="FChangeBeginDate" placeholder="拟开始时间" class="handle-select mr10" clearable>-->
+      <!--</el-select>-->
+      <!--<el-select v-model="FChangeEndDate" placeholder="拟结束时间" class="handle-select mr10" clearable>-->
         <!--<el-option v-for="(item, i) in cstaOptions" :key="i" :label="item.label" :value="item.value"></el-option>-->
       <!--</el-select>-->
+      <el-select v-model="FStatus" placeholder="状态" class="handle-select mr10" clearable>
+        <el-option v-for="(item, i) in statusOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>
+      </el-select>
     </div>
     <div class="handle-box">
-      <el-input v-model="select_problem_num" placeholder="问题编号" class="handle-input mr10"></el-input>
+      <el-input v-model="FAreaName" placeholder="区块名称" class="handle-input mr10"></el-input>
       <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-      <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2">新增问题</el-button>
-      <vProblemForm :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow" @closeProAdd="closePro"></vProblemForm>
+      <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2">新增改造</el-button>
     </div>
     <el-table v-loading="loading" :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange"
               stripe>
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="FAgencyName" label="行政区划">
       </el-table-column>
-      <el-table-column prop="FBillNo" label="问题编号" sortable>
-      </el-table-column>
-      <el-table-column prop="FLineName" label="线路名称">
+      <el-table-column prop="FAreaName" label="区块名称">
       </el-table-column>
       <el-table-column prop="FMileage" label="里程">
       </el-table-column>
@@ -65,8 +67,6 @@
       </el-table-column>
       <el-table-column prop="FStatusName" label="审核状态">
       </el-table-column>
-      <!--<el-table-column prop="FChangeStatusName" label="整改状态">-->
-      <!--</el-table-column>-->
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-button size="small"
@@ -116,22 +116,23 @@ export default {
       pageSize: 15,
       total: 1,
       multipleSelection: [],
-      select_cate: '',
-      select_years: '',
-      select_mouths: '',
-      select_adcd: '',
-      select_edge: '',
-      select_problem_num: '',
-      select_problem: '',
-      select_status: '',
-      select_cttatus: '',
+      FAgencyValue: '',
+      FTownValue: '',
+      FCityChangeType: '',
+      FTownChangeType: '',
+      FAfterChange: '',
+      FChangeDate: '',
+      FChangeBeginDate: '',
+      FChangeEndDate: '',
+      FAreaName: '',
+      FStatus: '',
       del_list: [],
       is_search: false,
       adlist: [],
-      proOptions: [],
-      edgeOptions: [],
-      staOptions: [],
-      cstaOptions: [],
+      countyOptions: [],
+      cityTypeOptions: [],
+      countyTypeOptions: [],
+      statusOptions: [],
       proAddShow: false,
       breadcrumb: [],
       loading: true
@@ -142,11 +143,11 @@ export default {
     this.getBreadcrumb()
 
     this.getAdcd()
-    this.getEdge()
-    this.getData()
-    this.getProblemType()
+    this.getCounty()
+    this.getCityChangeType()
+    this.getCountyChangeType()
     this.getStatusData()
-    this.getChangeStatusData()
+    this.getData()
   },
   methods: {
     handleCurrentChange (val) {
@@ -161,7 +162,7 @@ export default {
      * 获取BiilTypeID
      */
     getBillTypeId () {
-      this.billTypeID = this.$route.params.btid
+      this.FBillTypeID = this.$route.params.btid
     },
     /**
      * 获取面包屑
@@ -202,33 +203,78 @@ export default {
         })
     },
     /**
-     * 获取四边
+     * 获取乡镇街道
      */
-    getEdge () {
+    getCounty () {
       let self = this
-      this.$axios.get('Common/GetEnumList', {
+      this.FTownValue = ''
+      this.$axios.get('Common/GetStreetListByAgency', {
         params: {
-          EnumType: '四边'
+          AgencyValue: this.FAgencyValue
         }
       })
-        .then(function (response) {
+        .then(response => {
           let data = response.data
-          let list = []
+          let countyList = []
           _.each(data.object, (obj) => {
-            list.push({
-              value: obj.FValue,
+            countyList.push({
+              value: Number(obj.FValue),
               label: obj.FName
             })
           })
-          self.edgeOptions = [].concat(list)
+          self.countyOptions = [].concat(countyList)
         })
-        .catch(function (error) {
+        .catch(error => {
           console.log(error)
-          self.$message.error(error.message)
+          self.$alert(error.message, '温馨提示', {
+            confirmButtonText: '确定'
+          })
         })
     },
     /**
-     * 获取审核状态
+     * 获取市级改造方案
+     */
+    getCityChangeType () {
+      let self = this
+      this.$axios.get('Common/GetEnumList', {
+        params: {
+          EnumType: '按台州市办法分类'
+        }
+      })
+        .then(response => {
+          let data = response.data
+          self.cityTypeOptions = [].concat(data.object)
+        })
+        .catch(error => {
+          console.log(error)
+          self.$alert(error.message, '温馨提示', {
+            confirmButtonText: '确定'
+          })
+        })
+    },
+    /**
+     * 获取县级改造方案
+     */
+    getCountyChangeType () {
+      let self = this
+      this.$axios.get('Common/GetEnumList', {
+        params: {
+          EnumType: '按县市区自定义分类'
+        }
+      })
+        .then(response => {
+          let data = response.data
+          self.countyTypeOptions = [].concat(data.object)
+        })
+        .catch(error => {
+          console.log(error)
+          self.$alert(error.message, '温馨提示', {
+            confirmButtonText: '确定'
+          })
+        })
+    },
+    /**
+     * 获取状态
      */
     getStatusData () {
       let self = this
@@ -237,72 +283,15 @@ export default {
           EnumType: '审核状态'
         }
       })
-        .then(function (response) {
-          let data = response.data
-          let list = []
-          _.each(data.object, (obj) => {
-            list.push({
-              value: obj.FValue,
-              label: obj.FName
-            })
-          })
-          self.staOptions = [].concat(list)
-        })
-        .catch(function (error) {
-          console.log(error)
-          self.$message.error(error.message)
-        })
-    },
-    /**
-     * 获取整改状态
-     */
-    getChangeStatusData () {
-      let self = this
-      this.$axios.get('Common/GetEnumList', {
-        params: {
-          EnumType: '整改状态'
-        }
-      })
-        .then(function (response) {
-          let data = response.data
-          let list = []
-          _.each(data.object, (obj) => {
-            list.push({
-              value: obj.FValue,
-              label: obj.FName
-            })
-          })
-          self.cstaOptions = [].concat(list)
-        })
-        .catch(function (error) {
-          console.log(error)
-          self.$message.error(error.message)
-        })
-    },
-    /**
-     * 获取问题类型
-     */
-    getProblemType () {
-      let self = this
-      this.$axios.get('Common/GetEnumList', {
-        params: {
-          EnumType: '问题类型'
-        }
-      })
         .then(response => {
           let data = response.data
-          let list = []
-          _.each(data.object, (obj) => {
-            list.push({
-              value: obj.FValue,
-              label: obj.FName
-            })
-          })
-          self.proOptions = [].concat(list)
+          self.statusOptions = [].concat(data.object)
         })
         .catch(error => {
           console.log(error)
-          self.$message.error(error.message)
+          self.$alert(error.message, '温馨提示', {
+            confirmButtonText: '确定'
+          })
         })
     },
     /**
@@ -311,18 +300,18 @@ export default {
     getData () {
       let self = this
       this.loading = true
-      this.$axios.post('LoanApply/GetSJList', {
+      this.$axios.post('OldCity/GetList', {
         curr: this.cur_page,
         pageSize: this.pageSize,
-        FAgencyValue: this.select_adcd,
-        FBillTypeID: this.billTypeID,
-        FBillNo: this.select_problem_num,
-        FEdge: this.select_edge,
-        FProbType: this.select_problem,
-        FStatus: this.select_status,
-        FYear: this.select_years,
-        FMonth: this.select_mouths,
-        FChangeStatus: this.select_cttatus,
+        FBillTypeID: this.FBillTypeID,
+        FAgencyValue: this.FAgencyValue,
+        FTownValue: this.FTownValue,
+        FCityChangeType: this.FCityChangeType,
+        FTownChangeType: this.FTownChangeType,
+        FChangeBeginDate: this.FChangeDate[0],
+        FChangeEndDate: this.FChangeDate[1],
+        FAreaName: this.FAreaName,
+        FStatus: this.FStatus,
         strSortFiled: '',
         strSortType: ''
       })
@@ -386,7 +375,7 @@ export default {
       this.multipleSelection = val
     },
     /**
-     * 新增问题点位
+     * 新增改造信息
      */
     addProblem () {
       // this.proAddShow = true
@@ -395,7 +384,7 @@ export default {
       sessionStorage.setItem('breadcrumb', JSON.stringify(blist))
       this.editFid = ''
       console.log(this.$route.fullPath)
-      this.$router.push({path: this.$route.fullPath + '/add'})
+      this.$router.push({path: this.$route.fullPath + '/info'})
     },
     /**
      * 修改问题点位

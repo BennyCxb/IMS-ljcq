@@ -11,7 +11,7 @@
       <el-form :model="form"
                :rules="rules"
                :disabled="isDisabled"
-               ref="old"
+               ref="oldForm"
                class="demo-form-inline demo-ruleForm">
         <el-row>
           <el-col :span="24">
@@ -265,10 +265,10 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer" v-cloak>
-        <el-button @click="handleClose">关 闭</el-button>
+        <el-button @click="handleClose">返 回</el-button>
         <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && submitPossession && isDisabled">编 辑</el-button>
-        <el-button @click="resetForm('old')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
-        <el-button type="primary" @click="submit('old')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
+        <el-button @click="resetForm('oldForm')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
+        <el-button type="primary" @click="submit('oldForm')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
         <el-button type="primary" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled">整改完成</el-button>
         <el-button type="primary" @click="openAudit" v-if="isEdit && auditPossession && isDisabled">立即审核</el-button>
         <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>
@@ -311,6 +311,7 @@ export default {
       formLabelWidth: '130px',
       isEdit: false,
       isDisabled: false,
+      isSubmited: false,
       mapSelectShow: false,
       dialogAuditShow: false,
       filesChange: false,
@@ -361,10 +362,10 @@ export default {
           {required: true, message: '请输入区块名称', trigger: 'blur'}
         ],
         FAgencyValue: [
-          {type: 'number', required: true, message: '请选择行政区划', trigger: 'change'}
+          {type: 'number', required: true, message: '请选择行政区划', trigger: 'blur'}
         ],
         FTownValue: [
-          {type: 'number', required: true, message: '请选择乡镇街道', trigger: 'change'}
+          {type: 'number', required: true, message: '请选择乡镇街道', trigger: 'blur'}
         ],
         FPosition: [
           {required: true, message: '请输入详细地址', trigger: 'blur'}
@@ -461,7 +462,12 @@ export default {
     handleClose () {
       this.$confirm('确认取消？')
         .then(_ => {
-          this.$emit('closeProAdd', false)
+          // this.$emit('closeProAdd', false)
+          console.log(this.$route)
+          let path = this.$route.fullPath.replace('/info', '')
+          // path = path
+          console.log(path)
+          this.$router.push({path: path})
         })
         .catch(_ => {
         })
@@ -571,7 +577,6 @@ export default {
      */
     getCityChangeType () {
       let self = this
-      this.form.FTownValue = ''
       this.$axios.get('Common/GetEnumList', {
         params: {
           EnumType: '按台州市办法分类'
@@ -593,7 +598,6 @@ export default {
      */
     getCountyChangeType () {
       let self = this
-      this.form.FTownValue = ''
       this.$axios.get('Common/GetEnumList', {
         params: {
           EnumType: '按县市区自定义分类'
@@ -615,7 +619,6 @@ export default {
      */
     getPurpose () {
       let self = this
-      this.form.FTownValue = ''
       this.$axios.get('Common/GetEnumList', {
         params: {
           EnumType: '改造后用途'
@@ -665,7 +668,7 @@ export default {
      */
     submit (formName) {
       let self = this
-      if (self.form.isSubmited === false) {
+      if (self.isSubmited === false) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
             let data = self.form
@@ -677,7 +680,7 @@ export default {
                 let data = response.data
                 if (data.code === 1) {
                   self.form.FID = data.object
-                  self.form.isSubmited = true
+                  self.isSubmited = true
                   self.getAttachTypeList(self.form.FID, true)
                   if (!self.filesChange) {
                     self.$message({
@@ -816,7 +819,7 @@ export default {
       let data = response
       // console.log(response)
       if (data.code === 1) {
-        this.form.isSubmited = false
+        this.isSubmited = false
         this.filesChange = false
         this.$message({
           message: self.isEdit !== '' ? '修改成功' : '新增成功！',

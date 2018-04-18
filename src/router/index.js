@@ -34,7 +34,7 @@ export default new Router({
           component: resolve => require(['../components/page/notfound.vue'], resolve)
         },
         {
-          path: '/otable:fid-:btid/add',
+          path: '/otable:fid-:btid/info',
           component: resolve => require(['../components/page/add.vue'], resolve)
         }
         // {
