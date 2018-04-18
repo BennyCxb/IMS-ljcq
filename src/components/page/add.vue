@@ -31,7 +31,7 @@
             <el-form-item label="行政区划" :label-width="formLabelWidth" prop="FAgencyValue">
               <el-select v-model="form.FAgencyValue" @change="getCounty" placeholder="请选择行政区划">
                 <el-option
-                  v-for="(item,i) in adcdOptions"
+                  v-for="(item, i) in adcdOptions"
                   :key="i"
                   :label="item.label"
                   :value="item.value">
@@ -43,7 +43,7 @@
             <el-form-item label="乡镇街道" :label-width="formLabelWidth" prop="FTownValue">
               <el-select v-model="form.FTownValue" placeholder="请选择乡镇街道">
                 <el-option
-                  v-for="(item,i) in countyOptions"
+                  v-for="(item, i) in countyOptions"
                   :key="i"
                   :label="item.label"
                   :value="item.value">
@@ -149,6 +149,7 @@
           <el-col :span="6">
             <el-form-item label="县级改造方式" :label-width="formLabelWidth" prop="FTownChangeType">
               <el-select v-model="form.FTownChangeType"
+                         value-key="label"
                          filterable
                          allow-create
                          default-first-option
@@ -264,7 +265,7 @@
           </el-col>
         </el-row>
       </el-form>
-      <div slot="footer" class="dialog-footer" v-cloak>
+      <div slot="footer" class="el-footer" v-cloak>
         <el-button @click="handleClose">返 回</el-button>
         <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && submitPossession && isDisabled">编 辑</el-button>
         <el-button @click="resetForm('oldForm')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
@@ -315,6 +316,8 @@ export default {
       mapSelectShow: false,
       dialogAuditShow: false,
       filesChange: false,
+      submitPossession: false,
+      auditPossession: false,
       form: {
         FBillTypeID: null,
         FAreaName: '',
@@ -407,7 +410,7 @@ export default {
           {type: 'number', required: true, message: '请选择市级改造方式', trigger: 'change'}
         ],
         FTownChangeType: [
-          {type: 'number', required: false, message: '请选择县级改造方式', trigger: 'change'}
+          {required: false, message: '请选择县级改造方式', trigger: 'change'}
         ],
         FChangeBeginDate: [
           {type: 'date', required: true, message: '请选择拟启动日期', trigger: 'change'}
@@ -459,15 +462,17 @@ export default {
     }
   },
   methods: {
+    closeInfo () {
+      let blist = this.breadcrumb
+      blist.pop()
+      sessionStorage.setItem('breadcrumb', JSON.stringify(blist))
+      let path = this.$route.fullPath.replace('/info', '')
+      this.$router.push({path: path})
+    },
     handleClose () {
       this.$confirm('确认取消？')
         .then(_ => {
-          // this.$emit('closeProAdd', false)
-          console.log(this.$route)
-          let path = this.$route.fullPath.replace('/info', '')
-          // path = path
-          console.log(path)
-          this.$router.push({path: path})
+          this.closeInfo()
         })
         .catch(_ => {
         })
@@ -492,6 +497,15 @@ export default {
       let blist = JSON.parse(sessionStorage.getItem('breadcrumb'))
       this.breadcrumb = [].concat(blist)
       this.form.FBillTypeID = Number(this.$route.params.btid)
+      console.log(this.$route)
+      let fid = this.$route.params.infoid
+      if (fid) {
+        this.isEdit = true
+        this.form.FID = fid
+        this.getInfo()
+      } else {
+        this.isEdit = false
+      }
     },
     openMap () {
       this.mapSelectShow = true
@@ -529,7 +543,7 @@ export default {
           } else {
             _.each(data.object, (obj) => {
               adcdlist.push({
-                value: Number(obj.FValue),
+                value: obj.FValue,
                 label: obj.FName
               })
             })
@@ -559,7 +573,7 @@ export default {
           let countyList = []
           _.each(data.object, (obj) => {
             countyList.push({
-              value: Number(obj.FValue),
+              value: obj.FValue,
               label: obj.FName
             })
           })
@@ -640,9 +654,9 @@ export default {
      */
     getInfo () {
       let self = this
-      this.$axios.get('LoanApply/GetApplyInfo', {
+      this.$axios.get('OldCity/GetOldCity', {
         params: {
-          FID: this.fid
+          FID: this.form.FID
         }
       })
         .then(response => {
@@ -713,7 +727,7 @@ export default {
       let self = this
       this.$axios.get('Files/GetAttachTypeList', {
         params: {
-          FBillTypeID: self.billTypeId
+          FBillTypeID: self.form.FBillTypeID
         }
       })
         .then(response => {
@@ -761,8 +775,8 @@ export default {
       this.$axios.get('Files/GetFilesUrl', {
         params: {
           FAttachType: FAttachType,
-          FLoanID: this.fid,
-          FBillTypeID: this.billTypeId
+          FLoanID: this.form.FID,
+          FBillTypeID: this.form.FBillTypeID
         }
       })
         .then(response => {
@@ -892,8 +906,7 @@ export default {
     this.getCityChangeType()
     this.getCountyChangeType()
     this.getPurpose()
-  },
-  props: ['fid', 'billTypeId']
+  }
 }
 </script>
 
@@ -916,5 +929,9 @@ export default {
 
   .toolbar {
     margin-top: 10px;
+  }
+
+  .el-footer {
+    text-align: right;
   }
 </style>

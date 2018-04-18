@@ -29,9 +29,6 @@
       <el-select v-model="FCityChangeType" placeholder="市级整改方式" class="handle-select mr10" clearable>
         <el-option v-for="(item, i) in cityTypeOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>
       </el-select>
-      <el-select v-model="FTownChangeType" placeholder="县级整改方式" class="handle-select mr10" clearable>
-        <el-option v-for="(item, i) in countyTypeOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>
-      </el-select>
       <el-date-picker
         v-model="FChangeDate"
         type="daterange"
@@ -40,11 +37,6 @@
         start-placeholder="拟开始时间"
         end-placeholder="拟结束时间">
       </el-date-picker>
-      <!--<el-select v-model="FChangeBeginDate" placeholder="拟开始时间" class="handle-select mr10" clearable>-->
-      <!--</el-select>-->
-      <!--<el-select v-model="FChangeEndDate" placeholder="拟结束时间" class="handle-select mr10" clearable>-->
-        <!--<el-option v-for="(item, i) in cstaOptions" :key="i" :label="item.label" :value="item.value"></el-option>-->
-      <!--</el-select>-->
       <el-select v-model="FStatus" placeholder="状态" class="handle-select mr10" clearable>
         <el-option v-for="(item, i) in statusOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>
       </el-select>
@@ -59,13 +51,15 @@
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="FAgencyName" label="行政区划">
       </el-table-column>
+      <el-table-column prop="FTownName" label="乡镇街道">
+      </el-table-column>
       <el-table-column prop="FAreaName" label="区块名称">
       </el-table-column>
-      <el-table-column prop="FMileage" label="里程">
+      <el-table-column prop="FCityChangeType" label="整改方式">
       </el-table-column>
-      <el-table-column prop="FProbType" label="问题类型">
+      <el-table-column prop="FAfterChange" label="改造后用途">
       </el-table-column>
-      <el-table-column prop="FStatusName" label="审核状态">
+      <el-table-column prop="FStatus" label="状态">
       </el-table-column>
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
@@ -121,7 +115,7 @@ export default {
       FCityChangeType: '',
       FTownChangeType: '',
       FAfterChange: '',
-      FChangeDate: '',
+      FChangeDate: ['', ''],
       FChangeBeginDate: '',
       FChangeEndDate: '',
       FAreaName: '',
@@ -308,8 +302,8 @@ export default {
         FTownValue: this.FTownValue,
         FCityChangeType: this.FCityChangeType,
         FTownChangeType: this.FTownChangeType,
-        FChangeBeginDate: this.FChangeDate[0],
-        FChangeEndDate: this.FChangeDate[1],
+        FChangeBeginDate: this.FChangeDate ? this.FChangeDate[0] : '',
+        FChangeEndDate: this.FChangeDate ? this.FChangeDate[1] : '',
         FAreaName: this.FAreaName,
         FStatus: this.FStatus,
         strSortFiled: '',
@@ -342,6 +336,10 @@ export default {
      */
     handleEdit (index, row) {
       this.editProblem(row.FID)
+      let blist = [].concat(this.breadcrumb)
+      blist.push('查看改造信息')
+      sessionStorage.setItem('breadcrumb', JSON.stringify(blist))
+      this.$router.push({path: this.$route.fullPath + '/info-' + row.FID})
     },
     /**
      * 删除信息触发
