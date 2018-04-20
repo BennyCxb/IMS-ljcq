@@ -267,25 +267,30 @@
       </el-form>
       <div slot="footer" class="el-footer" v-cloak>
         <el-button @click="handleClose">返 回</el-button>
+        <el-button @click="cancelEdit" v-if="isEdit && submitPossession && !isDisabled">取消编辑</el-button>
         <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && submitPossession && isDisabled">编 辑</el-button>
         <el-button @click="resetForm('oldForm')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
         <el-button type="primary" @click="submit('oldForm')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
-        <el-button type="primary" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled">整改完成</el-button>
+        <el-button type="primary" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled">改造完成</el-button>
         <el-button type="primary" @click="openAudit" v-if="isEdit && auditPossession && isDisabled">立即审核</el-button>
         <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>
+        <el-button type="success" @click="dialogProgressShow = true" v-if="isDisabled">查看改造进度</el-button>
       </div>
-    </div>
+    <transform-progress1 :dialogProgress="dialogProgressShow" :FCityChangeType="form.FCityChangeType" @closeProgress="closeProgress"></transform-progress1>
+  </div>
   <!--</div>-->
 </template>
 <script>
 import mapSelect from './MapSelect.vue'
 import problemAudit from './ProblemAudit.vue'
+import transformProgress1 from './TransformProgress1.vue'
 import {formatDate} from '../../assets/js/date.js'
 import _ from 'lodash'
 
 export default {
   components: {
     problemAudit,
+    transformProgress1,
     mapSelect
   },
   computed: {
@@ -315,6 +320,7 @@ export default {
       isSubmited: false,
       mapSelectShow: false,
       dialogAuditShow: false,
+      dialogProgressShow: false,
       filesChange: false,
       submitPossession: false,
       auditPossession: false,
@@ -365,10 +371,10 @@ export default {
           {required: true, message: '请输入区块名称', trigger: 'blur'}
         ],
         FAgencyValue: [
-          {type: 'number', required: true, message: '请选择行政区划', trigger: 'blur'}
+          {type: 'string', required: true, message: '请选择行政区划', trigger: 'blur'}
         ],
         FTownValue: [
-          {type: 'number', required: true, message: '请选择乡镇街道', trigger: 'blur'}
+          {type: 'string', required: true, message: '请选择乡镇街道', trigger: 'blur'}
         ],
         FPosition: [
           {required: true, message: '请输入详细地址', trigger: 'blur'}
@@ -413,10 +419,10 @@ export default {
           {required: false, message: '请选择县级改造方式', trigger: 'change'}
         ],
         FChangeBeginDate: [
-          {type: 'date', required: true, message: '请选择拟启动日期', trigger: 'change'}
+          {required: true, message: '请选择拟启动日期', trigger: 'change'}
         ],
         FChangeEndDate: [
-          {type: 'date', required: true, message: '请选择拟完成日期', trigger: 'change'}
+          {required: true, message: '请选择拟完成日期', trigger: 'change'}
         ],
         FAfterChange: [
           {type: 'number', required: true, message: '请选择改造后用途', trigger: 'change'}
@@ -469,6 +475,10 @@ export default {
       let path = this.$route.fullPath.replace('/info', '')
       this.$router.push({path: path})
     },
+    cancelEdit () {
+      this.isDisabled = true
+      this.getInfo()
+    },
     handleClose () {
       this.$confirm('确认取消？')
         .then(_ => {
@@ -497,10 +507,11 @@ export default {
       let blist = JSON.parse(sessionStorage.getItem('breadcrumb'))
       this.breadcrumb = [].concat(blist)
       this.form.FBillTypeID = Number(this.$route.params.btid)
-      console.log(this.$route)
+      // console.log(this.$route)
       let fid = this.$route.params.infoid
       if (fid) {
         this.isEdit = true
+        this.isDisabled = true
         this.form.FID = fid
         this.getInfo()
       } else {
@@ -537,7 +548,7 @@ export default {
             let item = _.find(data.object, {FValue: FAgencyValue})
             self.form.FAgencyValue = Number(item.FValue)
             adcdlist.push({
-              value: Number(item.FValue),
+              value: item.FValue,
               label: item.FName
             })
           } else {
@@ -663,8 +674,19 @@ export default {
           let data = response.data
           if (data.code === 1) {
             let obj = data.object
+            let position = obj.FGPS
+            let FTownValue = obj.FTownValue
             self.form = obj
+            if (position) {
+              self.markers = [].concat([{
+                position: position.split(',')
+              }])
+            }
             self.getAttachTypeList(obj.FID)
+            self.getCounty()
+            self.form.FTownValue = FTownValue
+            self.getSubmitPossession()
+            self.getAuditPossession()
           } else {
             self.$message({
               message: data.message,
@@ -692,6 +714,7 @@ export default {
             this.$axios.post('OldCity/SaveOldCity', data)
               .then(response => {
                 let data = response.data
+
                 if (data.code === 1) {
                   self.form.FID = data.object
                   self.isSubmited = true
@@ -736,7 +759,7 @@ export default {
             var switchFiles = (obj, index) => {
               self.files[index].data.FLoanID = FLoanID
               self.files[index].data.AttachType = obj.FID
-              self.files[index].data.FBillTypeID = Number(self.billTypeId)
+              self.files[index].data.FBillTypeID = Number(self.form.FBillTypeID)
               if (!isUpload) {
                 self.files[index].fileList = []
                 self.getFilesUrl(self.files[index], obj.FID)
@@ -892,9 +915,47 @@ export default {
     closeAudit (msg) {
       this.dialogAuditShow = false
     },
+    openProgress () {
+      this.dialogProgressShow = true
+    },
+    closeProgress (msg) {
+      this.dialogProgressShow = false
+    },
     closePro (msg) {
       console.log(msg)
       location.reload()
+    },
+    // 编辑、提交整改权限
+    getSubmitPossession () {
+      let FLevel = Number(localStorage.getItem('FLevel'))
+      if (FLevel === 1) {
+        if (this.form.FStatus === 0) {
+          this.submitPossession = true
+        } else {
+          this.submitPossession = false
+        }
+      } else if (FLevel === 3 && this.form.FStatus === 0) {
+        this.submitPossession = true
+      } else if (FLevel === 4 && this.form.FStatus === 0) {
+        this.submitPossession = true
+      } else {
+        this.submitPossession = false
+      }
+    },
+    // 审核整改权限
+    getAuditPossession () {
+      let FLevel = Number(localStorage.getItem('FLevel'))
+      if (FLevel === 1 || FLevel === 2) {
+        if (this.form.FStatus === 1) {
+          this.auditPossession = true
+        } else {
+          this.auditPossession = false
+        }
+      } else if (this.form.FStatus === 1 && FLevel === 3) {
+        this.auditPossession = true
+      } else {
+        this.auditPossession = false
+      }
     },
     formatDatetime (row, column, cellValue) {
       return formatDate(new Date(cellValue), 'yyyy-MM-dd hh:mm:ss')

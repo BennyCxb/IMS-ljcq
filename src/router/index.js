@@ -35,11 +35,11 @@ export default new Router({
         },
         {
           path: '/otable:fid-:btid/info',
-          component: resolve => require(['../components/page/add.vue'], resolve)
+          component: resolve => require(['../components/page/OldInfo.vue'], resolve)
         },
         {
           path: '/otable:fid-:btid/info-:infoid',
-          component: resolve => require(['../components/page/add.vue'], resolve)
+          component: resolve => require(['../components/page/OldInfo.vue'], resolve)
         }
       ]
     },
