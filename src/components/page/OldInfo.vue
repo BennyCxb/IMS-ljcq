@@ -276,8 +276,8 @@
         <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>
         <el-button type="success" @click="dialogProgress" v-if="isDisabled">查看改造进度</el-button>
       </div>
-    <transform-progress1 :dialogProgress="dialogProgress1Show" :FLoanID="form.FID" @closeProgress="closeProgress1"></transform-progress1>
-    <transform-progress2 :dialogProgress="dialogProgress2Show" :FLoanID="form.FID" @closeProgress="closeProgress2"></transform-progress2>
+    <transform-progress1 :dialogProgress="dialogProgress1Show" :FLoanID="form.FID" :submitPossession="submitPossession" @closeProgress="closeProgress1"></transform-progress1>
+    <transform-progress2 :dialogProgress="dialogProgress2Show" :FLoanID="form.FID" :submitPossession="submitPossession" @closeProgress="closeProgress2"></transform-progress2>
   </div>
   <!--</div>-->
 </template>
@@ -497,7 +497,7 @@ export default {
       this.getInfo()
     },
     handleClose () {
-      this.$confirm('确认取消？')
+      this.$confirm('确认返回？')
         .then(_ => {
           this.closeInfo()
         })
@@ -944,7 +944,7 @@ export default {
      */
     dialogProgress () {
       let type = Number(this.form.FCityChangeType)
-      console.log(type)
+      // console.log(type)
       if (type === 1 || type === 2) {
         this.openProgress1()
       } else if (type === 3) {

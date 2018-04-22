@@ -2,6 +2,7 @@
   <el-dialog title="改造进度" :visible.sync="dialogProgress" :before-close="handleClose" width="80%">
     <el-form :model="form"
              :disabled="isDisabled"
+             ref="form"
              class="demo-form-inline demo-ruleForm">
       <el-row>
         <el-col :span="24">
@@ -22,7 +23,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-for="(item, i) in files" :key="i" v-if="i <= 1">
+      <el-row v-for="(item, i) in files" :key="i" v-if="item.sign === 0">
         <el-col :span="24" v-if="item.type === 'img'">
           <el-form-item :label="item.label" :label-width="formLabelWidth">
             <el-upload
@@ -34,21 +35,19 @@
               :data="item.data"
               :file-list="item.fileList"
               :beforeUpload="beforeAvatarUpload"
-              :on-success="uploadSuccess"
-              :on-change="onFilesChange"
               accept="image/*"
               multiple>
               <i class="el-icon-plus"></i>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
             </el-upload>
-            <el-dialog :visible.sync="dialogVisible">
+            <el-dialog :visible.sync="dialogVisible" append-to-body>
               <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
           </el-form-item>
         </el-col>
         <el-col :span="24" v-else-if="item.type === 'file'">
-          <el-col :span="12">
-            <el-form-item :label="item.label" :label-width="formLabelWidth">
+          <el-form-item :label="item.label" :label-width="formLabelWidth">
+            <el-col :span="12">
               <el-upload
                 class="upload-demo"
                 drag
@@ -56,15 +55,33 @@
                 :action="url"
                 :headers="headers"
                 :data="item.data"
-                :show-file-list="false"
-                :on-success="uploadSuccess"
-                :on-change="onFilesChange"
                 multiple>
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
               </el-upload>
-            </el-form-item>
-          </el-col>
+            </el-col>
+            <el-col :span="12">
+              <el-table
+                :data="item.fileList"
+                max-height="300"
+                style="width: 100%">
+                <el-table-column
+                  prop="name"
+                  label="文件名">
+                </el-table-column>
+                <el-table-column
+                  prop="address"
+                  label="操作"
+                  width="180">
+                  <template slot-scope="scope">
+                    <el-button size="small" icon="el-icon-download" title="下载"
+                               @click="download(scope.$index, scope.row)">
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-col>
+          </el-form-item>
         </el-col>
       </el-row>
       <el-row>
@@ -86,7 +103,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-for="(item, i) in files" :key="i" v-if="i > 1 && i <= 3">
+      <el-row v-for="(item, i) in files" :key="i" v-if="item.sign === 1">
         <el-col :span="24" v-if="item.type === 'img'">
           <el-form-item :label="item.label" :label-width="formLabelWidth">
             <el-upload
@@ -99,38 +116,53 @@
               :data="item.data"
               :file-list="item.fileList"
               :beforeUpload="beforeAvatarUpload"
-              :on-success="uploadSuccess"
-              :on-change="onFilesChange"
               accept="image/*"
               multiple>
               <i class="el-icon-plus"></i>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
             </el-upload>
-            <el-dialog :visible.sync="dialogVisible">
+            <el-dialog :visible.sync="dialogVisible" append-to-body>
               <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
           </el-form-item>
         </el-col>
         <el-col :span="24" v-else-if="item.type === 'file'">
-          <el-col :span="12">
-            <el-form-item :label="item.label" :label-width="formLabelWidth">
+          <el-form-item :label="item.label" :label-width="formLabelWidth">
+            <el-col :span="12">
               <el-upload
                 class="upload-demo"
                 drag
                 :ref="'upload' + i"
                 :action="url"
                 :headers="headers"
-                :auto-upload="false"
                 :data="item.data"
-                :show-file-list="false"
-                :on-success="uploadSuccess"
-                :on-change="onFilesChange"
                 multiple>
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
               </el-upload>
-            </el-form-item>
-          </el-col>
+            </el-col>
+            <el-col :span="12">
+              <el-table
+                :data="item.fileList"
+                max-height="300"
+                style="width: 100%">
+                <el-table-column
+                  prop="name"
+                  label="文件名">
+                </el-table-column>
+                <el-table-column
+                  prop="address"
+                  label="操作"
+                  width="180">
+                  <template slot-scope="scope">
+                    <el-button size="small" icon="el-icon-download" title="下载"
+                               @click="download(scope.$index, scope.row)">
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-col>
+          </el-form-item>
         </el-col>
       </el-row>
       <el-row>
@@ -162,7 +194,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-for="(item, i) in files" :key="i" v-if="i === 4">
+      <el-row v-for="(item, i) in files" :key="i" v-if="item.sign === 2">
         <el-col :span="24" v-if="item.type === 'img'">
           <el-form-item :label="item.label" :label-width="formLabelWidth">
             <el-upload
@@ -175,38 +207,53 @@
               :data="item.data"
               :file-list="item.fileList"
               :beforeUpload="beforeAvatarUpload"
-              :on-success="uploadSuccess"
-              :on-change="onFilesChange"
               accept="image/*"
               multiple>
               <i class="el-icon-plus"></i>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
             </el-upload>
-            <el-dialog :visible.sync="dialogVisible">
+            <el-dialog :visible.sync="dialogVisible" append-to-body>
               <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
           </el-form-item>
         </el-col>
         <el-col :span="24" v-else-if="item.type === 'file'">
-          <el-col :span="12">
-            <el-form-item :label="item.label" :label-width="formLabelWidth">
+          <el-form-item :label="item.label" :label-width="formLabelWidth">
+            <el-col :span="12">
               <el-upload
                 class="upload-demo"
                 drag
                 :ref="'upload' + i"
                 :action="url"
                 :headers="headers"
-                :auto-upload="false"
                 :data="item.data"
-                :show-file-list="false"
-                :on-success="uploadSuccess"
-                :on-change="onFilesChange"
                 multiple>
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
               </el-upload>
-            </el-form-item>
-          </el-col>
+            </el-col>
+            <el-col :span="12">
+              <el-table
+                :data="item.fileList"
+                max-height="300"
+                style="width: 100%">
+                <el-table-column
+                  prop="name"
+                  label="文件名">
+                </el-table-column>
+                <el-table-column
+                  prop="address"
+                  label="操作"
+                  width="180">
+                  <template slot-scope="scope">
+                    <el-button size="small" icon="el-icon-download" title="下载"
+                               @click="download(scope.$index, scope.row)">
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-col>
+          </el-form-item>
         </el-col>
       </el-row>
       <el-row>
@@ -228,7 +275,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-for="(item, i) in files" :key="i" v-if="i === 5">
+      <el-row v-for="(item, i) in files" :key="i" v-if="item.sign === 3">
         <el-col :span="24" v-if="item.type === 'img'">
           <el-form-item :label="item.label" :label-width="formLabelWidth">
             <el-upload
@@ -241,38 +288,53 @@
               :data="item.data"
               :file-list="item.fileList"
               :beforeUpload="beforeAvatarUpload"
-              :on-success="uploadSuccess"
-              :on-change="onFilesChange"
               accept="image/*"
               multiple>
               <i class="el-icon-plus"></i>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
             </el-upload>
-            <el-dialog :visible.sync="dialogVisible">
+            <el-dialog :visible.sync="dialogVisible" append-to-body>
               <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
           </el-form-item>
         </el-col>
         <el-col :span="24" v-else-if="item.type === 'file'">
-          <el-col :span="12">
-            <el-form-item :label="item.label" :label-width="formLabelWidth">
+          <el-form-item :label="item.label" :label-width="formLabelWidth">
+            <el-col :span="12">
               <el-upload
                 class="upload-demo"
                 drag
                 :ref="'upload' + i"
                 :action="url"
                 :headers="headers"
-                :auto-upload="false"
                 :data="item.data"
-                :show-file-list="false"
-                :on-success="uploadSuccess"
-                :on-change="onFilesChange"
                 multiple>
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
               </el-upload>
-            </el-form-item>
-          </el-col>
+            </el-col>
+            <el-col :span="12">
+              <el-table
+                :data="item.fileList"
+                max-height="300"
+                style="width: 100%">
+                <el-table-column
+                  prop="name"
+                  label="文件名">
+                </el-table-column>
+                <el-table-column
+                  prop="address"
+                  label="操作"
+                  width="180">
+                  <template slot-scope="scope">
+                    <el-button size="small" icon="el-icon-download" title="下载"
+                               @click="download(scope.$index, scope.row)">
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-col>
+          </el-form-item>
         </el-col>
       </el-row>
       <el-row>
@@ -304,7 +366,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-for="(item, i) in files" :key="i" v-if="i === 6">
+      <el-row v-for="(item, i) in files" :key="i" v-if="item.sign === 4">
         <el-col :span="24" v-if="item.type === 'img'">
           <el-form-item :label="item.label" :label-width="formLabelWidth">
             <el-upload
@@ -317,49 +379,67 @@
               :data="item.data"
               :file-list="item.fileList"
               :beforeUpload="beforeAvatarUpload"
-              :on-success="uploadSuccess"
-              :on-change="onFilesChange"
               accept="image/*"
               multiple>
               <i class="el-icon-plus"></i>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
             </el-upload>
-            <el-dialog :visible.sync="dialogVisible">
+            <el-dialog :visible.sync="dialogVisible" append-to-body>
               <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
           </el-form-item>
         </el-col>
         <el-col :span="24" v-else-if="item.type === 'file'">
-          <el-col :span="12">
-            <el-form-item :label="item.label" :label-width="formLabelWidth">
+          <el-form-item :label="item.label" :label-width="formLabelWidth">
+            <el-col :span="12">
               <el-upload
                 class="upload-demo"
                 drag
                 :ref="'upload' + i"
                 :action="url"
                 :headers="headers"
-                :auto-upload="false"
                 :data="item.data"
-                :show-file-list="false"
-                :on-success="uploadSuccess"
-                :on-change="onFilesChange"
                 multiple>
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
               </el-upload>
-            </el-form-item>
-          </el-col>
+            </el-col>
+            <el-col :span="12">
+              <el-table
+                :data="item.fileList"
+                max-height="300"
+                style="width: 100%">
+                <el-table-column
+                  prop="name"
+                  label="文件名">
+                </el-table-column>
+                <el-table-column
+                  prop="address"
+                  label="操作"
+                  width="180">
+                  <template slot-scope="scope">
+                    <el-button size="small" icon="el-icon-download" title="下载"
+                               @click="download(scope.$index, scope.row)">
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-col>
+          </el-form-item>
         </el-col>
       </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="handleClose">取 消</el-button>
-      <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      <el-button @click="cancelEdit" v-if="submitPossession && !isDisabled">取消编辑</el-button>
+      <el-button type="primary" @click="isDisabled = !isDisabled" v-if="submitPossession && isDisabled">编 辑</el-button>
+      <el-button type="primary" @click="submit('form')" v-if="submitPossession && !isDisabled">保 存</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
+import _ from 'lodash'
 export default {
   computed: {
     url () {
@@ -374,8 +454,7 @@ export default {
   data () {
     return {
       dialogFormVisible: false,
-      isDisabled: false,
-      isUpload: false,
+      isDisabled: true,
       type: 1,
       FBillTypeID: 2000011,
       form: {
@@ -422,45 +501,91 @@ export default {
       },
       files: [
         {
+          sign: 0,
           label: '方案',
           type: 'file',
-          data: {},
+          data: {
+            AttachType: '',
+            FBillTypeID: 2000011,
+            FLoanID: ''
+          },
           fileList: []
         },
         {
+          sign: 0,
           label: '照片',
           type: 'img',
-          data: {},
+          data: {
+            AttachType: '',
+            FBillTypeID: 2000011,
+            FLoanID: ''
+          },
           fileList: []
         },
         {
+          sign: 1,
           label: '协议',
           type: 'file',
-          data: {},
+          data: {
+            AttachType: '',
+            FBillTypeID: 2000011,
+            FLoanID: ''
+          },
           fileList: []
         },
         {
+          sign: 1,
           label: '照片',
           type: 'img',
-          data: {},
+          data: {
+            AttachType: '',
+            FBillTypeID: 2000011,
+            FLoanID: ''
+          },
           fileList: []
         },
         {
+          sign: 2,
           label: '照片',
           type: 'img',
-          data: {},
+          data: {
+            AttachType: '',
+            FBillTypeID: 2000011,
+            FLoanID: ''
+          },
           fileList: []
         },
         {
-          label: '照片',
-          type: 'img',
-          data: {},
+          sign: 3,
+          label: '建设工程规划许可证',
+          type: 'file',
+          data: {
+            AttachType: '',
+            FBillTypeID: 2000011,
+            FLoanID: ''
+          },
           fileList: []
         },
         {
+          sign: 3,
           label: '照片',
           type: 'img',
-          data: {},
+          data: {
+            AttachType: '',
+            FBillTypeID: 2000011,
+            FLoanID: ''
+          },
+          fileList: []
+        },
+        {
+          sign: 4,
+          label: '照片',
+          type: 'img',
+          data: {
+            AttachType: '',
+            FBillTypeID: 2000011,
+            FLoanID: ''
+          },
           fileList: []
         }
       ],
@@ -478,6 +603,10 @@ export default {
         .catch(_ => {
         })
     },
+    cancelEdit () {
+      this.isDisabled = true
+      this.getInfo()
+    },
     /**
      * 获取改造进度信息
      */
@@ -494,9 +623,13 @@ export default {
             self.form[0] = data.object
             data.object.forEach((obj, index) => {
               self.form[index] = obj
+              _.each(self.files, file => {
+                if (file.sign === index) {
+                  file.data.FLoanID = obj.FLoanID
+                }
+              })
             })
             self.getAttachTypeList()
-            console.log(self.form)
           } else {
             self.$message({
               message: data.message,
@@ -509,39 +642,47 @@ export default {
           self.$message.error(error.message)
         })
     },
-    getAttachTypeList (FLoanID, isUpload) {
+    getAttachTypeList () {
       let self = this
       this.$axios.get('Files/GetAttachTypeList', {
         params: {
-          FBillTypeID: self.FBillTypeID
+          FBillTypeID: this.$route.params.btid
         }
       })
         .then(response => {
           let data = response.data
           if (data.code === 1) {
-            console.log(data)
-            // var switchFiles = (obj, index) => {
-            //   self.files[index].data.FLoanID = FLoanID
-            //   self.files[index].data.AttachType = obj.FID
-            //   self.files[index].data.FBillTypeID = Number(self.FBillTypeID)
-            //   if (!isUpload) {
-            //     self.files[index].fileList = []
-            //     self.getFilesUrl(self.files[index], obj.FID)
-            //   }
-            // }
-            // _.each(data.object, obj => {
-            //   switch (obj.FName) {
-            //     case '改造前影像图':
-            //       switchFiles(obj, 0)
-            //       break
-            //     case '效果图':
-            //       switchFiles(obj, 1)
-            //       break
-            //   }
-            // })
-            // if (isUpload) {
-            //   self.submitUpload()
-            // }
+            var switchFiles = (obj, index) => {
+              self.files[index].data.AttachType = obj.FID
+              self.files[index].fileList = []
+              self.getFilesUrl(self.files[index], obj.FID)
+            }
+            _.each(data.object, obj => {
+              switch (obj.FName) {
+                case '已启动方案':
+                  switchFiles(obj, 0)
+                  break
+                case '已启动照片':
+                  switchFiles(obj, 1)
+                  break
+                case '已签约协议':
+                  switchFiles(obj, 2)
+                  break
+                case '已签约照片':
+                  switchFiles(obj, 3)
+                  break
+                case '已开工建设工程规划许可证':
+                  switchFiles(obj, 4)
+                  break
+                case '已开工照片':
+                  switchFiles(obj, 5)
+                  break
+                case '已完工照片':
+                  switchFiles(obj, 6)
+                  break
+              }
+            })
+            console.log(self.files)
           } else {
             self.$message({
               message: data.message,
@@ -593,15 +734,41 @@ export default {
     /**
      * 提交
      */
-    submit () {
-
-    },
-    /**
-     * 提交照片/文件
-     */
-    submitUpload () {
-      this.$refs.upload0[0].submit()
-      this.$refs.upload1[0].submit()
+    submit (formName) {
+      let self = this
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let data = self.form
+          let tmp = []
+          _.each(data, obj => {
+            tmp.push(obj)
+          })
+          console.log(tmp)
+          this.$axios.post('OldCity/SaveOldCityExtend12', tmp)
+            .then(response => {
+              let data = response.data
+              if (data.code === 1) {
+                self.$message({
+                  message: '保存成功！',
+                  type: 'success'
+                })
+                self.$emit('closeProgress', false)
+              } else {
+                self.$message({
+                  message: data.message,
+                  type: 'warning'
+                })
+              }
+            })
+            .catch(error => {
+              console.log(error)
+              self.$message.error(error.message)
+            })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     },
     beforeAvatarUpload (file) {
       var testmsg = file.type.substring(0, file.type.lastIndexOf('/') + 1)
@@ -621,25 +788,6 @@ export default {
       }
       return extension && isLt2M
     },
-    uploadSuccess (response, file, fileLis) {
-      let self = this
-      let data = response
-      // console.log(response)
-      if (data.code === 1) {
-        this.isSubmited = false
-        this.filesChange = false
-        this.$message({
-          message: self.isEdit !== '' ? '修改成功' : '新增成功！',
-          type: 'success'
-        })
-        this.$emit('closeProAdd', false)
-      } else {
-        this.$message({
-          message: data.message,
-          type: 'warning'
-        })
-      }
-    },
     handleRemove (file, fileList) {
       console.log(file, fileList)
     },
@@ -652,9 +800,18 @@ export default {
         title: '上传失败',
         message: '图片上传接口上传失败，可更改为自己的服务器接口'
       })
+    },
+    download (index, obj) {
+      let filename = obj.name.split('.')[0]
+      var $a = document.createElement('a')
+      $a.setAttribute('href', obj.url)
+      $a.setAttribute('download', filename)
+      var evObj = document.createEvent('MouseEvents')
+      evObj.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, true, false, 0, null)
+      $a.dispatchEvent(evObj)
     }
   },
-  props: ['dialogProgress', 'FLoanID'],
+  props: ['dialogProgress', 'FLoanID', 'submitPossession'],
   watch: {
     dialogProgress (curVal) {
       if (curVal) {
