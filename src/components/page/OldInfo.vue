@@ -274,9 +274,10 @@
         <el-button type="primary" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled">改造完成</el-button>
         <el-button type="primary" @click="openAudit" v-if="isEdit && auditPossession && isDisabled">立即审核</el-button>
         <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>
-        <el-button type="success" @click="dialogProgressShow = true" v-if="isDisabled">查看改造进度</el-button>
+        <el-button type="success" @click="dialogProgress" v-if="isDisabled">查看改造进度</el-button>
       </div>
-    <transform-progress1 :dialogProgress="dialogProgressShow" :FCityChangeType="form.FCityChangeType" @closeProgress="closeProgress"></transform-progress1>
+    <transform-progress1 :dialogProgress="dialogProgress1Show" :FLoanID="form.FID" @closeProgress="closeProgress1"></transform-progress1>
+    <transform-progress2 :dialogProgress="dialogProgress2Show" :FLoanID="form.FID" @closeProgress="closeProgress2"></transform-progress2>
   </div>
   <!--</div>-->
 </template>
@@ -284,6 +285,7 @@
 import mapSelect from './MapSelect.vue'
 import problemAudit from './ProblemAudit.vue'
 import transformProgress1 from './TransformProgress1.vue'
+import transformProgress2 from './TransformProgress2.vue'
 import {formatDate} from '../../assets/js/date.js'
 import _ from 'lodash'
 
@@ -291,6 +293,7 @@ export default {
   components: {
     problemAudit,
     transformProgress1,
+    transformProgress2,
     mapSelect
   },
   computed: {
@@ -304,8 +307,8 @@ export default {
     },
     auditData () {
       let data = {
-        FBillTypeID: this.billTypeId,
-        FID: this.fid,
+        FBillTypeID: this.form.FBillTypeID,
+        FID: this.form.FID,
         FCheckLevel: this.form.FCheckLevel
       }
       return JSON.stringify(data)
@@ -320,7 +323,8 @@ export default {
       isSubmited: false,
       mapSelectShow: false,
       dialogAuditShow: false,
-      dialogProgressShow: false,
+      dialogProgress1Show: false,
+      dialogProgress2Show: false,
       filesChange: false,
       submitPossession: false,
       auditPossession: false,
@@ -468,11 +472,24 @@ export default {
     }
   },
   methods: {
+    reload () {
+      if (this.isEdit) {
+        this.isDisabled = true
+        this.getBreadcrumb()
+        this.getAdcd()
+        this.getCityChangeType()
+        this.getCountyChangeType()
+        this.getPurpose()
+      } else {
+        this.$router.push({path: this.$route.fullPath + '-' + this.form.FID})
+      }
+    },
     closeInfo () {
       let blist = this.breadcrumb
       blist.pop()
       sessionStorage.setItem('breadcrumb', JSON.stringify(blist))
-      let path = this.$route.fullPath.replace('/info', '')
+      let path = this.$route.fullPath
+      path = path.substring(0, path.indexOf('/info'))
       this.$router.push({path: path})
     },
     cancelEdit () {
@@ -724,7 +741,7 @@ export default {
                       message: self.isEdit ? '修改成功' : '新增成功！',
                       type: 'success'
                     })
-                    self.$emit('closeProAdd', false)
+                    self.reload()
                   }
                 } else {
                   self.$message({
@@ -854,15 +871,16 @@ export default {
     uploadSuccess (response, file, fileLis) {
       let self = this
       let data = response
-      // console.log(response)
+      console.log(response)
       if (data.code === 1) {
+        this.isDisabled = true
         this.isSubmited = false
         this.filesChange = false
         this.$message({
           message: self.isEdit !== '' ? '修改成功' : '新增成功！',
           type: 'success'
         })
-        this.$emit('closeProAdd', false)
+        this.reload()
       } else {
         this.$message({
           message: data.message,
@@ -883,11 +901,14 @@ export default {
         message: '图片上传接口上传失败，可更改为自己的服务器接口'
       })
     },
+    /**
+     * 提交审核
+     */
     submitAudit () {
       let self = this
-      this.$axios.post('LoanApply/SubmitSJApply', {
-        FBillTypeID: self.billTypeId,
-        FID: self.form.fid
+      this.$axios.post('Flow/SubmitApply', {
+        FBillTypeID: self.form.FBillTypeID,
+        FID: self.form.FID
       })
         .then(response => {
           let data = response.data
@@ -896,7 +917,7 @@ export default {
               message: '提交审核成功',
               type: 'success'
             })
-            this.$emit('closeProAdd', false)
+            location.reload()
           } else {
             self.$message({
               message: data.message,
@@ -909,21 +930,43 @@ export default {
           self.$message.error(error.message)
         })
     },
+    /**
+     * 打开审核
+     */
     openAudit () {
       this.dialogAuditShow = true
     },
     closeAudit (msg) {
       this.dialogAuditShow = false
     },
-    openProgress () {
-      this.dialogProgressShow = true
+    /**
+     * 判断改造方式打开改造进度
+     */
+    dialogProgress () {
+      let type = Number(this.form.FCityChangeType)
+      console.log(type)
+      if (type === 1 || type === 2) {
+        this.openProgress1()
+      } else if (type === 3) {
+        this.openProgress2()
+      } else {
+        this.$message.error('请选择改造方式')
+      }
     },
-    closeProgress (msg) {
-      this.dialogProgressShow = false
+    openProgress1 () {
+      this.dialogProgress1Show = true
+    },
+    closeProgress1 (msg) {
+      this.dialogProgress1Show = false
+    },
+    openProgress2 () {
+      this.dialogProgress2Show = true
+    },
+    closeProgress2 (msg) {
+      this.dialogProgress2Show = false
     },
     closePro (msg) {
-      console.log(msg)
-      location.reload()
+      this.reload()
     },
     // 编辑、提交整改权限
     getSubmitPossession () {
