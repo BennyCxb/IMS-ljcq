@@ -348,7 +348,7 @@ export default {
       let self = this
       this.$confirm('确认删除？')
         .then(_ => {
-          self.$axios.get('LoanApply/DeleteApply', {
+          self.$axios.get('OldCity/DeleteOldCity', {
             params: {
               FID: row.FID
             }

@@ -445,28 +445,7 @@ export default {
       countyOptions: [],
       cityTypeOptions: [],
       countyTypeOptions: [],
-      purposeOptions: [
-        {
-          value: 1,
-          label: '复绿复耕'
-        },
-        {
-          value: 2,
-          label: '退二进三'
-        },
-        {
-          value: 3,
-          label: '退二优二'
-        },
-        {
-          value: 4,
-          label: '建小微园区'
-        },
-        {
-          value: 5,
-          label: '其他'
-        }
-      ],
+      purposeOptions: [],
       dialogImageUrl: '',
       dialogVisible: false
     }
