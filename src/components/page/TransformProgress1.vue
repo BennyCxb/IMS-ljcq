@@ -98,6 +98,7 @@
             <el-date-picker
               v-model="form[1].FTime"
               type="date"
+              :picker-options="pickerOptions1"
               placeholder="请选择时间">
             </el-date-picker>
           </el-form-item>
@@ -178,6 +179,7 @@
             <el-date-picker
               v-model="form[2].FTime"
               type="date"
+              :picker-options="pickerOptions2"
               placeholder="请选择时间">
             </el-date-picker>
           </el-form-item>
@@ -272,6 +274,7 @@
             <el-date-picker
               v-model="form[3].FTime"
               type="date"
+              :picker-options="pickerOptions3"
               placeholder="请选择时间">
             </el-date-picker>
           </el-form-item>
@@ -284,7 +287,6 @@
               :ref="'upload' + i"
               :action="url"
               :headers="headers"
-              :auto-upload="false"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
               :data="item.data"
@@ -353,6 +355,7 @@
             <el-date-picker
               v-model="form[4].FTime"
               type="date"
+              :picker-options="pickerOptions4"
               placeholder="请选择时间">
             </el-date-picker>
           </el-form-item>
@@ -435,7 +438,7 @@
       </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="handleClose">取 消</el-button>
+      <el-button @click="handleClose">关 闭</el-button>
       <el-button @click="cancelEdit" v-if="submitPossession && !isDisabled">取消编辑</el-button>
       <el-button type="primary" @click="isDisabled = !isDisabled" v-if="submitPossession && isDisabled">编 辑</el-button>
       <el-button type="primary" @click="submit('form')" v-if="submitPossession && !isDisabled">保 存</el-button>
@@ -457,6 +460,7 @@ export default {
     }
   },
   data () {
+    let self = this
     return {
       dialogFormVisible: false,
       isDisabled: true,
@@ -594,14 +598,67 @@ export default {
           fileList: []
         }
       ],
+      // pickerOptions0: {
+      //   disabledDate (time) {
+      //     return time.getTime() < new Date(self.form[0].FTime) || time.getTime() > new Date(self.form[2].FTime)
+      //   }
+      // },
+      pickerOptions1: {
+        disabledDate (time) {
+          if (self.form[0].FTime && !self.form[3].FTime) {
+            return time.getTime() < new Date(self.form[0].FTime)
+          } else if (!self.form[0].FTime && self.form[2].FTime) {
+            return time.getTime() > new Date(self.form[2].FTime)
+          } else if (self.form[0].FTime && self.form[2].FTime) {
+            return time.getTime() < new Date(self.form[0].FTime) || time.getTime() > new Date(self.form[2].FTime)
+          } else {
+            return false
+          }
+        }
+      },
+      pickerOptions2: {
+        disabledDate (time) {
+          if (self.form[1].FTime && !self.form[3].FTime) {
+            return time.getTime() < new Date(self.form[1].FTime)
+          } else if (!self.form[1].FTime && self.form[3].FTime) {
+            return time.getTime() > new Date(self.form[3].FTime)
+          } else if (self.form[1].FTime && self.form[3].FTime) {
+            return time.getTime() < new Date(self.form[1].FTime) || time.getTime() > new Date(self.form[3].FTime)
+          } else {
+            return false
+          }
+        }
+      },
+      pickerOptions3: {
+        disabledDate (time) {
+          if (self.form[2].FTime && !self.form[3].FTime) {
+            return time.getTime() < new Date(self.form[2].FTime)
+          } else if (!self.form[2].FTime && self.form[4].FTime) {
+            return time.getTime() > new Date(self.form[4].FTime)
+          } else if (self.form[2].FTime && self.form[4].FTime) {
+            return time.getTime() < new Date(self.form[2].FTime) || time.getTime() > new Date(self.form[4].FTime)
+          } else {
+            return false
+          }
+        }
+      },
+      pickerOptions4: {
+        disabledDate (time) {
+          return time.getTime() < new Date(self.form[3].FTime)
+        }
+      },
       formLabelWidth: '120px',
       dialogImageUrl: '',
       dialogVisible: false
     }
   },
   methods: {
+    reload () {
+      this.isDisabled = true
+      this.getInfo()
+    },
     handleClose () {
-      this.$confirm('确认关闭？')
+      this.$confirm('确定关闭？')
         .then(_ => {
           this.$emit('closeProgress1', false)
         })
@@ -687,7 +744,7 @@ export default {
                   break
               }
             })
-            console.log(self.files)
+            // console.log(self.files)
           } else {
             self.$message({
               message: data.message,
@@ -748,7 +805,7 @@ export default {
           _.each(data, obj => {
             tmp.push(obj)
           })
-          console.log(tmp)
+          // console.log(tmp)
           this.$axios.post('OldCity/SaveOldCityExtend12', tmp)
             .then(response => {
               let data = response.data
@@ -757,7 +814,7 @@ export default {
                   message: '保存成功！',
                   type: 'success'
                 })
-                self.$emit('closeProgress', false)
+                self.reload()
               } else {
                 self.$message({
                   message: data.message,

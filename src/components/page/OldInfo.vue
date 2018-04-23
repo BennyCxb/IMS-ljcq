@@ -275,6 +275,41 @@
             </el-col>
           </el-col>
         </el-row>
+        <el-row v-if="isEdit">
+          <el-col :span="24">
+            <el-form-item>
+              <h3>审核历史</h3>
+              <hr/>
+            </el-form-item>
+            <el-form-item :label-width="formLabelWidth">
+              <el-table
+                :data="auditList"
+                max-height="250"
+                style="width: 100%">
+                <el-table-column
+                  prop="FAddTime"
+                  label="日期"
+                  width="180"
+                  :formatter="formatDatetime">
+                </el-table-column>
+                <el-table-column
+                  prop="FLevelName"
+                  label="事件"
+                  width="180">
+                </el-table-column>
+                <el-table-column
+                  prop="FName"
+                  label="操作用户"
+                  width="180">
+                </el-table-column>
+                <el-table-column
+                  prop="FRemark"
+                  label="结果">
+                </el-table-column>
+              </el-table>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="el-footer" v-cloak>
         <el-button @click="handleClose">返 回</el-button>
@@ -339,6 +374,7 @@ export default {
       filesChange: false,
       submitPossession: false,
       auditPossession: false,
+      auditList: [],
       form: {
         FBillTypeID: null,
         FAreaName: '',
@@ -465,13 +501,17 @@ export default {
     reload () {
       if (this.isEdit) {
         this.isDisabled = true
-        this.getBreadcrumb()
-        this.getAdcd()
-        this.getCityChangeType()
-        this.getCountyChangeType()
-        this.getPurpose()
+        // this.getBreadcrumb()
+        // this.getAdcd()
+        // this.getCityChangeType()
+        // this.getCountyChangeType()
+        // this.getPurpose()
+        this.getInfo()
       } else {
-        this.$router.push({path: this.$route.fullPath + '-' + this.form.FID})
+        this.isDisabled = true
+        let path = this.$route.fullPath.split('/info')[0]
+        this.$router.push({path: path + '/info-' + this.form.FID})
+        this.getInfo()
       }
     },
     closeInfo () {
@@ -549,24 +589,32 @@ export default {
       this.$axios.get('Common/GetAgencyList')
         .then(response => {
           let data = response.data
-          let adcdlist = []
-          let FAgencyValue = localStorage.getItem('FAgencyValue')
-          if (FAgencyValue !== 'null') {
-            let item = _.find(data.object, {FValue: FAgencyValue})
-            self.form.FAgencyValue = Number(item.FValue)
-            adcdlist.push({
-              value: item.FValue,
-              label: item.FName
-            })
-          } else {
-            _.each(data.object, (obj) => {
+          if (data.code === 1) {
+            let adcdlist = []
+            let FAgencyValue = localStorage.getItem('FAgencyValue')
+            if (FAgencyValue !== 'null') {
+              let item = _.find(data.object, {FValue: FAgencyValue})
+              self.form.FAgencyValue = item.FValue
               adcdlist.push({
-                value: obj.FValue,
-                label: obj.FName
+                value: item.FValue,
+                label: item.FName
               })
+            } else {
+              _.each(data.object, (obj) => {
+                adcdlist.push({
+                  value: obj.FValue,
+                  label: obj.FName
+                })
+              })
+            }
+            self.adcdOptions = [].concat(adcdlist)
+            if (!self.isEdit) self.getCounty()
+          } else {
+            self.$message({
+              message: data.object,
+              type: 'warning'
             })
           }
-          self.adcdOptions = [].concat(adcdlist)
         })
         .catch(error => {
           console.log(error)
@@ -672,6 +720,7 @@ export default {
      */
     getInfo () {
       let self = this
+      this.getAuditList()
       this.$axios.get('OldCity/GetOldCity', {
         params: {
           FID: this.form.FID
@@ -859,15 +908,14 @@ export default {
       return extension && isLt2M
     },
     uploadSuccess (response, file, fileLis) {
-      let self = this
       let data = response
-      console.log(response)
+      // console.log(response)
       if (data.code === 1) {
         this.isDisabled = true
         this.isSubmited = false
         this.filesChange = false
         this.$message({
-          message: self.isEdit !== '' ? '修改成功' : '新增成功！',
+          message: '保存成功！',
           type: 'success'
         })
         this.reload()
@@ -891,6 +939,31 @@ export default {
         message: '图片上传接口上传失败，可更改为自己的服务器接口'
       })
     },
+    getAuditList () {
+      let self = this
+      this.$axios.get('Flow/GetCheckList', {
+        params: {
+          FLoanID: this.form.FID,
+          FBillTypeID: this.form.FBillTypeID
+        }
+      })
+        .then(response => {
+          let data = response.data
+          // console.log(data)
+          if (data.code === 1) {
+            self.auditList = [].concat(data.object)
+          } else {
+            self.$message({
+              message: data.message,
+              type: 'warning'
+            })
+          }
+        })
+        .catch(error => {
+          console.log(error)
+          self.$message.error(error.message)
+        })
+    },
     /**
      * 提交审核
      */
@@ -904,10 +977,10 @@ export default {
           let data = response.data
           if (data.code === 1) {
             self.$message({
-              message: '提交审核成功',
+              message: '提交改造成功',
               type: 'success'
             })
-            location.reload()
+            self.reload()
           } else {
             self.$message({
               message: data.message,
@@ -984,8 +1057,6 @@ export default {
         } else {
           this.auditPossession = false
         }
-      } else if (this.form.FStatus === 1 && FLevel === 3) {
-        this.auditPossession = true
       } else {
         this.auditPossession = false
       }

@@ -48,12 +48,12 @@
     </div>
     <el-table v-loading="loading" :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange"
               stripe>
-      <el-table-column type="selection" width="55"></el-table-column>
+      <!--<el-table-column type="selection" width="55"></el-table-column>-->
+      <el-table-column prop="FAreaName" label="区块名称">
+      </el-table-column>
       <el-table-column prop="FAgencyName" label="行政区划">
       </el-table-column>
       <el-table-column prop="FTownName" label="乡镇街道">
-      </el-table-column>
-      <el-table-column prop="FAreaName" label="区块名称">
       </el-table-column>
       <el-table-column prop="FCityChangeType" label="整改方式">
       </el-table-column>
@@ -381,7 +381,7 @@ export default {
       blist.push('新增改造信息')
       sessionStorage.setItem('breadcrumb', JSON.stringify(blist))
       this.editFid = ''
-      console.log(this.$route.fullPath)
+      // console.log(this.$route.fullPath)
       this.$router.push({path: this.$route.fullPath + '/info'})
     },
     /**
