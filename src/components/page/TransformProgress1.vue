@@ -110,7 +110,6 @@
               :ref="'upload' + i"
               :action="url"
               :headers="headers"
-              :auto-upload="false"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
               :data="item.data"
@@ -185,12 +184,16 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="拆除总建筑面积" :label-width="formLabelWidth" prop="date">
-            <el-input v-model="form[2].FArea1" placeholder="请输入拆除总建筑面积"></el-input>
+            <el-input v-model="form[2].FArea1" placeholder="请输入拆除总建筑面积">
+              <template slot="suffix">万㎡</template>
+            </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="其中违建面积" :label-width="formLabelWidth" prop="date">
-            <el-input v-model="form[2].FArea2" placeholder="请输入其中违建面积"></el-input>
+            <el-input v-model="form[2].FArea2">
+              <template slot="suffix">万㎡</template>
+            </el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -201,7 +204,6 @@
               :ref="'upload' + i"
               :action="url"
               :headers="headers"
-              :auto-upload="false"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
               :data="item.data"
@@ -357,12 +359,16 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="总建筑面积" :label-width="formLabelWidth" prop="date">
-            <el-input v-model="form[4].FArea1" placeholder="请输入总建筑面积"></el-input>
+            <el-input v-model="form[4].FArea1">
+              <template slot="suffix">万㎡</template>
+            </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="总占地面积" :label-width="formLabelWidth" prop="date">
-            <el-input v-model="form[4].FArea2" placeholder="请输入总占地面积"></el-input>
+            <el-input v-model="form[4].FArea2">
+              <template slot="suffix">万㎡</template>
+            </el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -373,7 +379,6 @@
               :ref="'upload' + i"
               :action="url"
               :headers="headers"
-              :auto-upload="false"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
               :data="item.data"
@@ -447,7 +452,7 @@ export default {
     },
     headers () {
       return {
-        Authorization: 'Bearer ' + this.$cookies.get('TZManage')
+        Authorization: 'Bearer ' + this.$cookies.get('TZOldManage')
       }
     }
   },

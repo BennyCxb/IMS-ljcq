@@ -1,10 +1,14 @@
 <template>
   <el-dialog title="改造进度" :visible.sync="dialogProgress" :before-close="handleClose" width="80%">
     <el-collapse v-model="activeNames" accordion>
+      <div class="add-enterprise" v-if="forms.length === 0">
+        <div class="el-upload__tip">您还未添加企业信息，请添加！</div>
+      </div>
       <el-collapse-item v-for="(form, index) in forms"
                         :key="index"
                         :title="form.FCompanyName"
-                        :name="index + 1">
+                        :name="index + 1"
+                        v-else>
         <el-form :model="form"
                  :disabled="isDisabled"
                  class="demo-form-inline demo-ruleForm">
@@ -28,11 +32,11 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="拟改造面积" :label-width="formLabelWidth" prop="date">
-                <el-input v-model="form.FReadyArea" placeholder="请输入拟拆除或拟整治建筑面积"></el-input>
+                <el-input v-model="form.FReadyArea" placeholder="请输入拟拆除或拟整治建筑面积">
+                  <template slot="suffix">万㎡</template>
+                </el-input>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
             <el-col :span="6">
               <el-form-item label="改造中类型" :label-width="formLabelWidth" prop="date">
                 <el-select v-model="form.FDoingType" placeholder="请选择">
@@ -45,6 +49,8 @@
                 </el-select>
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row>
             <el-col :span="6">
               <el-form-item label="改造时间" :label-width="formLabelWidth" prop="date">
                 <el-date-picker
@@ -67,12 +73,17 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="改造完时间" :label-width="formLabelWidth" prop="date">
+              <el-form-item label="改造完时间" :label-width="formLabelWidth">
                 <el-date-picker
                   v-model="form.FDoneTime"
                   type="date"
                   placeholder="请选择时间">
                 </el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="" :label-width="formLabelWidth">
+                <el-button type="danger" icon="el-icon-delete" v-if="(FLevel === 1 || FLevel === 3) && submitPossession" @click="enterpriseDelete(form)">删除</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -83,20 +94,18 @@
                   :ref="'upload' + i"
                   :action="url"
                   :headers="headers"
-                  :auto-upload="false"
                   list-type="picture-card"
                   :on-preview="handlePictureCardPreview"
                   :data="item.data"
                   :file-list="item.fileList"
+                  :uploadSuccess="uploadSuccess"
                   :beforeUpload="beforeAvatarUpload"
-                  :on-success="uploadSuccess"
-                  :on-change="onFilesChange"
                   accept="image/*"
                   multiple>
                   <i class="el-icon-plus"></i>
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
                 </el-upload>
-                <el-dialog :visible.sync="dialogVisible">
+                <el-dialog :visible.sync="dialogVisible" append-to-body>
                   <img width="100%" :src="dialogImageUrl" alt="">
                 </el-dialog>
               </el-form-item>
@@ -104,13 +113,15 @@
           </el-row>
         </el-form>
       </el-collapse-item>
-      <div class="add-enterprise">
+      <div class="add-enterprise" v-if="submitPossession && !isDisabled">
         <el-button type="primary" icon="el-icon-plus" round @click="enterpriseAdd">新增企业</el-button>
       </div>
     </el-collapse>
     <div slot="footer" class="dialog-footer">
       <el-button @click="handleClose">取 消</el-button>
-      <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      <el-button @click="cancelEdit" v-if="submitPossession && !isDisabled">取消编辑</el-button>
+      <el-button type="primary" @click="isDisabled = !isDisabled" v-if="submitPossession && isDisabled">编 辑</el-button>
+      <el-button type="primary" @click="enterpriseUpdate" v-if="submitPossession && !isDisabled">保 存</el-button>
     </div>
   </el-dialog>
 </template>
@@ -123,16 +134,18 @@ export default {
       return this.$axios.defaults.baseURL + 'Files/UploadFileForQiNiu'
     },
     headers () {
+      console.log()
       return {
-        Authorization: 'Bearer ' + this.$cookies.get('TZManage')
+        Authorization: 'Bearer ' + this.$cookies.get('TZOldManage')
       }
     }
   },
   data () {
     return {
-      dialogFormVisible: false,
-      isDisabled: false,
+      isDisabled: true,
       activeNames: 0,
+      FBillTypeID: this.$route.params.btid,
+      FLevel: Number(localStorage.getItem('FLevel')),
       type: 1,
       btOptions: [
         {
@@ -172,6 +185,10 @@ export default {
     }
   },
   methods: {
+    reload () {
+      this.isDisabled = true
+      this.getInfo()
+    },
     handleClose () {
       this.$confirm('确认关闭？')
         .then(_ => {
@@ -180,9 +197,17 @@ export default {
         .catch(_ => {
         })
     },
+    cancelEdit () {
+      this.isDisabled = true
+      this.getInfo()
+    },
+    /**
+     * 新增企业
+     */
     enterpriseAdd () {
+      let self = this
       let num = this.forms.length + 1
-      this.forms.push({
+      let formData = {
         FLoanID: this.FLoanID,
         FCompanyName: '企业' + num,
         FReadyType: '',
@@ -190,70 +215,102 @@ export default {
         FDoingType: '',
         FDoingTime: '',
         FDoneType: '',
-        FDoneTime: '',
-        files: [
-          {
-            label: '改造中照片',
-            data: {
-              AttachType: this.attachTypeList[0],
-              FBillTypeID: 2000012,
-              FLoanID: this.FLoanID
-            },
-            fileList: []
-          },
-          {
-            label: '改造后照片',
-            data: {
-              AttachType: this.attachTypeList[1],
-              FBillTypeID: 2000012,
-              FLoanID: this.FLoanID
-            },
-            fileList: []
-          }
-        ]
-      })
+        FDoneTime: ''
+      }
       this.activeNames = num
-      // let data = []
-      // _.each(this.forms, obj => {
-      //   data.push(obj)
-      // })
-      // data.forEach((obj) => {
-      //   delete obj['files']
-      // })
-      this.$axios.post('OldCity/SaveOldCityExtend12', this.forms)
+      this.$axios.post('OldCity/AddSingleOldCityExtend3', formData)
         .then(response => {
           let data = response.data
-          console.log(data)
+          if (data.code === 1) {
+            formData.FID = data.object
+            formData.files = [{
+              label: '改造中照片',
+              data: {
+                AttachType: self.attachTypeList[0],
+                FBillTypeID: 2000012,
+                FLoanID: self.FLoanID
+              },
+              fileList: []
+            },
+            {
+              label: '改造后照片',
+              data: {
+                AttachType: self.attachTypeList[1],
+                FBillTypeID: 2000012,
+                FLoanID: self.FLoanID
+              },
+              fileList: []
+            }]
+            self.forms.push(formData)
+            self.$message({
+              message: '新增企业成功！',
+              type: 'success'
+            })
+          } else {
+            self.$message.error(data.object)
+            self.forms.pop()
+          }
         })
         .catch(error => {
           console.log(error)
           self.$message.error(error.message)
         })
     },
-    getInfo () {
+    /**
+     * 删除企业
+     */
+    enterpriseDelete (item) {
       let self = this
-      this.$axios.get('OldCity/GetOldCityExtend3List', {
-        params: {
-          FLoanID: this.FLoanID
-        }
-      })
+      this.$confirm('确定删除' + item.FCompanyName + '？')
+        .then(_ => {
+          this.$axios.get('OldCity/DeleteCityExtend3', {
+            params: {
+              FID: item.FID,
+              FLoanID: this.FLoanID
+            }
+          })
+            .then(response => {
+              let data = response.data
+              console.log(data)
+              if (data.code === 1) {
+                self.$message({
+                  message: '删除成功！',
+                  type: 'success'
+                })
+                self.getInfo()
+              } else {
+                self.$message({
+                  message: data.message,
+                  type: 'warning'
+                })
+              }
+            })
+            .catch(error => {
+              console.log(error)
+              self.$message.error(error.message)
+            })
+        })
+        .catch(_ => {
+        })
+    },
+    /**
+     * 修改企业
+     */
+    enterpriseUpdate () {
+      let self = this
+      this.$axios.post('OldCity/SaveOldCityExtend3', this.forms)
         .then(response => {
           let data = response.data
-          console.log(data)
-          // if (data.code === 1) {
-          //   _.each(data.object, function (obj) {
-          //     files.fileList.push({
-          //       name: obj.FileName,
-          //       url: obj.FileUrl
-          //     })
-          //   })
-          // } else {
-          //   self.$message({
-          //     message: data.message,
-          //     type: 'warning'
-          //   })
-          // }
-          self.getAttachTypeList()
+          if (data.code === 1) {
+            self.$message({
+              message: '保存成功！',
+              type: 'success'
+            })
+            this.reload()
+          } else {
+            self.$message.error(data.object)
+            self.forms.pop()
+          }
         })
         .catch(error => {
           console.log(error)
@@ -282,6 +339,58 @@ export default {
               }
             })
             console.log(self.attachTypeList)
+            self.getInfo()
+          } else {
+            self.$message({
+              message: data.message,
+              type: 'warning'
+            })
+          }
+        })
+        .catch(error => {
+          console.log(error)
+          self.$message.error(error.message)
+        })
+    },
+    getInfo () {
+      let self = this
+      this.forms = []
+      this.$axios.get('OldCity/GetOldCityExtend3List', {
+        params: {
+          FLoanID: this.FLoanID
+        }
+      })
+        .then(response => {
+          let data = response.data
+          console.log(data)
+          if (data.code === 1) {
+            _.each(data.object, function (obj) {
+              let item = obj
+              item.files = [
+                {
+                  label: '改造中照片',
+                  data: {
+                    AttachType: self.attachTypeList[0],
+                    FBillTypeID: 2000012,
+                    FLoanID: obj.FID
+                  },
+                  fileList: []
+                },
+                {
+                  label: '改造后照片',
+                  data: {
+                    AttachType: self.attachTypeList[1],
+                    FBillTypeID: 2000012,
+                    FLoanID: obj.FID
+                  },
+                  fileList: []
+                }
+              ]
+              self.forms.push(item)
+              let files = self.forms[self.forms.length - 1].files
+              self.getFilesUrl(files[0])
+              self.getFilesUrl(files[1])
+            })
           } else {
             self.$message({
               message: data.message,
@@ -301,9 +410,9 @@ export default {
       let self = this
       this.$axios.get('Files/GetFilesUrl', {
         params: {
-          FAttachType: FAttachType,
-          FLoanID: this.FLoanID,
-          FBillTypeID: this.FBillTypeID
+          FAttachType: files.data.AttachType,
+          FLoanID: files.data.FLoanID,
+          FBillTypeID: files.data.FBillTypeID
         }
       })
         .then(response => {
@@ -327,16 +436,6 @@ export default {
           self.$message.error(error.message)
         })
     },
-    onFilesChange (file, fileList) {
-      this.filesChange = true
-    },
-    /**
-     * 提交照片/文件
-     */
-    submitUpload () {
-      this.$refs.upload0[0].submit()
-      this.$refs.upload1[0].submit()
-    },
     beforeAvatarUpload (file) {
       var testmsg = file.type.substring(0, file.type.lastIndexOf('/') + 1)
       const extension = testmsg === 'image/'
@@ -356,18 +455,9 @@ export default {
       return extension && isLt2M
     },
     uploadSuccess (response, file, fileLis) {
-      let self = this
       let data = response
       // console.log(response)
-      if (data.code === 1) {
-        this.isSubmited = false
-        this.filesChange = false
-        this.$message({
-          message: self.isEdit !== '' ? '修改成功' : '新增成功！',
-          type: 'success'
-        })
-        this.$emit('closeProAdd', false)
-      } else {
+      if (data.code !== 1) {
         this.$message({
           message: data.message,
           type: 'warning'
@@ -388,11 +478,11 @@ export default {
       })
     }
   },
-  props: ['dialogProgress', 'FLoanID'],
+  props: ['dialogProgress', 'FLoanID', 'submitPossession'],
   watch: {
     dialogProgress (curVal) {
       if (curVal) {
-        this.getInfo()
+        this.getAttachTypeList()
       } else {
         Object.assign(this.$data.forms, this.$options.data().forms)
       }
