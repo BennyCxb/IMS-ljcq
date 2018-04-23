@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="改造进度" :visible.sync="dialogProgress" :before-close="handleClose" width="80%">
+  <el-dialog title="改造进度" :visible.sync="dialogProgress2" :before-close="handleClose" width="80%">
     <el-collapse v-model="activeNames" accordion>
       <div class="add-enterprise" v-if="forms.length === 0">
         <div class="el-upload__tip">您还未添加企业信息，请添加！</div>
@@ -118,7 +118,7 @@
       </div>
     </el-collapse>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="handleClose">取 消</el-button>
+      <el-button @click="handleClose">关 闭</el-button>
       <el-button @click="cancelEdit" v-if="submitPossession && !isDisabled">取消编辑</el-button>
       <el-button type="primary" @click="isDisabled = !isDisabled" v-if="submitPossession && isDisabled">编 辑</el-button>
       <el-button type="primary" @click="enterpriseUpdate" v-if="submitPossession && !isDisabled">保 存</el-button>
@@ -134,10 +134,12 @@ export default {
       return this.$axios.defaults.baseURL + 'Files/UploadFileForQiNiu'
     },
     headers () {
-      console.log()
       return {
         Authorization: 'Bearer ' + this.$cookies.get('TZOldManage')
       }
+    },
+    FLevel () {
+      return Number(localStorage.getItem('FLevel'))
     }
   },
   data () {
@@ -145,7 +147,6 @@ export default {
       isDisabled: true,
       activeNames: 0,
       FBillTypeID: this.$route.params.btid,
-      FLevel: Number(localStorage.getItem('FLevel')),
       type: 1,
       btOptions: [
         {
@@ -190,9 +191,9 @@ export default {
       this.getInfo()
     },
     handleClose () {
-      this.$confirm('确认关闭？')
+      this.$confirm('确定关闭？')
         .then(_ => {
-          this.$emit('closeProgress', false)
+          this.$emit('closeProgress2')
         })
         .catch(_ => {
         })
@@ -338,7 +339,6 @@ export default {
                   break
               }
             })
-            console.log(self.attachTypeList)
             self.getInfo()
           } else {
             self.$message({
@@ -362,7 +362,6 @@ export default {
       })
         .then(response => {
           let data = response.data
-          console.log(data)
           if (data.code === 1) {
             _.each(data.object, function (obj) {
               let item = obj
@@ -478,13 +477,13 @@ export default {
       })
     }
   },
-  props: ['dialogProgress', 'FLoanID', 'submitPossession'],
+  props: ['dialogProgress2', 'FLoanID', 'submitPossession'],
   watch: {
-    dialogProgress (curVal) {
+    dialogProgress2 (curVal) {
       if (curVal) {
         this.getAttachTypeList()
       } else {
-        Object.assign(this.$data.forms, this.$options.data().forms)
+        this.forms = []
       }
     }
   }

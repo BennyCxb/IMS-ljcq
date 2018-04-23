@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="改造进度" :visible.sync="dialogProgress" :before-close="handleClose" width="80%">
+  <el-dialog title="改造进度" :visible.sync="dialogProgress1" :before-close="handleClose" width="80%">
     <el-form :model="form"
              :disabled="isDisabled"
              ref="form"
@@ -603,7 +603,7 @@ export default {
     handleClose () {
       this.$confirm('确认关闭？')
         .then(_ => {
-          this.$emit('closeProgress', false)
+          this.$emit('closeProgress1', false)
         })
         .catch(_ => {
         })
@@ -816,9 +816,9 @@ export default {
       $a.dispatchEvent(evObj)
     }
   },
-  props: ['dialogProgress', 'FLoanID', 'submitPossession'],
+  props: ['dialogProgress1', 'FLoanID', 'submitPossession'],
   watch: {
-    dialogProgress (curVal) {
+    dialogProgress1 (curVal) {
       if (curVal) {
         this.getInfo()
       }
