@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <div class="logo">“老旧城区改造”信息管理系统</div>
+    <div class="logo"><img src="../../assets/logo-ljcq.png" alt="" /></div>
     <div class="user-info">
       <el-dropdown trigger="click" @command="handleCommand">
                 <span class="el-dropdown-link">
@@ -89,6 +89,10 @@ export default {
     float: left;
     width: 250px;
     text-align: center;
+  }
+
+  .header .logo > img {
+    height: 70px;
   }
 
   .user-info {

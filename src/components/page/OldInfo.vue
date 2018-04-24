@@ -67,7 +67,6 @@
           <el-col :span="6">
             <el-form-item label="企业家数" :label-width="formLabelWidth" prop="FEntrepreneurCount">
               <el-input v-model="form.FEntrepreneurCount">
-                <template slot="suffix">万㎡</template>
               </el-input>
             </el-form-item>
           </el-col>
@@ -116,7 +115,7 @@
               <el-input v-model="form.FRemark"
                         type="textarea"
                         :rows="3"
-                        placeholder="请输入项目简介"></el-input>
+                        placeholder="请输入改造前区块情况简介"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -816,7 +815,7 @@ export default {
               self.files[index].data.AttachType = obj.FID
               self.files[index].data.FBillTypeID = Number(self.form.FBillTypeID)
               if (!isUpload) {
-                self.files[index].fileList = []
+                // self.files[index].fileList = []
                 self.getFilesUrl(self.files[index], obj.FID)
               }
             }
@@ -860,6 +859,7 @@ export default {
         .then(response => {
           let data = response.data
           if (data.code === 1) {
+            files.fileList = []
             _.each(data.object, function (obj) {
               files.fileList.push({
                 name: obj.FileName,
