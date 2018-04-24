@@ -1,9 +1,10 @@
 <template>
   <div class="login-wrap">
-    <div class="back-index" title="返回首页"><a href="http://www.tzsgyc.com/">
-      <!--<el-button icon="el-icon-arrow-left" circle></el-button>-->
-      <img src="../../assets/logo-2.png" alt="">
-    </a></div>
+    <div class="back-index" title="返回首页">
+      <a href="http://www.tzsgyc.com/">
+        <img src="../../assets/logo-2.png" alt="">
+      </a>
+    </div>
     <div class="ms-title">“老旧城区改造”信息管理系统</div>
     <div class="ms-subtitle">Old City Reconstruction Information Management System</div>
     <div class="ms-login">
