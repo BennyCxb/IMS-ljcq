@@ -679,7 +679,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -732,7 +732,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -765,7 +765,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -802,7 +802,7 @@ export default {
               }
             })
             .catch(error => {
-              console.log(error)
+              // console.log(error)
               self.$message.error(error.message)
             })
         } else {
@@ -830,7 +830,7 @@ export default {
       return extension && isLt2M
     },
     handleRemove (file, fileList) {
-      console.log(file, fileList)
+      // console.log(file, fileList)
     },
     handlePictureCardPreview (file) {
       this.dialogImageUrl = file.url

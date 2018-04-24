@@ -51,7 +51,7 @@ export default {
           })
             .then(function (response) {
               let data = response.data
-              console.log(data)
+              // console.log(data)
               if (data.code === 1) {
                 self.$cookies.set('TZOldManage', data.object, {expires: 12})
                 localStorage.setItem('ms_username', self.ruleForm.username)
@@ -64,13 +64,13 @@ export default {
               }
             })
             .catch(function (error) {
-              console.log(error)
+              // console.log(error)
               self.$alert(error.message, '温馨提示', {
                 confirmButtonText: '确定'
               })
             })
         } else {
-          console.log('error submit!!')
+          // console.log('error submit!!')
           return false
         }
       })

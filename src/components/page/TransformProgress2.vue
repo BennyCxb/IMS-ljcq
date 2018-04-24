@@ -260,7 +260,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -279,7 +279,7 @@ export default {
           })
             .then(response => {
               let data = response.data
-              console.log(data)
+              // console.log(data)
               if (data.code === 1) {
                 self.$message({
                   message: '删除成功！',
@@ -294,7 +294,7 @@ export default {
               }
             })
             .catch(error => {
-              console.log(error)
+              // console.log(error)
               self.$message.error(error.message)
             })
         })
@@ -321,7 +321,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -355,7 +355,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -405,7 +405,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -438,7 +438,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -471,7 +471,7 @@ export default {
       }
     },
     handleRemove (file, fileList) {
-      console.log(file, fileList)
+      // console.log(file, fileList)
     },
     handlePictureCardPreview (file) {
       this.dialogImageUrl = file.url

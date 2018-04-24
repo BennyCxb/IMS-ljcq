@@ -26,7 +26,7 @@
           {{ item.label }}
         </el-option>
       </el-select>
-      <el-select v-model="FCityChangeType" placeholder="市级整改方式" class="handle-select mr10" clearable>
+      <el-select v-model="FCityChangeType" placeholder="市级整改方式" clearable>
         <el-option v-for="(item, i) in cityTypeOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>
       </el-select>
       <el-date-picker
@@ -55,7 +55,7 @@
       </el-table-column>
       <el-table-column prop="FTownName" label="乡镇街道">
       </el-table-column>
-      <el-table-column prop="FCityChangeType" label="整改方式" width="250">
+      <el-table-column prop="FCityChangeType" label="整改方式" width="280">
       </el-table-column>
       <el-table-column prop="FAfterChange" label="改造后用途">
       </el-table-column>
