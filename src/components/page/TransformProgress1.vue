@@ -3,15 +3,10 @@
     <el-form :model="form"
              :disabled="isDisabled"
              ref="form"
-             class="demo-form-inline demo-ruleForm">
-      <el-row>
-        <el-col :span="24">
-          <el-form-item>
-            <h3>已启动</h3>
-            <hr/>
-          </el-form-item>
-        </el-col>
-      </el-row>
+             size="small"
+             class="demo-form-inline demo-ruleForm" v-loading="Loading">
+      <el-collapse v-model="activeNames" accordion>
+        <el-collapse-item title="已启动" name="1">
       <el-row>
         <el-col :span="8">
           <el-form-item label="时间" :label-width="formLabelWidth" prop="date1">
@@ -64,6 +59,7 @@
               <el-table
                 :data="item.fileList"
                 max-height="300"
+                size="mini"
                 style="width: 100%">
                 <el-table-column
                   prop="name"
@@ -84,14 +80,8 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item>
-            <h3>已签约</h3>
-            <hr/>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        </el-collapse-item>
+        <el-collapse-item title="已签约" name="2">
       <el-row>
         <el-col :span="8">
           <el-form-item label="时间" :label-width="formLabelWidth" prop="date1">
@@ -145,6 +135,7 @@
               <el-table
                 :data="item.fileList"
                 max-height="300"
+                size="mini"
                 style="width: 100%">
                 <el-table-column
                   prop="name"
@@ -165,14 +156,8 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item>
-            <h3>已拆除</h3>
-            <hr/>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        </el-collapse-item>
+        <el-collapse-item title="已拆除" name="3">
       <el-row>
         <el-col :span="8">
           <el-form-item label="时间" :label-width="formLabelWidth" prop="date">
@@ -240,6 +225,7 @@
               <el-table
                 :data="item.fileList"
                 max-height="300"
+                size="mini"
                 style="width: 100%">
                 <el-table-column
                   prop="name"
@@ -260,14 +246,8 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item>
-            <h3>已开工</h3>
-            <hr/>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        </el-collapse-item>
+        <el-collapse-item title="已开工" name="4">
       <el-row>
         <el-col :span="8">
           <el-form-item label="时间" :label-width="formLabelWidth" prop="date">
@@ -341,14 +321,8 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item>
-            <h3>已完工</h3>
-            <hr/>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        </el-collapse-item>
+        <el-collapse-item title="已完工" name="5">
       <el-row>
         <el-col :span="8">
           <el-form-item label="时间" :label-width="formLabelWidth" prop="date">
@@ -436,11 +410,13 @@
           </el-form-item>
         </el-col>
       </el-row>
+        </el-collapse-item>
+      </el-collapse>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="handleClose">关 闭</el-button>
       <el-button @click="cancelEdit" v-if="submitPossession && !isDisabled">取消编辑</el-button>
-      <el-button type="primary" @click="isDisabled = !isDisabled" v-if="submitPossession && isDisabled">编 辑</el-button>
+      <el-button type="warning" @click="isDisabled = !isDisabled" v-if="submitPossession && isDisabled">编 辑</el-button>
       <el-button type="primary" @click="submit('form')" v-if="submitPossession && !isDisabled">保 存</el-button>
     </div>
   </el-dialog>
@@ -463,7 +439,9 @@ export default {
     let self = this
     return {
       dialogFormVisible: false,
+      Loading: false,
       isDisabled: true,
+      activeNames: 1,
       type: 1,
       FBillTypeID: 2000011,
       form: {
@@ -598,11 +576,6 @@ export default {
           fileList: []
         }
       ],
-      // pickerOptions0: {
-      //   disabledDate (time) {
-      //     return time.getTime() < new Date(self.form[0].FTime) || time.getTime() > new Date(self.form[2].FTime)
-      //   }
-      // },
       pickerOptions1: {
         disabledDate (time) {
           if (self.form[0].FTime && !self.form[3].FTime) {
@@ -653,6 +626,12 @@ export default {
     }
   },
   methods: {
+    openLoading () {
+      this.Loading = true
+      setTimeout(() => {
+        this.Loading = false
+      }, 1000)
+    },
     reload () {
       this.isDisabled = true
       this.getInfo()
@@ -877,6 +856,7 @@ export default {
   watch: {
     dialogProgress1 (curVal) {
       if (curVal) {
+        this.openLoading()
         this.getInfo()
       }
     }

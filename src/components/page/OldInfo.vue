@@ -1,5 +1,5 @@
 <template>
-  <div class="table">
+  <div class="table" v-loading.lock="Loading">
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item v-for="(item, i) in breadcrumb" :key="i"><i class="el-icon-menu" v-if="i === 0"></i>
@@ -12,6 +12,7 @@
                :rules="rules"
                :disabled="isDisabled"
                ref="oldForm"
+               size="small"
                class="demo-form-inline demo-ruleForm">
         <el-row>
           <el-col :span="24">
@@ -285,6 +286,7 @@
               <el-table
                 :data="auditList"
                 max-height="250"
+                size="mini"
                 style="width: 100%">
                 <el-table-column
                   prop="FAddTime"
@@ -314,13 +316,13 @@
       <div slot="footer" class="el-footer" v-cloak>
         <el-button @click="handleClose">返 回</el-button>
         <el-button @click="cancelEdit" v-if="isEdit && submitPossession && !isDisabled">取消编辑</el-button>
-        <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && submitPossession && isDisabled">编 辑</el-button>
+        <el-button type="warning" @click="isDisabled = !isDisabled" v-if="isEdit && submitPossession && isDisabled">编 辑</el-button>
         <el-button @click="resetForm('oldForm')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
         <el-button type="primary" @click="submit('oldForm')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
         <el-button type="primary" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled">改造完成</el-button>
         <el-button type="primary" @click="openAudit" v-if="isEdit && auditPossession && isDisabled">立即审核</el-button>
-        <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>
         <el-button type="success" @click="dialogProgress" v-if="isDisabled">查看改造进度</el-button>
+        <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>
       </div>
     <transform-progress1 :dialogProgress1="dialogProgress1Show" :FLoanID="form.FID" :submitPossession="submitPossession" @closeProgress1="closeProgress1"></transform-progress1>
     <transform-progress2 :dialogProgress2="dialogProgress2Show" :FLoanID="form.FID" :submitPossession="submitPossession" @closeProgress2="closeProgress2"></transform-progress2>
@@ -364,6 +366,7 @@ export default {
     return {
       breadcrumb: [],
       formLabelWidth: '130px',
+      Loading: false,
       isEdit: false,
       isDisabled: false,
       isSubmited: false,
@@ -498,6 +501,12 @@ export default {
     }
   },
   methods: {
+    openLoading () {
+      this.Loading = true
+      setTimeout(() => {
+        this.Loading = false
+      }, 1000)
+    },
     reload () {
       if (this.isEdit) {
         this.isDisabled = true
@@ -527,22 +536,12 @@ export default {
       this.getInfo()
     },
     handleClose () {
-      this.$confirm('确认返回？')
+      this.$confirm('确定返回？')
         .then(_ => {
           this.closeInfo()
         })
         .catch(_ => {
         })
-    },
-    submitForm (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!')
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
     },
     resetForm (formName) {
       this.$refs[formName].resetFields()
@@ -1066,6 +1065,7 @@ export default {
     }
   },
   created () {
+    this.openLoading()
     this.getBreadcrumb()
     this.getAdcd()
     this.getCityChangeType()

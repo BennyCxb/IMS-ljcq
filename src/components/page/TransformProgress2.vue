@@ -1,6 +1,6 @@
 <template>
   <el-dialog title="改造进度" :visible.sync="dialogProgress2" :before-close="handleClose" width="80%">
-    <el-collapse v-model="activeNames" accordion>
+    <el-collapse v-model="activeNames" accordion v-loading="Loading">
       <div class="add-enterprise" v-if="forms.length === 0">
         <div class="el-upload__tip">您还未添加企业信息，请添加！</div>
       </div>
@@ -114,13 +114,13 @@
         </el-form>
       </el-collapse-item>
       <div class="add-enterprise" v-if="submitPossession && !isDisabled">
-        <el-button type="primary" icon="el-icon-plus" round @click="enterpriseAdd">新增企业</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="mini" round @click="enterpriseAdd">新增企业</el-button>
       </div>
     </el-collapse>
     <div slot="footer" class="dialog-footer">
       <el-button @click="handleClose">关 闭</el-button>
       <el-button @click="cancelEdit" v-if="submitPossession && !isDisabled">取消编辑</el-button>
-      <el-button type="primary" @click="isDisabled = !isDisabled" v-if="submitPossession && isDisabled">编 辑</el-button>
+      <el-button type="warning" @click="isDisabled = !isDisabled" v-if="submitPossession && isDisabled">编 辑</el-button>
       <el-button type="primary" @click="enterpriseUpdate" v-if="submitPossession && !isDisabled">保 存</el-button>
     </div>
   </el-dialog>
@@ -145,6 +145,7 @@ export default {
   data () {
     return {
       isDisabled: true,
+      Loading: false,
       activeNames: 0,
       FBillTypeID: this.$route.params.btid,
       type: 1,
@@ -186,6 +187,12 @@ export default {
     }
   },
   methods: {
+    openLoading () {
+      this.Loading = true
+      setTimeout(() => {
+        this.Loading = false
+      }, 1000)
+    },
     reload () {
       this.isDisabled = true
       this.getInfo()
@@ -481,6 +488,7 @@ export default {
   watch: {
     dialogProgress2 (curVal) {
       if (curVal) {
+        this.openLoading()
         this.getAttachTypeList()
       } else {
         this.forms = []

@@ -47,7 +47,7 @@
       <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2">新增改造</el-button>
     </div>
     <el-table v-loading="loading" :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange"
-              stripe>
+              stripe size="mini">
       <!--<el-table-column type="selection" width="55"></el-table-column>-->
       <el-table-column prop="FAreaName" label="区块名称">
       </el-table-column>
@@ -55,13 +55,13 @@
       </el-table-column>
       <el-table-column prop="FTownName" label="乡镇街道">
       </el-table-column>
-      <el-table-column prop="FCityChangeType" label="整改方式">
+      <el-table-column prop="FCityChangeType" label="整改方式" width="250">
       </el-table-column>
       <el-table-column prop="FAfterChange" label="改造后用途">
       </el-table-column>
       <el-table-column prop="FStatus" label="状态">
       </el-table-column>
-      <el-table-column label="操作" width="200">
+      <el-table-column label="操作" width="150">
         <template slot-scope="scope">
           <el-button size="small"
                      @click="handleEdit(scope.$index, scope.row)">查看
@@ -73,6 +73,15 @@
       </el-table-column>
     </el-table>
     <div class="pagination">
+      <el-select v-model="pageSize" class="handle-select" style="float: left" size="mini"
+                 placeholder="显示行数" @change="search">
+        <el-option
+          v-for="item in rowOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
       <el-pagination
         @current-change="handleCurrentChange"
         layout="prev, pager, next"
@@ -86,12 +95,8 @@
 
 <script>
 import _ from 'lodash'
-import vProblemForm from './ProblemForm.vue'
 
 export default {
-  components: {
-    vProblemForm
-  },
   computed: {
     data () {
       return this.tableData
@@ -129,7 +134,21 @@ export default {
       statusOptions: [],
       proAddShow: false,
       breadcrumb: [],
-      loading: true
+      loading: true,
+      rowOptions: [
+        {
+          label: '每页10行',
+          value: 10
+        },
+        {
+          label: '每页15行',
+          value: 15
+        },
+        {
+          label: '每页20行',
+          value: 20
+        }
+      ]
     }
   },
   created () {
