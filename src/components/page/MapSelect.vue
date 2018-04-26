@@ -30,10 +30,10 @@ export default {
   data () {
     let self = this
     return {
-      lng: 121.420866,
-      lat: 28.655815,
+      lng: 121.420687,
+      lat: 28.655613,
       zoom: 12,
-      center: [121.420866, 28.655815],
+      center: [121.420687, 28.655613],
       address: '',
       loaded: false,
       searchOption: {
@@ -41,7 +41,7 @@ export default {
         citylimit: true
       },
       markers: [{
-        position: [121.420866, 28.655815]
+        position: [121.420687, 28.655613]
       }],
       plugin: [{
         pName: 'Geolocation',
@@ -69,7 +69,7 @@ export default {
                     }
                   }
                 })
-                self.$nextTick();
+                self.$nextTick()
               }
             })
           }

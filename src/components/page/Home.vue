@@ -8,7 +8,7 @@
     <div class="ms-doc">
       <h3>README.md</h3>
       <article>
-        <h1>欢迎使用“老旧城区改造”信息管理系统！</h1>
+        <h1>欢迎使用“老旧工业区块改造”信息管理系统！</h1>
       </article>
     </div>
 

@@ -1,6 +1,12 @@
 <template>
   <div class="header">
-    <div class="logo"><img src="../../assets/logo-ljcq.png" alt="" /></div>
+    <div class="logo">
+      <div class="logo-img"><img src="../../assets/logo-ljcq.png" alt="" /></div>
+      <div class="logo-name">
+        <div class="logo-name-top">老旧工业区块改造</div>
+        <div class="logo-name-bottom">Retrofit old industrial blocks</div>
+      </div>
+    </div>
     <div class="user-info">
       <el-dropdown trigger="click" @command="handleCommand">
                 <span class="el-dropdown-link">
@@ -87,12 +93,32 @@ export default {
 
   .header .logo {
     float: left;
-    width: 250px;
+    width: 230px;
+    height: 50px;
+    padding: 10px;
     text-align: center;
   }
 
-  .header .logo > img {
-    height: 70px;
+  .logo-img {
+    float: left;
+    width: 50px;
+    height: 50px;
+  }
+
+  .header .logo-img > img {
+    height: 50px;
+  }
+
+  .logo-name {
+    float: left;
+    width: 180px;
+    height: 50px;
+    padding-top: 8px;
+    line-height: 20px;
+  }
+
+  .logo-name-bottom {
+    font-size: 12px;
   }
 
   .user-info {
