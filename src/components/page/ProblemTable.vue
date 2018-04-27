@@ -32,11 +32,12 @@
       <el-date-picker
         v-model="FChangeDate"
         type="daterange"
-        value-format="yyyy-MM-dd"
-        :default-value="new Date()"
+        align="right"
+        unlink-panels
         range-separator="至"
-        start-placeholder="拟开始时间"
-        end-placeholder="拟结束时间">
+        start-placeholder="拟开始日期"
+        end-placeholder="拟结束日期"
+        :picker-options="pickerOptions2">
       </el-date-picker>
       <el-select v-model="FStatus" placeholder="状态" class="handle-select mr10" clearable>
         <el-option v-for="(item, i) in statusOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>
@@ -96,6 +97,7 @@
 
 <script>
 import _ from 'lodash'
+import { formatDate } from '../../assets/js/date'
 
 export default {
   computed: {
@@ -121,7 +123,7 @@ export default {
       FCityChangeType: '',
       FTownChangeType: '',
       FAfterChange: '',
-      FChangeDate: ['', ''],
+      FChangeDate: [],
       FChangeBeginDate: '',
       FChangeEndDate: '',
       FAreaName: '',
@@ -150,7 +152,34 @@ export default {
           value: 20
         }
       ],
-      defaultDate: new Date()
+      defaultDate: new Date(),
+      pickerOptions2: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      }
     }
   },
   created () {
@@ -314,6 +343,14 @@ export default {
      */
     getData () {
       let self = this
+      let beginDate = ''
+      let endDate = ''
+      if (this.FChangeDate) {
+        if (this.FChangeDate.length) {
+          beginDate = formatDate(this.FChangeDate[0], 'yyyy-MM-dd')
+          endDate = formatDate(this.FChangeDate[1], 'yyyy-MM-dd')
+        }
+      }
       this.loading = true
       this.$axios.post('OldCity/GetList', {
         curr: this.cur_page,
@@ -323,8 +360,8 @@ export default {
         FTownValue: this.FTownValue,
         FCityChangeType: this.FCityChangeType,
         FTownChangeType: this.FTownChangeType,
-        FChangeBeginDate: this.FChangeDate ? this.FChangeDate[0] : '',
-        FChangeEndDate: this.FChangeDate ? this.FChangeDate[1] : '',
+        FChangeBeginDate: beginDate,
+        FChangeEndDate: endDate,
         FAreaName: this.FAreaName,
         FStatus: this.FStatus,
         strSortFiled: '',
