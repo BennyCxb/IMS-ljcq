@@ -33,6 +33,7 @@
         v-model="FChangeDate"
         type="daterange"
         value-format="yyyy-MM-dd"
+        :default-value="new Date()"
         range-separator="至"
         start-placeholder="拟开始时间"
         end-placeholder="拟结束时间">
@@ -148,7 +149,8 @@ export default {
           label: '每页20行',
           value: 20
         }
-      ]
+      ],
+      defaultDate: new Date()
     }
   },
   created () {
