@@ -1,8 +1,18 @@
 <template>
-  <el-dialog title="改造进度" :visible.sync="dialogProgress2" :before-close="handleClose" width="80%">
+  <div v-if="dialogProgress2">
+    <el-form class="demo-form-inline demo-ruleForm">
+      <el-row>
+        <el-col :span="24">
+          <el-form-item>
+            <h3>改造进度</h3>
+            <hr/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
     <el-collapse v-model="activeNames" accordion v-loading="Loading">
       <div class="add-enterprise" v-if="forms.length === 0">
-        <div class="el-upload__tip">您还未添加企业信息，请添加！</div>
+        <div class="el-upload__tip text-center">您还未添加企业信息，请添加！</div>
       </div>
       <el-collapse-item v-for="(form, index) in forms"
                         :key="index"
@@ -10,17 +20,16 @@
                         :name="index + 1"
                         v-else>
         <el-form :model="form"
-                 :disabled="isDisabled"
                  class="demo-form-inline demo-ruleForm">
           <el-row>
-            <el-col :span="6">
+            <el-col :span="8">
               <el-form-item label="企业名称" :label-width="formLabelWidth" prop="FCompanyName">
-                <el-input v-model="form.FCompanyName" placeholder="请输入企业名称"></el-input>
+                <el-input v-model="form.FCompanyName" placeholder="请输入企业名称" :disabled="isDisabled"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="拟改造类型" :label-width="formLabelWidth" prop="date">
-                <el-select v-model="form.FReadyType" placeholder="请选择">
+            <el-col :span="8">
+              <el-form-item label="改造类型" :label-width="formLabelWidth" prop="date">
+                <el-select v-model="form.FReadyType" placeholder="请选择" :disabled="isDisabled">
                   <el-option
                     v-for="item in btOptions"
                     :key="item.value"
@@ -30,60 +39,39 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="拟改造面积" :label-width="formLabelWidth" prop="date">
-                <el-input v-model="form.FReadyArea" placeholder="请输入拟拆除或拟整治建筑面积">
+            <el-col :span="8">
+              <el-form-item :label="form.FReadyType ? '整治建筑面积': '拆除建筑面积'" :label-width="formLabelWidth" prop="date">
+                <el-input v-model="form.FReadyArea" placeholder="请输入改造建筑面积" :disabled="isDisabled">
                   <template slot="suffix">万㎡</template>
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="改造中类型" :label-width="formLabelWidth" prop="date">
-                <el-select v-model="form.FDoingType" placeholder="请选择">
-                  <el-option
-                    v-for="item in tOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
           </el-row>
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="改造时间" :label-width="formLabelWidth" prop="date">
+          <el-row :disabled="isDisabled">
+            <el-col :span="8">
+              <el-form-item :label="form.FReadyType ? '整治开始时间': '拆除开始时间'" :label-width="formLabelWidth" prop="date">
                 <el-date-picker
                   v-model="form.FDoingTime"
                   type="date"
+                  :disabled="isDisabled"
                   placeholder="请选择时间">
                 </el-date-picker>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="改造后类型" :label-width="formLabelWidth" prop="date">
-                <el-select v-model="form.FDoneType" placeholder="请选择">
-                  <el-option
-                    v-for="item in atOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="改造完时间" :label-width="formLabelWidth">
+            <el-col :span="8">
+              <el-form-item :label="form.FReadyType ? '整治结束时间': '拆除结束时间'" :label-width="formLabelWidth">
                 <el-date-picker
                   v-model="form.FDoneTime"
                   type="date"
+                  :disabled="isDisabled"
                   placeholder="请选择时间">
                 </el-date-picker>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="8">
               <el-form-item label="" :label-width="formLabelWidth">
                 <el-button type="danger" icon="el-icon-delete" v-if="(FLevel === 1 || FLevel === 3) && submitPossession" @click="enterpriseDelete(form)">删除</el-button>
+                <el-button type="success" @click="" v-if="submitPossession && isDisabled">上报信息</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -100,6 +88,7 @@
                   :file-list="item.fileList"
                   :uploadSuccess="uploadSuccess"
                   :beforeUpload="beforeAvatarUpload"
+                  :disabled="isDisabled"
                   accept="image/*"
                   multiple>
                   <i class="el-icon-plus"></i>
@@ -113,17 +102,17 @@
           </el-row>
         </el-form>
       </el-collapse-item>
-      <div class="add-enterprise" v-if="submitPossession && !isDisabled">
+      <div class="add-enterprise text-center" v-if="submitPossession && !isDisabled">
         <el-button type="primary" icon="el-icon-plus" size="mini" round @click="enterpriseAdd">新增企业</el-button>
       </div>
     </el-collapse>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="handleClose">关 闭</el-button>
-      <el-button @click="cancelEdit" v-if="submitPossession && !isDisabled">取消编辑</el-button>
-      <el-button type="warning" @click="isDisabled = !isDisabled" v-if="submitPossession && isDisabled">编 辑</el-button>
-      <el-button type="primary" @click="enterpriseUpdate" v-if="submitPossession && !isDisabled">保 存</el-button>
+      <el-button @click="handleClose">返 回</el-button>
+      <el-button type="danger" @click="cancelEdit" v-if="submitPossession && !isDisabled">取消编辑</el-button>
+      <el-button type="primary" @click="isDisabled = !isDisabled" v-if="submitPossession && isDisabled">编 辑</el-button>
+      <el-button type="success" @click="enterpriseUpdate" v-if="submitPossession && !isDisabled">保 存</el-button>
     </div>
-  </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -151,34 +140,34 @@ export default {
       type: 1,
       btOptions: [
         {
-          label: '拟拆除',
+          label: '拆除',
           value: 0
         },
         {
-          label: '拟整治',
+          label: '整治',
           value: 1
         }
       ],
-      tOptions: [
-        {
-          label: '拆除中',
-          value: 0
-        },
-        {
-          label: '整治中',
-          value: 1
-        }
-      ],
-      atOptions: [
-        {
-          label: '已拆除',
-          value: 0
-        },
-        {
-          label: '整治完成',
-          value: 1
-        }
-      ],
+      // tOptions: [
+      //   {
+      //     label: '拆除中',
+      //     value: 0
+      //   },
+      //   {
+      //     label: '整治中',
+      //     value: 1
+      //   }
+      // ],
+      // atOptions: [
+      //   {
+      //     label: '已拆除',
+      //     value: 0
+      //   },
+      //   {
+      //     label: '整治完成',
+      //     value: 1
+      //   }
+      // ],
       forms: [],
       attachTypeList: [null, null],
       formLabelWidth: '120px',
@@ -198,7 +187,7 @@ export default {
       this.getInfo()
     },
     handleClose () {
-      this.$confirm('确定关闭？')
+      this.$confirm('确定返回？')
         .then(_ => {
           this.$emit('closeProgress2')
         })
@@ -218,7 +207,7 @@ export default {
       let formData = {
         FLoanID: this.FLoanID,
         FCompanyName: '企业' + num,
-        FReadyType: '',
+        FReadyType: 0,
         FReadyArea: '',
         FDoingType: '',
         FDoingTime: '',
@@ -499,8 +488,24 @@ export default {
 </script>
 
 <style scoped>
+  /*.el-collapse {*/
+    /*border-top: 0px solid #ebeef5;*/
+  /*}*/
+
   .add-enterprise {
     padding: 10px;
+  }
+
+  .text-center {
     text-align: center;
+  }
+
+  .dialog-footer {
+    margin-top: 10px;
+    text-align: right;
+  }
+
+  .el-date-editor.el-input, .el-date-editor.el-input__inner {
+    width: 100%;
   }
 </style>

@@ -8,321 +8,364 @@
       </el-breadcrumb>
     </div>
     <!--<div class="form-box">-->
-      <el-form :model="form"
-               :rules="rules"
-               :disabled="isDisabled"
-               ref="oldForm"
-               size="small"
-               class="demo-form-inline demo-ruleForm">
-        <el-row>
-          <el-col :span="24">
-            <el-form-item>
-              <h3>基本信息</h3>
-              <hr/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="区块名称" :label-width="formLabelWidth" prop="FAreaName">
-              <el-input v-model="form.FAreaName" placeholder="请输入区块名称"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="行政区划" :label-width="formLabelWidth" prop="FAgencyValue">
-              <el-select v-model="form.FAgencyValue" @change="getCounty" placeholder="请选择行政区划">
-                <el-option
-                  v-for="(item, i) in adcdOptions"
-                  :key="i"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="乡镇街道" :label-width="formLabelWidth" prop="FTownValue">
-              <el-select v-model="form.FTownValue" placeholder="请选择乡镇街道">
-                <el-option
-                  v-for="(item, i) in countyOptions"
-                  :key="i"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="详细地址" :label-width="formLabelWidth" prop="FPosition">
-              <el-input v-model="form.FPosition" placeholder="请输入详细地址"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="主要产业" :label-width="formLabelWidth" prop="FIndustry">
-              <el-input v-model="form.FIndustry"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="企业家数" :label-width="formLabelWidth" prop="FEntrepreneurCount">
-              <el-input v-model="form.FEntrepreneurCount">
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="总占地" :label-width="formLabelWidth" prop="FOccupy">
-              <el-input v-model="form.FOccupy">
-                <template slot="suffix">万㎡</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="总建筑面积" :label-width="formLabelWidth" prop="FTotalAcreage">
-              <el-input v-model="form.FTotalAcreage">
-                <template slot="suffix">万㎡</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="违建面积" :label-width="formLabelWidth" prop="FNonConBuildingArea">
-              <el-input v-model="form.FNonConBuildingArea">
-                <template slot="suffix">万㎡</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="责任领导" :label-width="formLabelWidth" prop="FRespLeader">
-              <el-input v-model="form.FRespLeader"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="联系人" :label-width="formLabelWidth" prop="FLinkMan">
-              <el-input v-model="form.FLinkMan"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="联系方式" :label-width="formLabelWidth" prop="FLinkMobile">
-              <el-input v-model="form.FLinkMobile"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
+    <el-form :model="form"
+             :rules="rules"
+             :disabled="isDisabled"
+             ref="oldForm"
+             size="small"
+             class="demo-form-inline demo-ruleForm">
+      <el-row>
+        <el-col :span="24">
+          <el-form-item>
+            <h3>基本信息</h3>
+            <hr/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="区块名称" :label-width="formLabelWidth" prop="FAreaName">
+            <el-input v-model="form.FAreaName" placeholder="请输入区块名称"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="行政区划" :label-width="formLabelWidth" prop="FAgencyValue">
+            <el-select v-model="form.FAgencyValue" @change="getCounty" placeholder="请选择行政区划">
+              <el-option
+                v-for="(item, i) in adcdOptions"
+                :key="i"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="总占地" :label-width="formLabelWidth" prop="FOccupy">
+            <el-input v-model="form.FOccupy">
+              <template slot="suffix">万㎡</template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="责任领导" :label-width="formLabelWidth" prop="FRespLeader">
+            <el-input v-model="form.FRespLeader"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="主要产业" :label-width="formLabelWidth" prop="FIndustry">
+            <el-input v-model="form.FIndustry"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="乡镇街道" :label-width="formLabelWidth" prop="FTownValue">
+            <el-select v-model="form.FTownValue" placeholder="请选择乡镇街道">
+              <el-option
+                v-for="(item, i) in countyOptions"
+                :key="i"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="总建筑面积" :label-width="formLabelWidth" prop="FTotalAcreage">
+            <el-input v-model="form.FTotalAcreage">
+              <template slot="suffix">万㎡</template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="联系人" :label-width="formLabelWidth" prop="FLinkMan">
+            <el-input v-model="form.FLinkMan"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="企业家数" :label-width="formLabelWidth" prop="FEntrepreneurCount">
+            <el-input v-model="form.FEntrepreneurCount">
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="详细地址" :label-width="formLabelWidth" prop="FPosition">
+            <el-input v-model="form.FPosition" placeholder="请输入详细地址"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="违建面积" :label-width="formLabelWidth" prop="FNonConBuildingArea">
+            <el-input v-model="form.FNonConBuildingArea">
+              <template slot="suffix">万㎡</template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="联系方式" :label-width="formLabelWidth" prop="FLinkMobile">
+            <el-input v-model="form.FLinkMobile"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="改造前区块情况简介" :label-width="formLabelWidth" prop="FRemark">
+            <el-input v-model="form.FRemark"
+                      type="textarea"
+                      :rows="11"
+                      placeholder="请输入改造前区块情况简介"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="地图定位" :label-width="formLabelWidth" prop="FGPS">
+            <el-input v-model="form.FGPS" @focus="openMap" prefix-icon="el-icon-location"
+                      placeholder="点击选择定位"></el-input>
+            <mapSelect :mapShow="mapSelectShow" @selectMap="closeMap" @selectPosition="setPosition"></mapSelect>
+            <div class="amap-page-container">
+            <el-amap vid="position" :zoom="zoom" :center="center" class="amap-demo">
+              <el-amap-marker v-for="(marker, index) in markers" :position="marker.position" :key="index" :vid="index"></el-amap-marker>
+            </el-amap>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row v-for="(item, i) in files" :key="i" v-if="i === 0">
+        <el-col :span="24" v-if="item.type === 'img'">
+          <el-form-item :label="item.label" :label-width="formLabelWidth">
+            <el-upload
+              :ref="'upload' + i"
+              :action="url"
+              :headers="headers"
+              :auto-upload="false"
+              list-type="picture-card"
+              :on-preview="handlePictureCardPreview"
+              :data="item.data"
+              :file-list="item.fileList"
+              :beforeUpload="beforeAvatarUpload"
+              :on-success="uploadSuccess"
+              :on-change="onFilesChange"
+              accept="image/*"
+              multiple>
+              <i class="el-icon-plus"></i>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+              <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24" v-else-if="item.type === 'file'">
           <el-col :span="12">
-            <el-form-item label="改造前区块情况简介" :label-width="formLabelWidth" prop="FRemark">
-              <el-input v-model="form.FRemark"
-                        type="textarea"
-                        :rows="3"
-                        placeholder="请输入改造前区块情况简介"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="地图定位" :label-width="formLabelWidth" prop="FGPS">
-              <el-input v-model="form.FGPS" @focus="openMap" prefix-icon="el-icon-location"
-                        placeholder="点击选择定位"></el-input>
-              <mapSelect :mapShow="mapSelectShow" @selectMap="closeMap" @selectPosition="setPosition"></mapSelect>
-              <div class="amap-page-container">
-              <el-amap vid="position" :zoom="zoom" :center="center" class="amap-demo">
-                <el-amap-marker v-for="(marker, index) in markers" :position="marker.position" :key="index" :vid="index"></el-amap-marker>
-              </el-amap>
-              </div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item>
-              <h3>改造信息</h3>
-              <hr/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="市级改造方式" :label-width="formLabelWidth" prop="FCityChangeType">
-              <el-select v-model="form.FCityChangeType" placeholder="请选择市级改造方式">
-                <el-option
-                  v-for="(item,i) in cityTypeOptions"
-                  :key="i"
-                  :label="item.FName"
-                  :value="item.FValue">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="县级改造方式" :label-width="formLabelWidth" prop="FTownChangeType">
-              <el-select v-model="form.FTownChangeType"
-                         value-key="label"
-                         filterable
-                         allow-create
-                         default-first-option>
-                <el-option
-                  v-for="(item,i) in countyTypeOptions"
-                  :key="i"
-                  :label="item.FName"
-                  :value="item.FValue">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="改造后用途" :label-width="formLabelWidth" prop="FAfterChange">
-              <el-select v-model="form.FAfterChange" placeholder="请选择改造后用途">
-                <el-option
-                  v-for="(item,i) in purposeOptions"
-                  :key="i"
-                  :label="item.FName"
-                  :value="item.FValue">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="拟总投资额" :label-width="formLabelWidth" prop="FTotalInvestAmount">
-              <el-input v-model="form.FTotalInvestAmount">
-                <template slot="suffix">万元</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="改造后总建筑面积" :label-width="formLabelWidth" prop="FAfterChangeArea">
-              <el-input v-model="form.FAfterChangeArea">
-                <template slot="suffix">万㎡</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="拟启动时间" :label-width="formLabelWidth" prop="FChangeBeginDate">
-              <el-date-picker
-                v-model="form.FChangeBeginDate"
-                type="month"
-                placeholder="请选择拟启动时间">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="拟完成时间" :label-width="formLabelWidth" prop="FChangeEndDate">
-              <el-date-picker
-                v-model="form.FChangeEndDate"
-                type="month"
-                placeholder="请选择拟完成时间">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="改造方案简介" :label-width="formLabelWidth" prop="FChangeRemark">
-              <el-input v-model="form.FChangeRemark"
-                        type="textarea"
-                        :rows="3"
-                        placeholder="请输入改造方案简介"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row v-for="(item, i) in files" :key="i">
-          <el-col :span="24" v-if="item.type === 'img'">
             <el-form-item :label="item.label" :label-width="formLabelWidth">
               <el-upload
+                class="upload-demo"
+                drag
                 :ref="'upload' + i"
                 :action="url"
                 :headers="headers"
                 :auto-upload="false"
-                list-type="picture-card"
-                :on-preview="handlePictureCardPreview"
                 :data="item.data"
-                :file-list="item.fileList"
-                :beforeUpload="beforeAvatarUpload"
+                :show-file-list="false"
                 :on-success="uploadSuccess"
                 :on-change="onFilesChange"
-                accept="image/*"
                 multiple>
-                <i class="el-icon-plus"></i>
-                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
               </el-upload>
-              <el-dialog :visible.sync="dialogVisible">
-                <img width="100%" :src="dialogImageUrl" alt="">
-              </el-dialog>
-              <hr/>
             </el-form-item>
           </el-col>
-          <el-col :span="24" v-else-if="item.type === 'file'">
-            <el-col :span="12">
-              <el-form-item :label="item.label" :label-width="formLabelWidth">
-                <el-upload
-                  class="upload-demo"
-                  drag
-                  :ref="'upload' + i"
-                  :action="url"
-                  :headers="headers"
-                  :auto-upload="false"
-                  :data="item.data"
-                  :show-file-list="false"
-                  :on-success="uploadSuccess"
-                  :on-change="onFilesChange"
-                  multiple>
-                  <i class="el-icon-upload"></i>
-                  <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                </el-upload>
-              </el-form-item>
-            </el-col>
-          </el-col>
-        </el-row>
-        <el-row v-if="isEdit">
-          <el-col :span="24">
-            <el-form-item>
-              <h3>审核历史</h3>
-              <hr/>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item>
+            <h3>改造信息</h3>
+            <hr/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="市级改造方式" :label-width="formLabelWidth" prop="FCityChangeType">
+            <el-select v-model="form.FCityChangeType">
+              <el-option
+                v-for="(item,i) in cityTypeOptions"
+                :key="i"
+                :label="item.FName"
+                :value="item.FValue">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="县级改造方式" :label-width="formLabelWidth" prop="FTownChangeType">
+            <el-select v-model="form.FTownChangeType"
+                       placeholder="请选择或输入"
+                       value-key="label"
+                       filterable
+                       allow-create
+                       default-first-option>
+              <el-option
+                v-for="(item,i) in countyTypeOptions"
+                :key="i"
+                :label="item.FName"
+                :value="item.FValue">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="改造后用途" :label-width="formLabelWidth" prop="FAfterChange">
+            <el-select v-model="form.FAfterChange">
+              <el-option
+                v-for="(item,i) in purposeOptions"
+                :key="i"
+                :label="item.FName"
+                :value="item.FValue">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="拟总投资额" :label-width="formLabelWidth" prop="FTotalInvestAmount">
+            <el-input v-model="form.FTotalInvestAmount">
+              <template slot="suffix">万元</template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="改造后总建筑面积" :label-width="formLabelWidth" prop="FAfterChangeArea">
+            <el-input v-model="form.FAfterChangeArea">
+              <template slot="suffix">万㎡</template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="启动时间" :label-width="formLabelWidth" prop="FChangeBeginDate">
+            <el-date-picker
+              v-model="form.FChangeBeginDate"
+              type="month">
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="完成时间" :label-width="formLabelWidth" prop="FChangeEndDate">
+            <el-date-picker
+              v-model="form.FChangeEndDate"
+              type="month">
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="改造方案简介" :label-width="formLabelWidth" prop="FChangeRemark">
+            <el-input v-model="form.FChangeRemark"
+                      type="textarea"
+                      :rows="3"
+                      placeholder="请输入改造方案简介"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row v-for="(item, i) in files" :key="i" v-if="i === 1">
+        <el-col :span="24" v-if="item.type === 'img'">
+          <el-form-item :label="item.label" :label-width="formLabelWidth">
+            <el-upload
+              :ref="'upload' + i"
+              :action="url"
+              :headers="headers"
+              :auto-upload="false"
+              list-type="picture-card"
+              :on-preview="handlePictureCardPreview"
+              :data="item.data"
+              :file-list="item.fileList"
+              :beforeUpload="beforeAvatarUpload"
+              :on-success="uploadSuccess"
+              :on-change="onFilesChange"
+              accept="image/*"
+              multiple>
+              <i class="el-icon-plus"></i>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+              <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24" v-else-if="item.type === 'file'">
+          <el-col :span="12">
+            <el-form-item :label="item.label" :label-width="formLabelWidth">
+              <el-upload
+                class="upload-demo"
+                drag
+                :ref="'upload' + i"
+                :action="url"
+                :headers="headers"
+                :auto-upload="false"
+                :data="item.data"
+                :show-file-list="false"
+                :on-success="uploadSuccess"
+                :on-change="onFilesChange"
+                multiple>
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+              </el-upload>
             </el-form-item>
-            <el-form-item :label-width="formLabelWidth">
-              <el-table
-                :data="auditList"
-                max-height="250"
-                size="mini"
-                style="width: 100%">
-                <el-table-column
-                  prop="FAddTime"
-                  label="日期"
-                  width="180"
-                  :formatter="formatDatetime">
-                </el-table-column>
-                <el-table-column
-                  prop="FLevelName"
-                  label="事件"
-                  width="180">
-                </el-table-column>
-                <el-table-column
-                  prop="FName"
-                  label="操作用户"
-                  width="180">
-                </el-table-column>
-                <el-table-column
-                  prop="FRemark"
-                  label="结果">
-                </el-table-column>
-              </el-table>
-            </el-form-item>
           </el-col>
-        </el-row>
-      </el-form>
-      <div slot="footer" class="el-footer" v-cloak>
-        <el-button @click="handleClose">返 回</el-button>
-        <el-button @click="cancelEdit" v-if="isEdit && submitPossession && !isDisabled">取消编辑</el-button>
-        <el-button type="warning" @click="isDisabled = !isDisabled" v-if="isEdit && submitPossession && isDisabled">编 辑</el-button>
-        <el-button @click="resetForm('oldForm')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
-        <el-button type="primary" @click="submit('oldForm')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
-        <el-button type="primary" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled">上报信息</el-button>
-        <el-button type="primary" @click="openAudit" v-if="isEdit && auditPossession && isDisabled">立即审核</el-button>
-        <el-button type="success" @click="dialogProgress" v-if="isDisabled">查看改造进度</el-button>
-        <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>
-      </div>
+        </el-col>
+      </el-row>
+      <!--<el-row v-if="isEdit">
+        <el-col :span="24">
+          <el-form-item>
+            <h3>审核历史</h3>
+            <hr/>
+          </el-form-item>
+          <el-form-item :label-width="formLabelWidth">
+            <el-table
+              :data="auditList"
+              max-height="250"
+              size="mini"
+              style="width: 100%">
+              <el-table-column
+                prop="FAddTime"
+                label="日期"
+                width="180"
+                :formatter="formatDatetime">
+              </el-table-column>
+              <el-table-column
+                prop="FLevelName"
+                label="事件"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="FName"
+                label="操作用户"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="FRemark"
+                label="结果">
+              </el-table-column>
+            </el-table>
+          </el-form-item>
+        </el-col>
+      </el-row>-->
+    </el-form>
+    <div slot="footer" class="el-footer" v-cloak>
+      <el-button @click="handleClose" v-if="!(dialogProgress1Show || dialogProgress2Show)">返 回</el-button>
+      <el-button @click="cancelEdit" v-if="isEdit && submitPossession && !isDisabled">取消编辑</el-button>
+      <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && submitPossession && isDisabled">编 辑</el-button>
+      <el-button type="primary" @click="resetForm('oldForm')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
+      <el-button type="success" @click="submit('oldForm')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
+      <el-button type="success" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled">上报信息</el-button>
+      <!--<el-button type="primary" @click="openAudit" v-if="isEdit && auditPossession && isDisabled">立即审核</el-button>-->
+      <!--<el-button type="success" @click="dialogProgress" v-if="isDisabled">查看改造进度</el-button>-->
+      <!--<problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>-->
+    </div>
     <transform-progress1 :dialogProgress1="dialogProgress1Show" :FLoanID="form.FID" :submitPossession="submitPossession" @closeProgress1="closeProgress1"></transform-progress1>
     <transform-progress2 :dialogProgress2="dialogProgress2Show" :FLoanID="form.FID" :submitPossession="submitPossession" @closeProgress2="closeProgress2"></transform-progress2>
   </div>
@@ -741,6 +784,7 @@ export default {
             self.form.FTownValue = FTownValue
             self.getSubmitPossession()
             self.getAuditPossession()
+            self.progressShow()
           } else {
             self.$message({
               message: data.message,
@@ -1004,15 +1048,13 @@ export default {
     /**
      * 判断改造方式打开改造进度
      */
-    dialogProgress () {
+    progressShow () {
       let type = Number(this.form.FCityChangeType)
       // console.log(type)
       if (type === 1 || type === 2) {
         this.openProgress1()
       } else if (type === 3) {
         this.openProgress2()
-      } else {
-        this.$message.error('请选择改造方式')
       }
     },
     openProgress1 () {
@@ -1020,12 +1062,14 @@ export default {
     },
     closeProgress1 (msg) {
       this.dialogProgress1Show = false
+      this.closeInfo()
     },
     openProgress2 () {
       this.dialogProgress2Show = true
     },
     closeProgress2 (msg) {
       this.dialogProgress2Show = false
+      this.closeInfo()
     },
     closePro (msg) {
       this.reload()
@@ -1077,7 +1121,7 @@ export default {
 
 <style scoped>
   #amapDemo, .amap-demo {
-    height: 300px;
+    height: 185px;
   }
 
   .search-box {
@@ -1102,5 +1146,9 @@ export default {
 
   .el-input__suffix {
     transform: translateX(0px);
+  }
+
+  .el-date-editor.el-input, .el-date-editor.el-input__inner {
+    width: 100%;
   }
 </style>

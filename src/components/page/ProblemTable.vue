@@ -7,7 +7,7 @@
       </el-breadcrumb>
     </div>
     <div class="handle-box">
-      <el-select v-model="FAgencyValue" class="handle-select" placeholder="行政区划" @change="getCounty" clearable>
+      <el-select v-model="FAgencyValue" class="handle-select" placeholder="行政区划" @change="getCounty" clearable size="small">
         <el-option
           v-for="item in adlist"
           :key="item.value"
@@ -17,7 +17,7 @@
           <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
         </el-option>
       </el-select>
-      <el-select v-model="FTownValue" class="handle-select" placeholder="乡镇街道" clearable>
+      <el-select v-model="FTownValue" class="handle-select" placeholder="乡镇街道" clearable size="small">
         <el-option
           v-for="item in countyOptions"
           :key="item.value"
@@ -26,27 +26,28 @@
           {{ item.label }}
         </el-option>
       </el-select>
-      <el-select v-model="FCityChangeType" placeholder="市级整改方式" clearable>
+      <el-select v-model="FCityChangeType" placeholder="市级整改方式" clearable size="small">
         <el-option v-for="(item, i) in cityTypeOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>
       </el-select>
       <el-date-picker
         v-model="FChangeDate"
         type="daterange"
         align="right"
+        size="small"
         unlink-panels
         range-separator="至"
         start-placeholder="拟开始日期"
         end-placeholder="拟结束日期"
         :picker-options="pickerOptions2">
       </el-date-picker>
-      <el-select v-model="FStatus" placeholder="状态" class="handle-select mr10" clearable>
+      <el-select v-model="FStatus" placeholder="状态" class="handle-select mr10" clearable size="small">
         <el-option v-for="(item, i) in statusOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>
       </el-select>
     </div>
     <div class="handle-box">
-      <el-input v-model="FAreaName" placeholder="区块名称" class="handle-input mr10"></el-input>
-      <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-      <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2">新增改造</el-button>
+      <el-input v-model="FAreaName" placeholder="区块名称" class="handle-input mr10" size="small"></el-input>
+      <el-button type="primary" icon="el-icon-search" @click="search" size="small">搜索</el-button>
+      <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2" size="small">新增改造</el-button>
     </div>
     <el-table v-loading="loading" :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange"
               stripe size="mini">

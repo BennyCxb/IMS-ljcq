@@ -52,6 +52,7 @@ export default {
           .catch(function (error) {
             // console.log(error)
             self.$message.error(error.message)
+            self.$router.push('/login')
           })
       }
     },

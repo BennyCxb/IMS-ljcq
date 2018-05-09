@@ -1,425 +1,123 @@
 <template>
-  <el-dialog title="改造进度" :visible.sync="dialogProgress1" :before-close="handleClose" width="80%">
-    <el-form :model="form"
-             :disabled="isDisabled"
-             ref="form"
-             size="small"
-             class="demo-form-inline demo-ruleForm" v-loading="Loading">
-      <el-collapse v-model="activeNames" accordion>
-        <el-collapse-item title="已启动" name="1">
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="时间" :label-width="formLabelWidth" prop="date1">
-            <el-date-picker
-              v-model="form[0].FTime"
-              type="date"
-              placeholder="请选择时间">
-            </el-date-picker>
+  <div v-if="dialogProgress1">
+    <el-row>
+      <el-col :span="24">
+        <el-form>
+          <el-form-item>
+            <h3>改造进度</h3>
+            <hr/>
           </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row v-for="(item, i) in files" :key="i" v-if="item.sign === 0">
-        <el-col :span="24" v-if="item.type === 'img'">
-          <el-form-item :label="item.label" :label-width="formLabelWidth">
-            <el-upload
-              :ref="'upload' + i"
-              :action="url"
-              :headers="headers"
-              list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
-              :data="item.data"
-              :file-list="item.fileList"
-              :beforeUpload="beforeAvatarUpload"
-              accept="image/*"
-              multiple>
-              <i class="el-icon-plus"></i>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
-            </el-upload>
-            <el-dialog :visible.sync="dialogVisible" append-to-body>
-              <img width="100%" :src="dialogImageUrl" alt="">
-            </el-dialog>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24" v-else-if="item.type === 'file'">
-          <el-form-item :label="item.label" :label-width="formLabelWidth">
-            <el-col :span="12">
-              <el-upload
-                class="upload-demo"
-                drag
-                :ref="'upload' + i"
-                :action="url"
-                :headers="headers"
-                :data="item.data"
-                multiple>
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              </el-upload>
+        </el-form>
+      </el-col>
+    </el-row>
+    <el-collapse v-model="activeNames" accordion>
+      <el-collapse-item :title="form.title" :name="index" v-for="(form, index) in forms" :key="index">
+        <el-form :model="form"
+                 size="small"
+                 class="demo-form-inline demo-ruleForm">
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="时间" :label-width="formLabelWidth">
+                <el-date-picker
+                  v-model="form.FTime"
+                  type="date"
+                  value-format="yyyy-MM-dd"
+                  :disabled="form.isDisabled"
+                  placeholder="请选择时间">
+                </el-date-picker>
+              </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-table
-                :data="item.fileList"
-                max-height="300"
-                size="mini"
-                style="width: 100%">
-                <el-table-column
-                  prop="name"
-                  label="文件名">
-                </el-table-column>
-                <el-table-column
-                  prop="address"
-                  label="操作"
-                  width="180">
-                  <template slot-scope="scope">
-                    <el-button size="small" icon="el-icon-download" title="下载"
-                               @click="download(scope.$index, scope.row)">
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
+            <el-col :span="8" v-if="form.label1">
+              <el-form-item :label="form.label1" :label-width="formLabelWidth">
+                <el-input v-model="form.FArea1" :disabled="form.isDisabled">
+                  <template slot="suffix">万㎡</template>
+                </el-input>
+              </el-form-item>
             </el-col>
-          </el-form-item>
-        </el-col>
-      </el-row>
-        </el-collapse-item>
-        <el-collapse-item title="已签约" name="2">
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="时间" :label-width="formLabelWidth" prop="date1">
-            <el-date-picker
-              v-model="form[1].FTime"
-              type="date"
-              :picker-options="pickerOptions1"
-              placeholder="请选择时间">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row v-for="(item, i) in files" :key="i" v-if="item.sign === 1">
-        <el-col :span="24" v-if="item.type === 'img'">
-          <el-form-item :label="item.label" :label-width="formLabelWidth">
-            <el-upload
-              :ref="'upload' + i"
-              :action="url"
-              :headers="headers"
-              list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
-              :data="item.data"
-              :file-list="item.fileList"
-              :beforeUpload="beforeAvatarUpload"
-              accept="image/*"
-              multiple>
-              <i class="el-icon-plus"></i>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
-            </el-upload>
-            <el-dialog :visible.sync="dialogVisible" append-to-body>
-              <img width="100%" :src="dialogImageUrl" alt="">
-            </el-dialog>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24" v-else-if="item.type === 'file'">
-          <el-form-item :label="item.label" :label-width="formLabelWidth">
-            <el-col :span="12">
-              <el-upload
-                class="upload-demo"
-                drag
-                :ref="'upload' + i"
-                :action="url"
-                :headers="headers"
-                :data="item.data"
-                multiple>
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              </el-upload>
+            <el-col :span="8" v-if="form.label1">
+              <el-form-item :label="form.label2" :label-width="formLabelWidth">
+                <el-input v-model="form.FArea1" :disabled="form.isDisabled">
+                  <template slot="suffix">万㎡</template>
+                </el-input>
+              </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-table
-                :data="item.fileList"
-                max-height="300"
-                size="mini"
-                style="width: 100%">
-                <el-table-column
-                  prop="name"
-                  label="文件名">
-                </el-table-column>
-                <el-table-column
-                  prop="address"
-                  label="操作"
-                  width="180">
-                  <template slot-scope="scope">
-                    <el-button size="small" icon="el-icon-download" title="下载"
-                               @click="download(scope.$index, scope.row)">
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
+          </el-row>
+          <el-row v-for="(item, i) in form.files" :key="i">
+            <el-col :span="24" v-if="item.type === 'img'">
+              <el-form-item :label="item.label" :label-width="formLabelWidth">
+                <el-upload
+                  :ref="'upload' + i"
+                  :action="url"
+                  :headers="headers"
+                  list-type="picture-card"
+                  :on-preview="handlePictureCardPreview"
+                  :data="item.data"
+                  :file-list="item.fileList"
+                  :beforeUpload="beforeAvatarUpload"
+                  :disabled="form.isDisabled"
+                  accept="image/*"
+                  multiple>
+                  <i class="el-icon-plus"></i>
+                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible" append-to-body>
+                  <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
+              </el-form-item>
             </el-col>
-          </el-form-item>
-        </el-col>
-      </el-row>
-        </el-collapse-item>
-        <el-collapse-item title="已拆除" name="3">
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="时间" :label-width="formLabelWidth" prop="date">
-            <el-date-picker
-              v-model="form[2].FTime"
-              type="date"
-              :picker-options="pickerOptions2"
-              placeholder="请选择时间">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="拆除总建筑面积" :label-width="formLabelWidth" prop="date">
-            <el-input v-model="form[2].FArea1" placeholder="请输入拆除总建筑面积">
-              <template slot="suffix">万㎡</template>
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="其中违建面积" :label-width="formLabelWidth" prop="date">
-            <el-input v-model="form[2].FArea2">
-              <template slot="suffix">万㎡</template>
-            </el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row v-for="(item, i) in files" :key="i" v-if="item.sign === 2">
-        <el-col :span="24" v-if="item.type === 'img'">
-          <el-form-item :label="item.label" :label-width="formLabelWidth">
-            <el-upload
-              :ref="'upload' + i"
-              :action="url"
-              :headers="headers"
-              list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
-              :data="item.data"
-              :file-list="item.fileList"
-              :beforeUpload="beforeAvatarUpload"
-              accept="image/*"
-              multiple>
-              <i class="el-icon-plus"></i>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
-            </el-upload>
-            <el-dialog :visible.sync="dialogVisible" append-to-body>
-              <img width="100%" :src="dialogImageUrl" alt="">
-            </el-dialog>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24" v-else-if="item.type === 'file'">
-          <el-form-item :label="item.label" :label-width="formLabelWidth">
-            <el-col :span="12">
-              <el-upload
-                class="upload-demo"
-                drag
-                :ref="'upload' + i"
-                :action="url"
-                :headers="headers"
-                :data="item.data"
-                multiple>
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              </el-upload>
+            <el-col :span="24" v-else-if="item.type === 'file'">
+              <el-form-item :label="item.label" :label-width="formLabelWidth">
+                <el-col :span="12">
+                  <el-upload
+                    class="upload-demo"
+                    drag
+                    :ref="'upload' + i"
+                    :action="url"
+                    :headers="headers"
+                    :data="item.data"
+                    :disabled="form.isDisabled"
+                    multiple>
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                  </el-upload>
+                </el-col>
+                <el-col :span="12">
+                  <el-table
+                    :data="item.fileList"
+                    max-height="300"
+                    size="mini"
+                    style="width: 100%">
+                    <el-table-column
+                      prop="name"
+                      label="文件名">
+                    </el-table-column>
+                    <el-table-column
+                      prop="address"
+                      label="操作"
+                      width="180">
+                      <template slot-scope="scope">
+                        <el-button size="small" icon="el-icon-download" title="下载"
+                                   @click="download(scope.$index, scope.row)">
+                        </el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </el-col>
+              </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-table
-                :data="item.fileList"
-                max-height="300"
-                size="mini"
-                style="width: 100%">
-                <el-table-column
-                  prop="name"
-                  label="文件名">
-                </el-table-column>
-                <el-table-column
-                  prop="address"
-                  label="操作"
-                  width="180">
-                  <template slot-scope="scope">
-                    <el-button size="small" icon="el-icon-download" title="下载"
-                               @click="download(scope.$index, scope.row)">
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-col>
-          </el-form-item>
-        </el-col>
-      </el-row>
-        </el-collapse-item>
-        <el-collapse-item title="已开工" name="4">
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="时间" :label-width="formLabelWidth" prop="date">
-            <el-date-picker
-              v-model="form[3].FTime"
-              type="date"
-              :picker-options="pickerOptions3"
-              placeholder="请选择时间">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row v-for="(item, i) in files" :key="i" v-if="item.sign === 3">
-        <el-col :span="24" v-if="item.type === 'img'">
-          <el-form-item :label="item.label" :label-width="formLabelWidth">
-            <el-upload
-              :ref="'upload' + i"
-              :action="url"
-              :headers="headers"
-              list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
-              :data="item.data"
-              :file-list="item.fileList"
-              :beforeUpload="beforeAvatarUpload"
-              accept="image/*"
-              multiple>
-              <i class="el-icon-plus"></i>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
-            </el-upload>
-            <el-dialog :visible.sync="dialogVisible" append-to-body>
-              <img width="100%" :src="dialogImageUrl" alt="">
-            </el-dialog>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24" v-else-if="item.type === 'file'">
-          <el-form-item :label="item.label" :label-width="formLabelWidth">
-            <el-col :span="12">
-              <el-upload
-                class="upload-demo"
-                drag
-                :ref="'upload' + i"
-                :action="url"
-                :headers="headers"
-                :data="item.data"
-                multiple>
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              </el-upload>
-            </el-col>
-            <el-col :span="12">
-              <el-table
-                :data="item.fileList"
-                max-height="300"
-                style="width: 100%">
-                <el-table-column
-                  prop="name"
-                  label="文件名">
-                </el-table-column>
-                <el-table-column
-                  prop="address"
-                  label="操作"
-                  width="180">
-                  <template slot-scope="scope">
-                    <el-button size="small" icon="el-icon-download" title="下载"
-                               @click="download(scope.$index, scope.row)">
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-col>
-          </el-form-item>
-        </el-col>
-      </el-row>
-        </el-collapse-item>
-        <el-collapse-item title="已完工" name="5">
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="时间" :label-width="formLabelWidth" prop="date">
-            <el-date-picker
-              v-model="form[4].FTime"
-              type="date"
-              :picker-options="pickerOptions4"
-              placeholder="请选择时间">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="总建筑面积" :label-width="formLabelWidth" prop="date">
-            <el-input v-model="form[4].FArea1">
-              <template slot="suffix">万㎡</template>
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="总占地面积" :label-width="formLabelWidth" prop="date">
-            <el-input v-model="form[4].FArea2">
-              <template slot="suffix">万㎡</template>
-            </el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row v-for="(item, i) in files" :key="i" v-if="item.sign === 4">
-        <el-col :span="24" v-if="item.type === 'img'">
-          <el-form-item :label="item.label" :label-width="formLabelWidth">
-            <el-upload
-              :ref="'upload' + i"
-              :action="url"
-              :headers="headers"
-              list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
-              :data="item.data"
-              :file-list="item.fileList"
-              :beforeUpload="beforeAvatarUpload"
-              accept="image/*"
-              multiple>
-              <i class="el-icon-plus"></i>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
-            </el-upload>
-            <el-dialog :visible.sync="dialogVisible" append-to-body>
-              <img width="100%" :src="dialogImageUrl" alt="">
-            </el-dialog>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24" v-else-if="item.type === 'file'">
-          <el-form-item :label="item.label" :label-width="formLabelWidth">
-            <el-col :span="12">
-              <el-upload
-                class="upload-demo"
-                drag
-                :ref="'upload' + i"
-                :action="url"
-                :headers="headers"
-                :data="item.data"
-                multiple>
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              </el-upload>
-            </el-col>
-            <el-col :span="12">
-              <el-table
-                :data="item.fileList"
-                max-height="300"
-                style="width: 100%">
-                <el-table-column
-                  prop="name"
-                  label="文件名">
-                </el-table-column>
-                <el-table-column
-                  prop="address"
-                  label="操作"
-                  width="180">
-                  <template slot-scope="scope">
-                    <el-button size="small" icon="el-icon-download" title="下载"
-                               @click="download(scope.$index, scope.row)">
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-col>
-          </el-form-item>
-        </el-col>
-      </el-row>
-        </el-collapse-item>
-      </el-collapse>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="handleClose">关 闭</el-button>
-      <el-button @click="cancelEdit" v-if="submitPossession && !isDisabled">取消编辑</el-button>
-      <el-button type="warning" @click="isDisabled = !isDisabled" v-if="submitPossession && isDisabled">编 辑</el-button>
-      <el-button type="primary" @click="submit('form')" v-if="submitPossession && !isDisabled">保 存</el-button>
-    </div>
-  </el-dialog>
+          </el-row>
+        </el-form>
+        <el-row>
+          <div class="dialog-footer">
+            <el-button type="danger" @click="cancelEdit(form)" v-if="!form.isDisabled">取消编辑</el-button>
+            <el-button type="primary" @click="edit(form)" v-if="form.isDisabled">编 辑</el-button>
+            <el-button type="success" @click="submit(form)" v-if="!form.isDisabled">保 存</el-button>
+            <el-button type="success" @click="submitProgress" v-if="form.isDisabled">上报信息</el-button>
+          </div>
+        </el-row>
+      </el-collapse-item>
+    </el-collapse>
+  </div>
 </template>
 
 <script>
@@ -440,142 +138,252 @@ export default {
     return {
       dialogFormVisible: false,
       Loading: false,
-      isDisabled: true,
-      activeNames: 1,
+      isDisabled: [true, true, true, true, true],
+      activeNames: 0,
       type: 1,
       FBillTypeID: 2000011,
-      form: {
-        0: {
+      forms: [
+        {
           FArea1: '',
           FArea2: '',
           FID: '',
           FLoanID: '',
           FStatus: 1,
-          FTime: ''
+          FTime: '',
+          isDisabled: true,
+          title: '已启动',
+          label1: '',
+          label2: '',
+          files: [
+            {
+              label: '方案',
+              type: 'file',
+              data: {
+                AttachType: '',
+                FBillTypeID: 2000011,
+                FLoanID: ''
+              },
+              fileList: []
+            },
+            {
+              label: '照片',
+              type: 'img',
+              data: {
+                AttachType: '',
+                FBillTypeID: 2000011,
+                FLoanID: ''
+              },
+              fileList: []
+            }
+          ]
         },
-        1: {
+        {
           FArea1: '',
           FArea2: '',
           FID: '',
           FLoanID: '',
           FStatus: 2,
-          FTime: ''
+          FTime: '',
+          isDisabled: true,
+          title: '已签约',
+          label1: '',
+          label2: '',
+          files: [
+            {
+              label: '协议',
+              type: 'file',
+              data: {
+                AttachType: '',
+                FBillTypeID: 2000011,
+                FLoanID: ''
+              },
+              fileList: []
+            },
+            {
+              label: '照片',
+              type: 'img',
+              data: {
+                AttachType: '',
+                FBillTypeID: 2000011,
+                FLoanID: ''
+              },
+              fileList: []
+            }
+          ]
         },
-        2: {
+        {
           FArea1: '',
           FArea2: '',
           FID: '',
           FLoanID: '',
           FStatus: 3,
-          FTime: ''
+          FTime: '',
+          isDisabled: true,
+          title: '已拆除',
+          label1: '拆除总建筑面积',
+          label2: '其中违建面积',
+          files: [
+            {
+              label: '照片',
+              type: 'img',
+              data: {
+                AttachType: '',
+                FBillTypeID: 2000011,
+                FLoanID: ''
+              },
+              fileList: []
+            }
+          ]
         },
-        3: {
+        {
           FArea1: '',
           FArea2: '',
           FID: '',
           FLoanID: '',
           FStatus: 4,
-          FTime: ''
+          FTime: '',
+          isDisabled: true,
+          title: '已开工',
+          label1: '',
+          label2: '',
+          files: [
+            {
+              label: '建设工程规划许可证',
+              type: 'file',
+              data: {
+                AttachType: '',
+                FBillTypeID: 2000011,
+                FLoanID: ''
+              },
+              fileList: []
+            },
+            {
+              label: '照片',
+              type: 'img',
+              data: {
+                AttachType: '',
+                FBillTypeID: 2000011,
+                FLoanID: ''
+              },
+              fileList: []
+            }
+          ]
         },
-        4: {
+        {
           FArea1: '',
           FArea2: '',
           FID: '',
           FLoanID: '',
-          FStatus: 1,
-          FTime: ''
-        }
-      },
-      files: [
-        {
-          sign: 0,
-          label: '方案',
-          type: 'file',
-          data: {
-            AttachType: '',
-            FBillTypeID: 2000011,
-            FLoanID: ''
-          },
-          fileList: []
-        },
-        {
-          sign: 0,
-          label: '照片',
-          type: 'img',
-          data: {
-            AttachType: '',
-            FBillTypeID: 2000011,
-            FLoanID: ''
-          },
-          fileList: []
-        },
-        {
-          sign: 1,
-          label: '协议',
-          type: 'file',
-          data: {
-            AttachType: '',
-            FBillTypeID: 2000011,
-            FLoanID: ''
-          },
-          fileList: []
-        },
-        {
-          sign: 1,
-          label: '照片',
-          type: 'img',
-          data: {
-            AttachType: '',
-            FBillTypeID: 2000011,
-            FLoanID: ''
-          },
-          fileList: []
-        },
-        {
-          sign: 2,
-          label: '照片',
-          type: 'img',
-          data: {
-            AttachType: '',
-            FBillTypeID: 2000011,
-            FLoanID: ''
-          },
-          fileList: []
-        },
-        {
-          sign: 3,
-          label: '建设工程规划许可证',
-          type: 'file',
-          data: {
-            AttachType: '',
-            FBillTypeID: 2000011,
-            FLoanID: ''
-          },
-          fileList: []
-        },
-        {
-          sign: 3,
-          label: '照片',
-          type: 'img',
-          data: {
-            AttachType: '',
-            FBillTypeID: 2000011,
-            FLoanID: ''
-          },
-          fileList: []
-        },
-        {
-          sign: 4,
-          label: '照片',
-          type: 'img',
-          data: {
-            AttachType: '',
-            FBillTypeID: 2000011,
-            FLoanID: ''
-          },
-          fileList: []
+          FStatus: 5,
+          FTime: '',
+          isDisabled: true,
+          title: '已完工',
+          label1: '总建筑面积',
+          label2: '总占地面积',
+          files: [
+            {
+              label: '照片',
+              type: 'img',
+              data: {
+                AttachType: '',
+                FBillTypeID: 2000011,
+                FLoanID: ''
+              },
+              fileList: []
+            }
+          ]
         }
       ],
+      // files: [
+      //   {
+      //     sign: 0,
+      //     label: '方案',
+      //     type: 'file',
+      //     data: {
+      //       AttachType: '',
+      //       FBillTypeID: 2000011,
+      //       FLoanID: ''
+      //     },
+      //     fileList: []
+      //   },
+      //   {
+      //     sign: 0,
+      //     label: '照片',
+      //     type: 'img',
+      //     data: {
+      //       AttachType: '',
+      //       FBillTypeID: 2000011,
+      //       FLoanID: ''
+      //     },
+      //     fileList: []
+      //   },
+      //   {
+      //     sign: 1,
+      //     label: '协议',
+      //     type: 'file',
+      //     data: {
+      //       AttachType: '',
+      //       FBillTypeID: 2000011,
+      //       FLoanID: ''
+      //     },
+      //     fileList: []
+      //   },
+      //   {
+      //     sign: 1,
+      //     label: '照片',
+      //     type: 'img',
+      //     data: {
+      //       AttachType: '',
+      //       FBillTypeID: 2000011,
+      //       FLoanID: ''
+      //     },
+      //     fileList: []
+      //   },
+      //   {
+      //     sign: 2,
+      //     label: '照片',
+      //     type: 'img',
+      //     data: {
+      //       AttachType: '',
+      //       FBillTypeID: 2000011,
+      //       FLoanID: ''
+      //     },
+      //     fileList: []
+      //   },
+      //   {
+      //     sign: 3,
+      //     label: '建设工程规划许可证',
+      //     type: 'file',
+      //     data: {
+      //       AttachType: '',
+      //       FBillTypeID: 2000011,
+      //       FLoanID: ''
+      //     },
+      //     fileList: []
+      //   },
+      //   {
+      //     sign: 3,
+      //     label: '照片',
+      //     type: 'img',
+      //     data: {
+      //       AttachType: '',
+      //       FBillTypeID: 2000011,
+      //       FLoanID: ''
+      //     },
+      //     fileList: []
+      //   },
+      //   {
+      //     sign: 4,
+      //     label: '照片',
+      //     type: 'img',
+      //     data: {
+      //       AttachType: '',
+      //       FBillTypeID: 2000011,
+      //       FLoanID: ''
+      //     },
+      //     fileList: []
+      //   }
+      // ],
       pickerOptions1: {
         disabledDate (time) {
           if (self.form[0].FTime && !self.form[3].FTime) {
@@ -637,15 +445,18 @@ export default {
       this.getInfo()
     },
     handleClose () {
-      this.$confirm('确定关闭？')
+      this.$confirm('确定返回？')
         .then(_ => {
           this.$emit('closeProgress1', false)
         })
         .catch(_ => {
         })
     },
-    cancelEdit () {
-      this.isDisabled = true
+    edit (obj) {
+      obj.isDisabled = false
+    },
+    cancelEdit (obj) {
+      obj.isDisabled = true
       this.getInfo()
     },
     /**
@@ -661,14 +472,18 @@ export default {
         .then(response => {
           let data = response.data
           if (data.code === 1) {
-            self.form[0] = data.object
             data.object.forEach((obj, index) => {
-              self.form[index] = obj
-              _.each(self.files, file => {
-                if (file.sign === index) {
+              if (self.forms[index].FStatu === obj.FStatu) {
+                self.forms[index].FArea1 = obj.FArea1
+                self.forms[index].FArea2 = obj.FArea2
+                self.forms[index].FID = obj.FID
+                self.forms[index].FLoanID = obj.FLoanID
+                self.forms[index].FStatu = obj.FStatu
+                self.forms[index].FTime = obj.FTime
+                _.each(self.forms[index].files, file => {
                   file.data.FLoanID = obj.FLoanID
-                }
-              })
+                })
+              }
             })
             self.getAttachTypeList()
           } else {
@@ -693,33 +508,36 @@ export default {
         .then(response => {
           let data = response.data
           if (data.code === 1) {
-            var switchFiles = (obj, index) => {
-              self.files[index].data.AttachType = obj.FID
-              self.files[index].fileList = []
-              self.getFilesUrl(self.files[index], obj.FID)
+            var switchFiles = (obj, index1, index2) => {
+              self.forms[index1].files[index2].data.AttachType = obj.FID
+              self.forms[index1].files[index2].fileList = []
+              self.getFilesUrl(self.forms[index1].files[index2], obj.FID)
             }
             _.each(data.object, obj => {
               switch (obj.FName) {
                 case '已启动方案':
-                  switchFiles(obj, 0)
+                  switchFiles(obj, 0, 0)
                   break
                 case '已启动照片':
-                  switchFiles(obj, 1)
+                  switchFiles(obj, 0, 1)
                   break
                 case '已签约协议':
-                  switchFiles(obj, 2)
+                  switchFiles(obj, 1, 0)
                   break
                 case '已签约照片':
-                  switchFiles(obj, 3)
+                  switchFiles(obj, 1, 1)
+                  break
+                case '已拆除照片':
+                  switchFiles(obj, 2, 0)
                   break
                 case '已开工建设工程规划许可证':
-                  switchFiles(obj, 4)
+                  switchFiles(obj, 3, 0)
                   break
                 case '已开工照片':
-                  switchFiles(obj, 5)
+                  switchFiles(obj, 3, 1)
                   break
                 case '已完工照片':
-                  switchFiles(obj, 6)
+                  switchFiles(obj, 4, 0)
                   break
               }
             })
@@ -732,7 +550,7 @@ export default {
           }
         })
         .catch(error => {
-          // console.log(error)
+          console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -765,7 +583,7 @@ export default {
           }
         })
         .catch(error => {
-          // console.log(error)
+          console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -775,41 +593,71 @@ export default {
     /**
      * 提交
      */
-    submit (formName) {
+    submit (form) {
       let self = this
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          let data = self.form
-          let tmp = []
-          _.each(data, obj => {
-            tmp.push(obj)
-          })
-          // console.log(tmp)
-          this.$axios.post('OldCity/SaveOldCityExtend12', tmp)
-            .then(response => {
-              let data = response.data
-              if (data.code === 1) {
-                self.$message({
-                  message: '保存成功！',
-                  type: 'success'
-                })
-                self.reload()
-              } else {
-                self.$message({
-                  message: data.message,
-                  type: 'warning'
-                })
-              }
+      // let data = self.form[num]
+      let tmp = []
+      tmp.push(form)
+      console.log(tmp)
+      this.$axios.post('OldCity/SaveOldCityExtend12', tmp)
+        .then(response => {
+          let data = response.data
+          if (data.code === 1) {
+            self.$message({
+              message: '保存成功！',
+              type: 'success'
             })
-            .catch(error => {
-              // console.log(error)
-              self.$message.error(error.message)
+            self.reload()
+          } else {
+            self.$message({
+              message: data.message,
+              type: 'warning'
             })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+          }
+        })
+        .catch(error => {
+          // console.log(error)
+          self.$message.error(error.message)
+        })
+    },
+    // submit (formName) {
+    //   let self = this
+    //   this.$refs[formName].validate((valid) => {
+    //     if (valid) {
+    //       let data = self.form
+    //       let tmp = []
+    //       _.each(data, obj => {
+    //         tmp.push(obj)
+    //       })
+    //       // console.log(tmp)
+    //       this.$axios.post('OldCity/SaveOldCityExtend12', tmp)
+    //         .then(response => {
+    //           let data = response.data
+    //           if (data.code === 1) {
+    //             self.$message({
+    //               message: '保存成功！',
+    //               type: 'success'
+    //             })
+    //             self.reload()
+    //           } else {
+    //             self.$message({
+    //               message: data.message,
+    //               type: 'warning'
+    //             })
+    //           }
+    //         })
+    //         .catch(error => {
+    //           // console.log(error)
+    //           self.$message.error(error.message)
+    //         })
+    //     } else {
+    //       console.log('error submit!!')
+    //       return false
+    //     }
+    //   })
+    // },
+    submitProgress () {
+      let self = this
     },
     beforeAvatarUpload (file) {
       var testmsg = file.type.substring(0, file.type.lastIndexOf('/') + 1)
@@ -865,5 +713,12 @@ export default {
 </script>
 
 <style scoped>
+  .dialog-footer {
+    margin-top: 10px;
+    text-align: right;
+  }
 
+  .el-date-editor.el-input, .el-date-editor.el-input__inner {
+    width: 100%;
+  }
 </style>
