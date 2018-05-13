@@ -340,29 +340,34 @@ export default {
         })
         return false
       }
-      this.$axios.get('OldCity/SubmitOldCityExtend3', {
-        params: {
-          FID: form.FID
-        }
-      })
-        .then(response => {
-          let data = response.data
-          if (data.code === 1) {
-            self.getInfo()
-            self.$message({
-              message: '上报成功',
-              type: 'success'
+      this.$confirm('上报信息将无法修改，确定上报信息？')
+        .then(_ => {
+          this.$axios.get('OldCity/SubmitOldCityExtend3', {
+            params: {
+              FID: form.FID
+            }
+          })
+            .then(response => {
+              let data = response.data
+              if (data.code === 1) {
+                self.getInfo()
+                self.$message({
+                  message: '上报成功',
+                  type: 'success'
+                })
+              } else {
+                self.$message({
+                  message: data.message,
+                  type: 'warning'
+                })
+              }
             })
-          } else {
-            self.$message({
-              message: data.message,
-              type: 'warning'
+            .catch(error => {
+              // console.log(error)
+              self.$message.error(error.message)
             })
-          }
         })
-        .catch(error => {
-          // console.log(error)
-          self.$message.error(error.message)
+        .catch(_ => {
         })
     },
     getAttachTypeList () {

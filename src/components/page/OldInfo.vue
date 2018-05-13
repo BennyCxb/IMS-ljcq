@@ -985,29 +985,34 @@ export default {
      * 提交审核
      */
     submitAudit () {
-      let self = this
-      this.$axios.post('Flow/SubmitApply', {
-        FBillTypeID: self.form.FBillTypeID,
-        FID: self.form.FID
-      })
-        .then(response => {
-          let data = response.data
-          if (data.code === 1) {
-            self.$message({
-              message: '提交改造成功',
-              type: 'success'
+      this.$confirm('上报信息将无法修改，确定上报信息？')
+        .then(_ => {
+          let self = this
+          this.$axios.post('Flow/SubmitApply', {
+            FBillTypeID: self.form.FBillTypeID,
+            FID: self.form.FID
+          })
+            .then(response => {
+              let data = response.data
+              if (data.code === 1) {
+                self.$message({
+                  message: '提交改造成功',
+                  type: 'success'
+                })
+                self.reload()
+              } else {
+                self.$message({
+                  message: data.message,
+                  type: 'warning'
+                })
+              }
             })
-            self.reload()
-          } else {
-            self.$message({
-              message: data.message,
-              type: 'warning'
+            .catch(error => {
+              // console.log(error)
+              self.$message.error(error.message)
             })
-          }
         })
-        .catch(error => {
-          // console.log(error)
-          self.$message.error(error.message)
+        .catch(_ => {
         })
     },
     /**
