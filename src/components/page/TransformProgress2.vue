@@ -24,12 +24,12 @@
           <el-row>
             <el-col :span="8">
               <el-form-item label="企业名称" :label-width="formLabelWidth" prop="FCompanyName">
-                <el-input v-model="form.FCompanyName" placeholder="请输入企业名称" :disabled="isDisabled"></el-input>
+                <el-input v-model="form.FCompanyName" placeholder="请输入企业名称" :disabled="form.isDisabled || !(form.FStatus === 0 || form.FStatus === null)"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="改造类型" :label-width="formLabelWidth" prop="date">
-                <el-select v-model="form.FReadyType" placeholder="请选择" :disabled="isDisabled">
+                <el-select v-model="form.FReadyType" placeholder="请选择" :disabled="form.isDisabled || !(form.FStatus === 0 || form.FStatus === null)" @change="changeReadyType(form)">
                   <el-option
                     v-for="item in btOptions"
                     :key="item.value"
@@ -41,19 +41,19 @@
             </el-col>
             <el-col :span="8">
               <el-form-item :label="form.FReadyType ? '整治建筑面积': '拆除建筑面积'" :label-width="formLabelWidth" prop="date">
-                <el-input v-model="form.FReadyArea" placeholder="请输入改造建筑面积" :disabled="isDisabled">
+                <el-input v-model="form.FReadyArea" placeholder="请输入改造建筑面积" :disabled="form.isDisabled || !(form.FStatus === 0 || form.FStatus === null)">
                   <template slot="suffix">万㎡</template>
                 </el-input>
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row :disabled="isDisabled">
+          <el-row>
             <el-col :span="8">
               <el-form-item :label="form.FReadyType ? '整治开始时间': '拆除开始时间'" :label-width="formLabelWidth" prop="date">
                 <el-date-picker
                   v-model="form.FDoingTime"
                   type="date"
-                  :disabled="isDisabled"
+                  :disabled="form.isDisabled || !(form.FStatus === 0 || form.FStatus === null)"
                   placeholder="请选择时间">
                 </el-date-picker>
               </el-form-item>
@@ -63,21 +63,24 @@
                 <el-date-picker
                   v-model="form.FDoneTime"
                   type="date"
-                  :disabled="isDisabled"
+                  :disabled="form.isDisabled || (form.FStatus === 2)"
                   placeholder="请选择时间">
                 </el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="" :label-width="formLabelWidth">
-                <el-button type="danger" icon="el-icon-delete" v-if="(FLevel === 1 || FLevel === 3) && submitPossession" @click="enterpriseDelete(form)">删除</el-button>
-                <el-button type="success" @click="" v-if="submitPossession && isDisabled">上报信息</el-button>
-              </el-form-item>
+              <div class="btn-list">
+                <el-button type="danger" icon="el-icon-delete" v-if="(FLevel === 1 || FLevel === 3) && !form.FStatus" @click="enterpriseDelete(form)">删除</el-button>
+                <el-button type="danger" @click="cancelEdit" v-if="!form.isDisabled">取消编辑</el-button>
+                <el-button type="primary" @click="form.isDisabled = !form.isDisabled" v-if="form.isDisabled && (form.FStatus !== 2)">编 辑</el-button>
+                <el-button type="success" @click="enterpriseUpdate(form)" v-if="!form.isDisabled">保 存</el-button>
+                <el-button type="success" @click="submitProgress(form)" v-if="form.isDisabled && (form.FStatus !== 2)">上报信息</el-button>
+              </div>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12" v-for="(item, i) in form.files" :key="i">
-              <el-form-item :label="item.label" :label-width="formLabelWidth">
+              <el-form-item :label="form.FReadyTypeName + item.label" :label-width="formLabelWidth" v-if="i === 0">
                 <el-upload
                   :ref="'upload' + i"
                   :action="url"
@@ -88,7 +91,28 @@
                   :file-list="item.fileList"
                   :uploadSuccess="uploadSuccess"
                   :beforeUpload="beforeAvatarUpload"
-                  :disabled="isDisabled"
+                  :disabled="form.isDisabled || !(form.FStatus === 0 || form.FStatus === null)"
+                  accept="image/*"
+                  multiple>
+                  <i class="el-icon-plus"></i>
+                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible" append-to-body>
+                  <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
+              </el-form-item>
+              <el-form-item :label="form.FReadyTypeName + item.label" :label-width="formLabelWidth" v-if="i === 1">
+                <el-upload
+                  :ref="'upload' + i"
+                  :action="url"
+                  :headers="headers"
+                  list-type="picture-card"
+                  :on-preview="handlePictureCardPreview"
+                  :data="item.data"
+                  :file-list="item.fileList"
+                  :uploadSuccess="uploadSuccess"
+                  :beforeUpload="beforeAvatarUpload"
+                  :disabled="form.isDisabled || (form.FStatus === 2)"
                   accept="image/*"
                   multiple>
                   <i class="el-icon-plus"></i>
@@ -102,15 +126,15 @@
           </el-row>
         </el-form>
       </el-collapse-item>
-      <div class="add-enterprise text-center" v-if="submitPossession && !isDisabled">
+      <div class="add-enterprise text-center">
         <el-button type="primary" icon="el-icon-plus" size="mini" round @click="enterpriseAdd">新增企业</el-button>
       </div>
     </el-collapse>
     <div slot="footer" class="dialog-footer">
       <el-button @click="handleClose">返 回</el-button>
-      <el-button type="danger" @click="cancelEdit" v-if="submitPossession && !isDisabled">取消编辑</el-button>
-      <el-button type="primary" @click="isDisabled = !isDisabled" v-if="submitPossession && isDisabled">编 辑</el-button>
-      <el-button type="success" @click="enterpriseUpdate" v-if="submitPossession && !isDisabled">保 存</el-button>
+      <!--<el-button type="danger" @click="cancelEdit" v-if="submitPossession && !isDisabled">取消编辑</el-button>-->
+      <!--<el-button type="primary" @click="isDisabled = !isDisabled" v-if="submitPossession && isDisabled">编 辑</el-button>-->
+      <!--<el-button type="success" @click="enterpriseUpdate" v-if="submitPossession && !isDisabled">保 存</el-button>-->
     </div>
   </div>
 </template>
@@ -148,26 +172,6 @@ export default {
           value: 1
         }
       ],
-      // tOptions: [
-      //   {
-      //     label: '拆除中',
-      //     value: 0
-      //   },
-      //   {
-      //     label: '整治中',
-      //     value: 1
-      //   }
-      // ],
-      // atOptions: [
-      //   {
-      //     label: '已拆除',
-      //     value: 0
-      //   },
-      //   {
-      //     label: '整治完成',
-      //     value: 1
-      //   }
-      // ],
       forms: [],
       attachTypeList: [null, null],
       formLabelWidth: '120px',
@@ -212,7 +216,9 @@ export default {
         FDoingType: '',
         FDoingTime: '',
         FDoneType: '',
-        FDoneTime: ''
+        FDoneTime: '',
+        FStatus: 0,
+        isDisabled: true
       }
       this.activeNames = num
       this.$axios.post('OldCity/AddSingleOldCityExtend3', formData)
@@ -220,21 +226,22 @@ export default {
           let data = response.data
           if (data.code === 1) {
             formData.FID = data.object
+            formData.FReadyTypeName = '拆除'
             formData.files = [{
-              label: '改造中照片',
+              label: '中照片',
               data: {
                 AttachType: self.attachTypeList[0],
                 FBillTypeID: 2000012,
-                FLoanID: self.FLoanID
+                FLoanID: data.object
               },
               fileList: []
             },
             {
-              label: '改造后照片',
+              label: '后照片',
               data: {
                 AttachType: self.attachTypeList[1],
                 FBillTypeID: 2000012,
-                FLoanID: self.FLoanID
+                FLoanID: data.object
               },
               fileList: []
             }]
@@ -290,12 +297,19 @@ export default {
         .catch(_ => {
         })
     },
+    changeReadyType (item) {
+      if (item.FReadyType) {
+        item.FReadyTypeName = '整治'
+      } else {
+        item.FReadyTypeName = '拆除'
+      }
+    },
     /**
      * 修改企业
      */
-    enterpriseUpdate () {
+    enterpriseUpdate (form) {
       let self = this
-      this.$axios.post('OldCity/SaveOldCityExtend3', this.forms)
+      this.$axios.post('OldCity/SaveOldCityExtend3', form)
         .then(response => {
           let data = response.data
           if (data.code === 1) {
@@ -307,6 +321,43 @@ export default {
           } else {
             self.$message.error(data.object)
             self.forms.pop()
+          }
+        })
+        .catch(error => {
+          // console.log(error)
+          self.$message.error(error.message)
+        })
+    },
+    /**
+     * 上报信息
+     */
+    submitProgress (form) {
+      let self = this
+      if (!this.FStatus) {
+        self.$message({
+          message: '请先上报改造前基本信息和改造信息',
+          type: 'warning'
+        })
+        return false
+      }
+      this.$axios.get('OldCity/SubmitOldCityExtend3', {
+        params: {
+          FID: form.FID
+        }
+      })
+        .then(response => {
+          let data = response.data
+          if (data.code === 1) {
+            self.getInfo()
+            self.$message({
+              message: '上报成功',
+              type: 'success'
+            })
+          } else {
+            self.$message({
+              message: data.message,
+              type: 'warning'
+            })
           }
         })
         .catch(error => {
@@ -361,9 +412,11 @@ export default {
           if (data.code === 1) {
             _.each(data.object, function (obj) {
               let item = obj
+              item.isDisabled = true
+              item.FReadyTypeName = item.FReadyType ? '整治' : '拆除'
               item.files = [
                 {
-                  label: '改造中照片',
+                  label: '中照片',
                   data: {
                     AttachType: self.attachTypeList[0],
                     FBillTypeID: 2000012,
@@ -372,7 +425,7 @@ export default {
                   fileList: []
                 },
                 {
-                  label: '改造后照片',
+                  label: '后照片',
                   data: {
                     AttachType: self.attachTypeList[1],
                     FBillTypeID: 2000012,
@@ -473,7 +526,7 @@ export default {
       })
     }
   },
-  props: ['dialogProgress2', 'FLoanID', 'submitPossession'],
+  props: ['dialogProgress2', 'FLoanID', 'FStatus'],
   watch: {
     dialogProgress2 (curVal) {
       if (curVal) {
@@ -507,5 +560,9 @@ export default {
 
   .el-date-editor.el-input, .el-date-editor.el-input__inner {
     width: 100%;
+  }
+
+  .btn-list {
+    text-align: right;
   }
 </style>

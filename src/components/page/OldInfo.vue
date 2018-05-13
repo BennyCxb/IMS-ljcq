@@ -330,8 +330,8 @@
       <!--<el-button type="success" @click="dialogProgress" v-if="isDisabled">查看改造进度</el-button>-->
       <!--<problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>-->
     </div>
-    <transform-progress1 :dialogProgress1="dialogProgress1Show" :FLoanID="form.FID" :submitPossession="submitPossession" @closeProgress1="closeProgress1"></transform-progress1>
-    <transform-progress2 :dialogProgress2="dialogProgress2Show" :FLoanID="form.FID" :submitPossession="submitPossession" @closeProgress2="closeProgress2"></transform-progress2>
+    <transform-progress1 :dialogProgress1="dialogProgress1Show" :FLoanID="form.FID" :FStatus="form.FStatus" @closeProgress1="closeProgress1"></transform-progress1>
+    <transform-progress2 :dialogProgress2="dialogProgress2Show" :FLoanID="form.FID" :FStatus="form.FStatus" @closeProgress2="closeProgress2"></transform-progress2>
   </div>
   <!--</div>-->
 </template>

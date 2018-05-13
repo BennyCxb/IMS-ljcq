@@ -537,6 +537,13 @@ export default {
     },
     submitProgress (form) {
       let self = this
+      if (!this.FStatus) {
+        self.$message({
+          message: '请先上报改造前基本信息和改造信息',
+          type: 'warning'
+        })
+        return false
+      }
       this.$axios.get('OldCity/SubmitOldCityExtend12', {
         params: {
           FID: form.FID
@@ -603,7 +610,7 @@ export default {
       $a.dispatchEvent(evObj)
     }
   },
-  props: ['dialogProgress1', 'FLoanID', 'submitPossession'],
+  props: ['dialogProgress1', 'FLoanID', 'FStatus'],
   watch: {
     dialogProgress1 (curVal) {
       if (curVal) {
