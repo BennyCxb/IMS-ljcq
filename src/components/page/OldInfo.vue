@@ -17,7 +17,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item>
-            <h3>基本信息</h3>
+            <h3>改造前基本信息</h3>
             <hr/>
           </el-form-item>
         </el-col>
@@ -41,8 +41,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="总占地" :label-width="formLabelWidth" prop="FOccupy">
-            <el-input v-model="form.FOccupy">
+          <el-form-item label="总占地面积" :label-width="formLabelWidth" prop="FOccupy">
+            <el-input v-model="form.FOccupy" placeholder="请输入总占地面积">
               <template slot="suffix">万㎡</template>
             </el-input>
           </el-form-item>
@@ -73,7 +73,7 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="总建筑面积" :label-width="formLabelWidth" prop="FTotalAcreage">
-            <el-input v-model="form.FTotalAcreage">
+            <el-input v-model="form.FTotalAcreage" placeholder="请输入总建筑面积">
               <template slot="suffix">万㎡</template>
             </el-input>
           </el-form-item>
@@ -135,7 +135,7 @@
         <el-col :span="24" v-if="item.type === 'img'">
           <el-form-item :label="item.label" :label-width="formLabelWidth">
             <el-upload
-              :ref="'upload' + i"
+              ref="upload"
               :action="url"
               :headers="headers"
               :auto-upload="false"
@@ -275,7 +275,7 @@
         <el-col :span="24" v-if="item.type === 'img'">
           <el-form-item :label="item.label" :label-width="formLabelWidth">
             <el-upload
-              :ref="'upload' + i"
+              ref="upload"
               :action="url"
               :headers="headers"
               :auto-upload="false"
@@ -318,50 +318,14 @@
           </el-col>
         </el-col>
       </el-row>
-      <!--<el-row v-if="isEdit">
-        <el-col :span="24">
-          <el-form-item>
-            <h3>审核历史</h3>
-            <hr/>
-          </el-form-item>
-          <el-form-item :label-width="formLabelWidth">
-            <el-table
-              :data="auditList"
-              max-height="250"
-              size="mini"
-              style="width: 100%">
-              <el-table-column
-                prop="FAddTime"
-                label="日期"
-                width="180"
-                :formatter="formatDatetime">
-              </el-table-column>
-              <el-table-column
-                prop="FLevelName"
-                label="事件"
-                width="180">
-              </el-table-column>
-              <el-table-column
-                prop="FName"
-                label="操作用户"
-                width="180">
-              </el-table-column>
-              <el-table-column
-                prop="FRemark"
-                label="结果">
-              </el-table-column>
-            </el-table>
-          </el-form-item>
-        </el-col>
-      </el-row>-->
     </el-form>
     <div slot="footer" class="el-footer" v-cloak>
       <el-button @click="handleClose" v-if="!(dialogProgress1Show || dialogProgress2Show)">返 回</el-button>
       <el-button @click="cancelEdit" v-if="isEdit && submitPossession && !isDisabled">取消编辑</el-button>
       <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && submitPossession && isDisabled">编 辑</el-button>
       <el-button type="primary" @click="resetForm('oldForm')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
-      <el-button type="success" @click="submit('oldForm')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
-      <el-button type="success" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled">上报信息</el-button>
+      <el-button type="success" @click="submit('oldForm')" v-if="(!form.FStatus || FLevel == 2) && !isDisabled">保 存</el-button>
+      <el-button type="success" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled && FLevel !== 2">上报信息</el-button>
       <!--<el-button type="primary" @click="openAudit" v-if="isEdit && auditPossession && isDisabled">立即审核</el-button>-->
       <!--<el-button type="success" @click="dialogProgress" v-if="isDisabled">查看改造进度</el-button>-->
       <!--<problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>-->
@@ -408,6 +372,7 @@ export default {
     return {
       breadcrumb: [],
       formLabelWidth: '130px',
+      FLevel: Number(localStorage.getItem('FLevel')),
       Loading: false,
       isEdit: false,
       isDisabled: false,
@@ -476,7 +441,7 @@ export default {
           {required: true, message: '请输入详细地址', trigger: 'blur'}
         ],
         FGPS: [
-          {required: false, message: '请选择定位', trigger: 'blur'}
+          {required: true, message: '请选择定位', trigger: 'change'}
         ],
         FIndustry: [
           {required: false, message: '请选择主要产业', trigger: 'blur'}
@@ -488,10 +453,10 @@ export default {
           {required: false, message: '请输入企业家数', trigger: 'blur'}
         ],
         FOccupy: [
-          {required: false, message: '请输入总占地', trigger: 'blur'}
+          {required: true, message: '请输入总占地', trigger: 'blur'}
         ],
         FTotalAcreage: [
-          {required: false, message: '请输入总建筑面积', trigger: 'blur'}
+          {required: true, message: '请输入总建筑面积', trigger: 'blur'}
         ],
         FNonConBuildingArea: [
           {required: false, message: '请输入违建面积', trigger: 'blur'}
@@ -552,6 +517,7 @@ export default {
     reload () {
       if (this.isEdit) {
         this.isDisabled = true
+        this.isSubmited = false
         // this.getBreadcrumb()
         // this.getAdcd()
         // this.getCityChangeType()
@@ -560,6 +526,8 @@ export default {
         this.getInfo()
       } else {
         this.isDisabled = true
+        this.isEdit = true
+        this.isSubmited = false
         let path = this.$route.fullPath.split('/info')[0]
         this.$router.push({path: path + '/info-' + this.form.FID})
         this.getInfo()
@@ -809,10 +777,16 @@ export default {
             if (self.isEdit) {
               data.FID = self.form.FID
             }
+            if (!self.$refs.upload[0].uploadFiles.length) {
+              self.$message({
+                message: '请上传改造前影像图',
+                type: 'warning'
+              })
+              return false
+            }
             this.$axios.post('OldCity/SaveOldCity', data)
               .then(response => {
                 let data = response.data
-
                 if (data.code === 1) {
                   self.form.FID = data.object
                   self.isSubmited = true
@@ -929,8 +903,8 @@ export default {
      * 提交照片/文件
      */
     submitUpload () {
-      this.$refs.upload0[0].submit()
-      this.$refs.upload1[0].submit()
+      this.$refs.upload[0].submit()
+      this.$refs.upload[1].submit()
     },
     beforeAvatarUpload (file) {
       var testmsg = file.type.substring(0, file.type.lastIndexOf('/') + 1)
@@ -1051,6 +1025,8 @@ export default {
     progressShow () {
       let type = Number(this.form.FCityChangeType)
       // console.log(type)
+      this.dialogProgress1Show = false
+      this.dialogProgress2Show = false
       if (type === 1 || type === 2) {
         this.openProgress1()
       } else if (type === 3) {
@@ -1083,6 +1059,8 @@ export default {
         } else {
           this.submitPossession = false
         }
+      } else if (FLevel === 2) {
+        this.submitPossession = true
       } else if (FLevel === 3 && this.form.FStatus === 0) {
         this.submitPossession = true
       } else if (FLevel === 4 && this.form.FStatus === 0) {

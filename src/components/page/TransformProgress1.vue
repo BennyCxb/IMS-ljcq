@@ -108,11 +108,11 @@
           </el-row>
         </el-form>
         <el-row>
-          <div class="dialog-footer">
+          <div class="dialog-footer" v-if="index >= state">
             <el-button type="danger" @click="cancelEdit(form)" v-if="!form.isDisabled">取消编辑</el-button>
             <el-button type="primary" @click="edit(form)" v-if="form.isDisabled">编 辑</el-button>
             <el-button type="success" @click="submit(form)" v-if="!form.isDisabled">保 存</el-button>
-            <el-button type="success" @click="submitProgress" v-if="form.isDisabled">上报信息</el-button>
+            <el-button type="success" @click="submitProgress(form)" v-if="form.isDisabled && FLevel != 2">上报信息</el-button>
           </div>
         </el-row>
       </el-collapse-item>
@@ -138,9 +138,10 @@ export default {
     return {
       dialogFormVisible: false,
       Loading: false,
-      isDisabled: [true, true, true, true, true],
       activeNames: 0,
+      state: 0,
       type: 1,
+      FLevel: Number(localStorage.getItem('FLevel')),
       FBillTypeID: 2000011,
       forms: [
         {
@@ -294,96 +295,6 @@ export default {
           ]
         }
       ],
-      // files: [
-      //   {
-      //     sign: 0,
-      //     label: '方案',
-      //     type: 'file',
-      //     data: {
-      //       AttachType: '',
-      //       FBillTypeID: 2000011,
-      //       FLoanID: ''
-      //     },
-      //     fileList: []
-      //   },
-      //   {
-      //     sign: 0,
-      //     label: '照片',
-      //     type: 'img',
-      //     data: {
-      //       AttachType: '',
-      //       FBillTypeID: 2000011,
-      //       FLoanID: ''
-      //     },
-      //     fileList: []
-      //   },
-      //   {
-      //     sign: 1,
-      //     label: '协议',
-      //     type: 'file',
-      //     data: {
-      //       AttachType: '',
-      //       FBillTypeID: 2000011,
-      //       FLoanID: ''
-      //     },
-      //     fileList: []
-      //   },
-      //   {
-      //     sign: 1,
-      //     label: '照片',
-      //     type: 'img',
-      //     data: {
-      //       AttachType: '',
-      //       FBillTypeID: 2000011,
-      //       FLoanID: ''
-      //     },
-      //     fileList: []
-      //   },
-      //   {
-      //     sign: 2,
-      //     label: '照片',
-      //     type: 'img',
-      //     data: {
-      //       AttachType: '',
-      //       FBillTypeID: 2000011,
-      //       FLoanID: ''
-      //     },
-      //     fileList: []
-      //   },
-      //   {
-      //     sign: 3,
-      //     label: '建设工程规划许可证',
-      //     type: 'file',
-      //     data: {
-      //       AttachType: '',
-      //       FBillTypeID: 2000011,
-      //       FLoanID: ''
-      //     },
-      //     fileList: []
-      //   },
-      //   {
-      //     sign: 3,
-      //     label: '照片',
-      //     type: 'img',
-      //     data: {
-      //       AttachType: '',
-      //       FBillTypeID: 2000011,
-      //       FLoanID: ''
-      //     },
-      //     fileList: []
-      //   },
-      //   {
-      //     sign: 4,
-      //     label: '照片',
-      //     type: 'img',
-      //     data: {
-      //       AttachType: '',
-      //       FBillTypeID: 2000011,
-      //       FLoanID: ''
-      //     },
-      //     fileList: []
-      //   }
-      // ],
       pickerOptions1: {
         disabledDate (time) {
           if (self.form[0].FTime && !self.form[3].FTime) {
@@ -472,14 +383,21 @@ export default {
         .then(response => {
           let data = response.data
           if (data.code === 1) {
+            self.state = Number(data.message) || 0
+            self.activeNames = self.state
+            // let flag = true
             data.object.forEach((obj, index) => {
               if (self.forms[index].FStatu === obj.FStatu) {
+                // if (self.state === index) {
+                //   flag = false
+                // }
                 self.forms[index].FArea1 = obj.FArea1
                 self.forms[index].FArea2 = obj.FArea2
                 self.forms[index].FID = obj.FID
                 self.forms[index].FLoanID = obj.FLoanID
-                self.forms[index].FStatu = obj.FStatu
+                self.forms[index].FStatus = obj.FStatus
                 self.forms[index].FTime = obj.FTime
+                self.forms[index].isDisabled = true
                 _.each(self.forms[index].files, file => {
                   file.data.FLoanID = obj.FLoanID
                 })
@@ -595,14 +513,11 @@ export default {
      */
     submit (form) {
       let self = this
-      // let data = self.form[num]
-      let tmp = []
-      tmp.push(form)
-      console.log(tmp)
-      this.$axios.post('OldCity/SaveOldCityExtend12', tmp)
+      this.$axios.post('OldCity/SaveOldCityExtend12', form)
         .then(response => {
           let data = response.data
           if (data.code === 1) {
+            form.isDisabled = true
             self.$message({
               message: '保存成功！',
               type: 'success'
@@ -620,44 +535,32 @@ export default {
           self.$message.error(error.message)
         })
     },
-    // submit (formName) {
-    //   let self = this
-    //   this.$refs[formName].validate((valid) => {
-    //     if (valid) {
-    //       let data = self.form
-    //       let tmp = []
-    //       _.each(data, obj => {
-    //         tmp.push(obj)
-    //       })
-    //       // console.log(tmp)
-    //       this.$axios.post('OldCity/SaveOldCityExtend12', tmp)
-    //         .then(response => {
-    //           let data = response.data
-    //           if (data.code === 1) {
-    //             self.$message({
-    //               message: '保存成功！',
-    //               type: 'success'
-    //             })
-    //             self.reload()
-    //           } else {
-    //             self.$message({
-    //               message: data.message,
-    //               type: 'warning'
-    //             })
-    //           }
-    //         })
-    //         .catch(error => {
-    //           // console.log(error)
-    //           self.$message.error(error.message)
-    //         })
-    //     } else {
-    //       console.log('error submit!!')
-    //       return false
-    //     }
-    //   })
-    // },
-    submitProgress () {
+    submitProgress (form) {
       let self = this
+      this.$axios.get('OldCity/SubmitOldCityExtend12', {
+        params: {
+          FID: form.FID
+        }
+      })
+        .then(response => {
+          let data = response.data
+          if (data.code === 1) {
+            self.getInfo()
+            self.$message({
+              message: '上报成功',
+              type: 'success'
+            })
+          } else {
+            self.$message({
+              message: data.message,
+              type: 'warning'
+            })
+          }
+        })
+        .catch(error => {
+          // console.log(error)
+          self.$message.error(error.message)
+        })
     },
     beforeAvatarUpload (file) {
       var testmsg = file.type.substring(0, file.type.lastIndexOf('/') + 1)
