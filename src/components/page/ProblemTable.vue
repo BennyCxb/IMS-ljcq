@@ -40,9 +40,9 @@
         end-placeholder="拟结束日期"
         :picker-options="pickerOptions2">
       </el-date-picker>
-      <el-select v-model="FStatus" placeholder="状态" class="handle-select mr10" clearable size="small">
-        <el-option v-for="(item, i) in statusOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>
-      </el-select>
+      <!--<el-select v-model="FStatus" placeholder="状态" class="handle-select mr10" clearable size="small">-->
+        <!--<el-option v-for="(item, i) in statusOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>-->
+      <!--</el-select>-->
     </div>
     <div class="handle-box">
       <el-input v-model="FAreaName" placeholder="区块名称" class="handle-input mr10" size="small"></el-input>
@@ -62,8 +62,8 @@
       </el-table-column>
       <el-table-column prop="FAfterChange" label="改造后用途">
       </el-table-column>
-      <el-table-column prop="FStatus" label="状态">
-      </el-table-column>
+      <!--<el-table-column prop="FStatus" label="状态">-->
+      <!--</el-table-column>-->
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">
           <el-button size="small"
