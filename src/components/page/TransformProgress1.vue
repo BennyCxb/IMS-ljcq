@@ -117,6 +117,9 @@
         </el-row>
       </el-collapse-item>
     </el-collapse>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="handleClose">返 回</el-button>
+    </div>
   </div>
 </template>
 
