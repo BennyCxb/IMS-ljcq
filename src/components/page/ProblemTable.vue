@@ -69,7 +69,7 @@
           <el-button size="small"
                      @click="handleEdit(scope.$index, scope.row)">查看
           </el-button>
-          <el-button size="small" type="danger" v-if="(FLevel === 1 || FLevel === 3) && scope.row.FStatus === '待整改'"
+          <el-button size="small" type="danger" v-if="((FLevel === 3 || FLevel === 4) && scope.row.FStatus === '待整改') || FLevel === 1 || FLevel === 2"
                      @click="handleDelete(scope.$index, scope.row)">删除
           </el-button>
         </template>
