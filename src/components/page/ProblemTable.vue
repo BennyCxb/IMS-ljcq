@@ -7,6 +7,15 @@
       </el-breadcrumb>
     </div>
     <div class="handle-box">
+      <el-date-picker
+        class="handle-select"
+        v-model="FYear"
+        align="right"
+        type="year"
+        value-format="yyyy"
+        placeholder="年度"
+        size="small">
+      </el-date-picker>
       <el-select v-model="FAgencyValue" class="handle-select" placeholder="行政区划" @change="getCounty" clearable size="small">
         <el-option
           v-for="item in adlist"
@@ -29,22 +38,20 @@
       <el-select v-model="FCityChangeType" placeholder="市级整改方式" clearable size="small">
         <el-option v-for="(item, i) in cityTypeOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>
       </el-select>
-      <el-date-picker
-        v-model="FChangeDate"
-        type="daterange"
-        align="right"
-        size="small"
-        unlink-panels
-        range-separator="至"
-        start-placeholder="拟开始日期"
-        end-placeholder="拟结束日期"
-        :picker-options="pickerOptions2">
-      </el-date-picker>
+      <!--<el-date-picker-->
+        <!--v-model="FChangeDate"-->
+        <!--type="daterange"-->
+        <!--align="right"-->
+        <!--size="small"-->
+        <!--unlink-panels-->
+        <!--range-separator="至"-->
+        <!--start-placeholder="拟开始日期"-->
+        <!--end-placeholder="拟结束日期"-->
+        <!--:picker-options="pickerOptions2">-->
+      <!--</el-date-picker>-->
       <!--<el-select v-model="FStatus" placeholder="状态" class="handle-select mr10" clearable size="small">-->
         <!--<el-option v-for="(item, i) in statusOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>-->
       <!--</el-select>-->
-    </div>
-    <div class="handle-box">
       <el-input v-model="FAreaName" placeholder="区块名称" class="handle-input mr10" size="small"></el-input>
       <el-button type="primary" icon="el-icon-search" @click="search" size="small">搜索</el-button>
       <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2" size="small">新增改造</el-button>
@@ -52,6 +59,8 @@
     <el-table v-loading="loading" :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange"
               stripe size="mini">
       <!--<el-table-column type="selection" width="55"></el-table-column>-->
+      <el-table-column prop="FYear" label="年度" sortable width="120">
+      </el-table-column>
       <el-table-column prop="FAreaName" label="区块名称">
       </el-table-column>
       <el-table-column prop="FAgencyName" label="行政区划">
@@ -119,6 +128,7 @@ export default {
       pageSize: 15,
       total: 1,
       multipleSelection: [],
+      FYear: null,
       FAgencyValue: '',
       FTownValue: '',
       FCityChangeType: '',
@@ -344,14 +354,14 @@ export default {
      */
     getData () {
       let self = this
-      let beginDate = ''
-      let endDate = ''
-      if (this.FChangeDate) {
-        if (this.FChangeDate.length) {
-          beginDate = formatDate(this.FChangeDate[0], 'yyyy-MM-dd')
-          endDate = formatDate(this.FChangeDate[1], 'yyyy-MM-dd')
-        }
-      }
+      // let beginDate = ''
+      // let endDate = ''
+      // if (this.FChangeDate) {
+      //   if (this.FChangeDate.length) {
+      //     beginDate = formatDate(this.FChangeDate[0], 'yyyy-MM-dd')
+      //     endDate = formatDate(this.FChangeDate[1], 'yyyy-MM-dd')
+      //   }
+      // }
       this.loading = true
       this.$axios.post('OldCity/GetList', {
         curr: this.cur_page,
@@ -361,10 +371,11 @@ export default {
         FTownValue: this.FTownValue,
         FCityChangeType: this.FCityChangeType,
         FTownChangeType: this.FTownChangeType,
-        FChangeBeginDate: beginDate,
-        FChangeEndDate: endDate,
+        // FChangeBeginDate: beginDate,
+        // FChangeEndDate: endDate,
         FAreaName: this.FAreaName,
         FStatus: this.FStatus,
+        FYear: this.FYear,
         strSortFiled: '',
         strSortType: ''
       })
@@ -481,7 +492,7 @@ export default {
   }
 
   .handle-input {
-    width: 300px;
+    width: 200px;
     display: inline-block;
   }
 </style>

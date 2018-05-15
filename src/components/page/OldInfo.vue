@@ -110,6 +110,14 @@
         </el-col>
       </el-row>
       <el-row>
+        <el-col :span="6">
+          <el-form-item label="十大老旧工业区块改造示范点" :label-width="formLabelWidth" prop="FPurpose">
+            <el-radio v-model="form.FDemonstration" label="1">是</el-radio>
+            <el-radio v-model="form.FDemonstration" label="0">否</el-radio>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="12">
           <el-form-item label="改造前区块情况简介" :label-width="formLabelWidth" prop="FRemark">
             <el-input v-model="form.FRemark"
@@ -248,7 +256,8 @@
           <el-form-item label="启动时间" :label-width="formLabelWidth" prop="FChangeBeginDate">
             <el-date-picker
               v-model="form.FChangeBeginDate"
-              type="month">
+              type="month"
+              placeholder="请选择">
             </el-date-picker>
           </el-form-item>
         </el-col>
@@ -256,7 +265,8 @@
           <el-form-item label="完成时间" :label-width="formLabelWidth" prop="FChangeEndDate">
             <el-date-picker
               v-model="form.FChangeEndDate"
-              type="month">
+              type="month"
+              placeholder="请选择">
             </el-date-picker>
           </el-form-item>
         </el-col>
@@ -389,6 +399,7 @@ export default {
         FBillTypeID: null,
         FAreaName: '',
         FAgencyValue: '',
+        FDemonstration: '0',
         FTownValue: '',
         FPosition: '',
         FGPS: '',
