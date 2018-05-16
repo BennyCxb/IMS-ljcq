@@ -110,7 +110,7 @@ export default {
     let self = this
     this.$axios.get('Login/IsLogin')
       .then(function (response) {
-        let data = response.data.object
+        // let data = response.data.object
         let data = response.data
         if (data.code === 1) {
           // console.log(data)
@@ -118,7 +118,7 @@ export default {
           let items2 = []
           let items3 = []
           // 一级菜单
-          _.each(data.MenuJson, (obj1) => {
+          _.each(data.object.MenuJson, (obj1) => {
             if (obj1.FChild.length > 0) {
               // 二级菜单
               _.each(obj1.FChild, (obj2) => {

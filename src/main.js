@@ -32,7 +32,7 @@ Vue.prototype.$axios.defaults.baseURL = process.env.API_ROOT
 // 添加请求拦截器
 const self = Vue.prototype
 Vue.prototype.$axios.interceptors.request.use(
-  (config) => {
+  config => {
     // 在发送请求之前做些什么
     if (self.$cookies.get('TZOldManage')) {
       config.headers.common['Authorization'] = 'Bearer ' + self.$cookies.get('TZOldManage')
@@ -42,7 +42,7 @@ Vue.prototype.$axios.interceptors.request.use(
 
     return config
   },
-  (error) => {
+  error => {
     // 对请求错误做些什么
     if (error.response) {
       switch (error.response.status) {
