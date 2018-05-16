@@ -37,7 +37,7 @@ Vue.prototype.$axios.interceptors.request.use(
     if (self.$cookies.get('TZOldManage')) {
       config.headers.common['Authorization'] = 'Bearer ' + self.$cookies.get('TZOldManage')
     } else {
-      alert('登录已过期，请重新登录！')
+      // alert('登录已过期，请重新登录！')
     }
 
     return config
