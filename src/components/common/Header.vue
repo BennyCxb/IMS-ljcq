@@ -35,25 +35,8 @@ export default {
   // },
   methods: {
     handleCommand (command) {
-      let self = this
       if (command === 'loginout') {
-        this.$axios.get('Login/LoginOut')
-          .then(function (response) {
-            let data = response.data
-            if (data.code === 1) {
-              localStorage.removeItem('ms_username')
-              self.$router.push('/login')
-            } else {
-              self.$message.error(data.message)
-              localStorage.removeItem('ms_username')
-              self.$router.push('/login')
-            }
-          })
-          .catch(function (error) {
-            // console.log(error)
-            self.$message.error(error.message)
-            self.$router.push('/login')
-          })
+        this.logOut()
       }
     },
     getUsername () {
@@ -74,6 +57,11 @@ export default {
           // console.log(error)
           self.$message.error(error.message)
         })
+    },
+    logOut () {
+      this.$cookies.remove('TZManage')
+      localStorage.removeItem('ms_username')
+      this.$router.push('/login')
     }
   },
   created () {
