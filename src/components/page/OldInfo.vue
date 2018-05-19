@@ -25,12 +25,12 @@
       <el-row>
         <el-col :span="6">
           <el-form-item label="区块名称" :label-width="formLabelWidth" prop="FAreaName">
-            <el-input v-model="form.FAreaName" placeholder="请输入区块名称"></el-input>
+            <el-input v-model="form.FAreaName" placeholder="请输入区块名称" clearable></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="行政区划" :label-width="formLabelWidth" prop="FAgencyValue">
-            <el-select v-model="form.FAgencyValue" @change="getCounty" placeholder="请选择行政区划">
+            <el-select v-model="form.FAgencyValue" @change="getCounty" placeholder="请选择行政区划" clearable>
               <el-option
                 v-for="(item, i) in adcdOptions"
                 :key="i"
@@ -42,26 +42,26 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="总占地面积" :label-width="formLabelWidth" prop="FOccupy">
-            <el-input v-model="form.FOccupy" placeholder="请输入总占地面积">
+            <el-input v-model="form.FOccupy" placeholder="请输入总占地面积" clearable>
               <template slot="suffix">万㎡</template>
             </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="责任领导" :label-width="formLabelWidth" prop="FRespLeader">
-            <el-input v-model="form.FRespLeader"></el-input>
+            <el-input v-model="form.FRespLeader" clearable></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="6">
           <el-form-item label="主要产业" :label-width="formLabelWidth" prop="FIndustry">
-            <el-input v-model="form.FIndustry"></el-input>
+            <el-input v-model="form.FIndustry" clearable></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="乡镇街道" :label-width="formLabelWidth" prop="FTownValue">
-            <el-select v-model="form.FTownValue" placeholder="请选择乡镇街道">
+            <el-select v-model="form.FTownValue" placeholder="请选择乡镇街道" clearable>
               <el-option
                 v-for="(item, i) in countyOptions"
                 :key="i"
@@ -73,39 +73,38 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="总建筑面积" :label-width="formLabelWidth" prop="FTotalAcreage">
-            <el-input v-model="form.FTotalAcreage" placeholder="请输入总建筑面积">
+            <el-input v-model="form.FTotalAcreage" placeholder="请输入总建筑面积" clearable>
               <template slot="suffix">万㎡</template>
             </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="联系人" :label-width="formLabelWidth" prop="FLinkMan">
-            <el-input v-model="form.FLinkMan"></el-input>
+          <el-form-item label="联系人" :label-width="formLabelWidth" prop="FLinkMan" clearable>
+            <el-input v-model="form.FLinkMan" clearable></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="6">
           <el-form-item label="企业家数" :label-width="formLabelWidth" prop="FEntrepreneurCount">
-            <el-input v-model="form.FEntrepreneurCount">
-            </el-input>
+            <el-input v-model="form.FEntrepreneurCount" clearable></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="详细地址" :label-width="formLabelWidth" prop="FPosition">
-            <el-input v-model="form.FPosition" placeholder="请输入详细地址"></el-input>
+            <el-input v-model="form.FPosition" placeholder="请输入详细地址" clearable></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="违建面积" :label-width="formLabelWidth" prop="FNonConBuildingArea">
-            <el-input v-model="form.FNonConBuildingArea">
+            <el-input v-model="form.FNonConBuildingArea" clearable>
               <template slot="suffix">万㎡</template>
             </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="联系方式" :label-width="formLabelWidth" prop="FLinkMobile">
-            <el-input v-model="form.FLinkMobile"></el-input>
+            <el-input v-model="form.FLinkMobile" clearable></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -195,14 +194,16 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="6">
+        <el-col :span="12">
           <el-form-item label="市级改造方式" :label-width="formLabelWidth" prop="FCityChangeType">
-            <el-select v-model="form.FCityChangeType">
+            <el-select v-model="form.FCityChangeType" class="city-type-select" clearable>
               <el-option
                 v-for="(item,i) in cityTypeOptions"
                 :key="i"
-                :label="item.FName"
+                :label="(i + 1) + '.' + item.FName"
                 :value="item.FValue">
+                <span style="float: left; color: #8492a6; font-size: 13px">{{ item.FValue }}.</span>
+                <span style="float: left">{{ item.FName }}</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -214,19 +215,20 @@
                        value-key="label"
                        filterable
                        allow-create
-                       default-first-option>
+                       default-first-option
+                       clearable>
               <el-option
                 v-for="(item,i) in countyTypeOptions"
                 :key="i"
                 :label="item.FName"
-                :value="item.FValue">
+                :value="item.FName">
               </el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="改造后用途" :label-width="formLabelWidth" prop="FAfterChange">
-            <el-select v-model="form.FAfterChange">
+            <el-select v-model="form.FAfterChange" clearable>
               <el-option
                 v-for="(item,i) in purposeOptions"
                 :key="i"
@@ -236,18 +238,18 @@
             </el-select>
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="6">
           <el-form-item label="拟总投资额" :label-width="formLabelWidth" prop="FTotalInvestAmount">
-            <el-input v-model="form.FTotalInvestAmount">
+            <el-input v-model="form.FTotalInvestAmount" clearable>
               <template slot="suffix">万元</template>
             </el-input>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="6">
           <el-form-item label="改造后总建筑面积" :label-width="formLabelWidth" prop="FAfterChangeArea">
-            <el-input v-model="form.FAfterChangeArea">
+            <el-input v-model="form.FAfterChangeArea" clearable>
               <template slot="suffix">万㎡</template>
             </el-input>
           </el-form-item>
@@ -276,7 +278,7 @@
           <el-form-item label="改造方案简介" :label-width="formLabelWidth" prop="FChangeRemark">
             <el-input v-model="form.FChangeRemark"
                       type="textarea"
-                      :rows="3"
+                      :rows="5"
                       placeholder="请输入改造方案简介"></el-input>
           </el-form-item>
         </el-col>
@@ -1143,6 +1145,10 @@ export default {
   }
 
   .el-date-editor.el-input, .el-date-editor.el-input__inner {
+    width: 100%;
+  }
+
+  .city-type-select {
     width: 100%;
   }
 </style>

@@ -400,6 +400,7 @@ export default {
      */
     search () {
       this.is_search = true
+      this.cur_page = 1
       this.getData()
     },
     formatter (row, column) {
