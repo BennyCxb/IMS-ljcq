@@ -107,7 +107,7 @@
 
 <script>
 import _ from 'lodash'
-import { formatDate } from '../../assets/js/date'
+// import { formatDate } from '../../assets/js/date'
 
 export default {
   computed: {

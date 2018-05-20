@@ -756,9 +756,11 @@ export default {
             let FTownValue = obj.FTownValue
             self.form = obj
             if (position) {
+              let pos = position.split(',')
               self.markers = [].concat([{
-                position: position.split(',')
+                position: pos
               }])
+              self.center = pos
             }
             self.getAttachTypeList(obj.FID)
             self.getCounty()
