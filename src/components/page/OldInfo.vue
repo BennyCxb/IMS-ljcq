@@ -337,7 +337,7 @@
       <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && submitPossession && isDisabled">编 辑</el-button>
       <el-button type="primary" @click="resetForm('oldForm')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
       <el-button type="success" @click="submit('oldForm')" v-if="(!form.FStatus || FLevel == 2) && !isDisabled">保 存</el-button>
-      <el-button type="success" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled && FLevel !== 2">上报信息</el-button>
+      <el-button type="success" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled && FLevel !== 2 && FLevel !== 4">上报信息</el-button>
       <!--<el-button type="primary" @click="openAudit" v-if="isEdit && auditPossession && isDisabled">立即审核</el-button>-->
       <!--<el-button type="success" @click="dialogProgress" v-if="isDisabled">查看改造进度</el-button>-->
       <!--<problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>-->

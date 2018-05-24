@@ -40,7 +40,20 @@ export default new Router({
         {
           path: '/otable:fid-:btid/info-:infoid',
           component: resolve => require(['../components/page/OldInfo.vue'], resolve)
-        }
+        },
+        // 统计
+        {
+          path: '/StatisticsPlan:fid-:sid-:tid-:btid',
+          component: resolve => require(['../components/page/StatisticsPlan.vue'], resolve)
+        },
+        {
+          path: '/StatisticsPlan:fid-:sid-:btid',
+          component: resolve => require(['../components/page/StatisticsPlan.vue'], resolve)
+        },
+        {
+          path: '/StatisticsPlan:fid-:btid',
+          component: resolve => require(['../components/page/StatisticsPlan.vue'], resolve)
+        },
       ]
     },
     {

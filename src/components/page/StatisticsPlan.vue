@@ -1,99 +1,192 @@
 <template>
-  <el-table
-    :data="tableData3"
-    style="width: 100%">
-    <el-table-column
-      prop="date"
-      label="日期"
-      width="150">
-    </el-table-column>
-    <el-table-column label="配送信息">
+  <div class="table">
+    <div class="crumbs">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item v-for="(item, i) in breadcrumb" :key="i"><i class="el-icon-menu" v-if="i === 0"></i> {{item}}
+        </el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="handle-box">
+      <el-date-picker
+        class="handle-select"
+        v-model="FYear"
+        align="right"
+        type="year"
+        value-format="yyyy"
+        placeholder="起始年度"
+        :blur="search"
+        size="small">
+      </el-date-picker>
+      <el-button type="primary" icon="el-icon-search" @click="search" size="small">查询</el-button>
+      <el-button type="primary" icon="el-icon-download" @click="getExcel" size="small">下载</el-button>
+    </div>
+    <el-table
+      :data="tableData"
+      v-loading="loading"
+      style="width: 100%">
       <el-table-column
-        prop="name"
-        label="姓名"
+        prop="县（市区）"
+        label="县(市区)"
+        align="center"
+        header-align="center"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="三年改造任务数"
+        label="三年改造任务数"
+        align="center"
+        header-align="center"
         width="120">
       </el-table-column>
-      <el-table-column label="地址">
+      <el-table-column :label="Number(FYear) + '年'" header-align="center">
         <el-table-column
-          prop="province"
-          label="省份"
-          width="120">
+          :prop="'Task' + Number(FYear) + 'Type1'"
+          label="整体(或大部分)拆除退出工业用途"
+          align="center"
+          header-align="center">
         </el-table-column>
         <el-table-column
-          prop="city"
-          label="市区"
-          width="120">
+          :prop="'Task' + Number(FYear) + 'Type2'"
+          label="整体(或大部分)拆除重建用于工业"
+          align="center"
+          header-align="center">
         </el-table-column>
         <el-table-column
-          prop="address"
-          label="地址"
-          width="300">
-        </el-table-column>
-        <el-table-column
-          prop="zip"
-          label="邮编"
-          width="120">
+          :prop="'Task' + Number(FYear) + 'Type3'"
+          label="综合整治(含部分拆除)用于产业提升或转型"
+          align="center"
+          header-align="center">
         </el-table-column>
       </el-table-column>
-    </el-table-column>
-  </el-table>
+      <el-table-column :label="Number(FYear) + 1 + '年'" header-align="center">
+        <el-table-column
+          :prop="'Task' + (Number(FYear) + 1) + 'Type1'"
+          label="整体(或大部分)拆除退出工业用途"
+          align="center"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          :prop="'Task' + (Number(FYear) + 1) + 'Type2'"
+          label="整体(或大部分)拆除重建用于工业"
+          align="center"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          :prop="'Task' + (Number(FYear) + 1) + 'Type3'"
+          label="综合整治(含部分拆除)用于产业提升或转型"
+          align="center"
+          header-align="center">
+        </el-table-column>
+      </el-table-column>
+      <el-table-column :label="Number(FYear) + 2 + '年'" header-align="center">
+        <el-table-column
+          :prop="'Task' + (Number(FYear) + 2) + 'Type1'"
+          label="整体(或大部分)拆除退出工业用途"
+          align="center"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          :prop="'Task' + (Number(FYear) + 2) + 'Type2'"
+          label="整体(或大部分)拆除重建用于工业"
+          align="center"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          :prop="'Task' + (Number(FYear) + 2) + 'Type3'"
+          label="综合整治(含部分拆除)用于产业提升或转型"
+          align="center"
+          header-align="center">
+        </el-table-column>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script>
+import { formatDate } from '../../assets/js/date'
+import fileDownload from 'js-file-download'
 export default {
   data () {
     return {
-      tableData3: [{
-        date: '2016-05-03',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-02',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-08',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-06',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-07',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }]
+      breadcrumb: [],
+      tableData: [],
+      loading: true,
+      FYear: formatDate(new Date(), 'yyyy')
     }
+  },
+  methods: {
+    /**
+     * 获取面包屑
+     */
+    getBreadcrumb () {
+      let blist = JSON.parse(sessionStorage.getItem('breadcrumb'))
+      this.breadcrumb = [].concat(blist)
+    },
+    getList () {
+      let self = this
+      this.loading = true
+      this.$axios.get('Statistical/GetOldCityChangeSchDataByAgency', {
+        params: {
+          FYear: this.FYear
+        }
+      })
+        .then(function (response) {
+          let data = response.data
+          self.loading = false
+          if (data.code === 1) {
+            self.tableData = [].concat(data.object)
+          } else {
+            self.$message.error(data.message)
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+          self.$alert(error.message, '温馨提示', {
+            confirmButtonText: '确定'
+          })
+        })
+    },
+    /**
+     * 搜索事件
+     */
+    search () {
+      this.getList()
+    },
+    getExcel () {
+      let self = this
+      this.$axios.get('Statistical/GetOldCityChangeSchExcelByAgency', {
+        params: {
+          FYear: this.FYear
+        }
+      })
+        .then(function (response) {
+          let fileName = response.headers['content-disposition'].match(/fushun(\S*)xls/)[0]
+          // let fileName = '老旧工业区块' + Number(self.FYear) + '-' + (Number(self.FYear) + 2) + '三年改造任务表.xlsx'
+
+          fileDownload(response.data, fileName)
+        })
+        .catch(function (error) {
+          console.log(error)
+          self.$alert(error.message, '温馨提示', {
+            confirmButtonText: '确定'
+          })
+        })
+    }
+  },
+  created () {
+    this.getList()
+    this.getBreadcrumb()
   }
 }
 </script>
+
+<style scoped>
+  .handle-box {
+    margin-bottom: 20px;
+  }
+
+  .handle-input {
+    width: 200px;
+    display: inline-block;
+  }
+</style>

@@ -112,7 +112,7 @@
             <el-button type="danger" @click="cancelEdit(form)" v-if="!form.isDisabled">取消编辑</el-button>
             <el-button type="primary" @click="edit(form)" v-if="form.isDisabled">编 辑</el-button>
             <el-button type="success" @click="submit(form)" v-if="!form.isDisabled">保 存</el-button>
-            <el-button type="success" @click="submitProgress(form)" v-if="form.isDisabled && FLevel != 2">上报信息</el-button>
+            <el-button type="success" @click="submitProgress(form)" v-if="form.isDisabled && FLevel != 2 && FLevel !== 4">上报信息</el-button>
           </div>
         </el-row>
       </el-collapse-item>

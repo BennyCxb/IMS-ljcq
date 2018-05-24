@@ -72,9 +72,9 @@
               <div class="btn-list">
                 <el-button type="danger" icon="el-icon-delete" v-if="(FLevel === 1 || FLevel === 3) && !form.FStatus" @click="enterpriseDelete(form)">删除</el-button>
                 <el-button type="danger" @click="cancelEdit" v-if="!form.isDisabled">取消编辑</el-button>
-                <el-button type="primary" @click="form.isDisabled = !form.isDisabled" v-if="form.isDisabled && (form.FStatus !== 2)">编 辑</el-button>
+                <el-button type="primary" @click="form.isDisabled = !form.isDisabled" v-if="form.isDisabled && (form.FStatus != 2)">编 辑</el-button>
                 <el-button type="success" @click="enterpriseUpdate(form)" v-if="!form.isDisabled">保 存</el-button>
-                <el-button type="success" @click="submitProgress(form)" v-if="form.isDisabled && (form.FStatus !== 2)">上报信息</el-button>
+                <el-button type="success" @click="submitProgress(form)" v-if="form.isDisabled && (form.FStatus != 2) && FLevel != 2 && FLevel !== 4">上报信息</el-button>
               </div>
             </el-col>
           </el-row>
