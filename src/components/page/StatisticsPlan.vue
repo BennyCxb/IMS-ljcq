@@ -157,12 +157,13 @@ export default {
       this.$axios.get('Statistical/GetOldCityChangeSchExcelByAgency', {
         params: {
           FYear: this.FYear
-        }
+        },
+        responseType: 'blob'
       })
         .then(function (response) {
-          let fileName = response.headers['content-disposition'].match(/fushun(\S*)xls/)[0]
-          // let fileName = '老旧工业区块' + Number(self.FYear) + '-' + (Number(self.FYear) + 2) + '三年改造任务表.xlsx'
-
+          // self.download(response.data)
+          // let fileName = response.headers['content-disposition'].match(/fushun(\S*)xls/)[0]
+          let fileName = '老旧工业区块' + Number(self.FYear) + '-' + (Number(self.FYear) + 2) + '三年改造任务表.xls'
           fileDownload(response.data, fileName)
         })
         .catch(function (error) {
@@ -171,6 +172,19 @@ export default {
             confirmButtonText: '确定'
           })
         })
+    },
+    download (data) {
+      if (!data) {
+        return
+      }
+      let url = window.URL.createObjectURL(new Blob([data]))
+      let link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = url
+      link.setAttribute('download', 'excel.xls')
+
+      document.body.appendChild(link)
+      link.click()
     }
   },
   created () {
