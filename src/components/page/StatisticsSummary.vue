@@ -35,14 +35,13 @@
         label="县(市区)"
         align="center"
         header-align="center"
-        width="100">
+        width="80">
       </el-table-column>
       <el-table-column
         prop="FOccupy"
         label="总占地"
         align="center"
-        header-align="center"
-        width="120">
+        header-align="center">
       </el-table-column>
       <el-table-column
         prop="FTotalAcreage"
@@ -60,13 +59,15 @@
         prop="FEVName"
         label="市定改造方式"
         align="center"
-        header-align="center">
+        header-align="center"
+        width="310">
       </el-table-column>
       <el-table-column
         prop="FTownChangeType"
         label="县市区自定改造方式"
         align="center"
-        header-align="center">
+        header-align="center"
+        width="130">
       </el-table-column>
       <el-table-column
         prop="FEVName1"
@@ -102,7 +103,8 @@
         prop="FProgress"
         label="目前进度"
         align="center"
-        header-align="center">
+        header-align="center"
+        width="100">
       </el-table-column>
     </el-table>
   </div>
