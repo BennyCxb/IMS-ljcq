@@ -41,7 +41,7 @@ export default new Router({
           path: '/otable:fid-:btid/info-:infoid',
           component: resolve => require(['../components/page/OldInfo.vue'], resolve)
         },
-        // 统计
+        // 统计-计划
         {
           path: '/StatisticsPlan:fid-:sid-:tid-:btid',
           component: resolve => require(['../components/page/StatisticsPlan.vue'], resolve)
@@ -54,6 +54,32 @@ export default new Router({
           path: '/StatisticsPlan:fid-:btid',
           component: resolve => require(['../components/page/StatisticsPlan.vue'], resolve)
         },
+        // 统计-进度
+        {
+          path: '/StatisticsProgress:fid-:sid-:tid-:btid',
+          component: resolve => require(['../components/page/StatisticsProgress.vue'], resolve)
+        },
+        {
+          path: '/StatisticsProgress:fid-:sid-:btid',
+          component: resolve => require(['../components/page/StatisticsProgress.vue'], resolve)
+        },
+        {
+          path: '/StatisticsProgress:fid-:btid',
+          component: resolve => require(['../components/page/StatisticsProgress.vue'], resolve)
+        },
+        // 统计-汇总
+        {
+          path: '/StatisticsSummary:fid-:sid-:tid-:btid',
+          component: resolve => require(['../components/page/StatisticsSummary.vue'], resolve)
+        },
+        {
+          path: '/StatisticsSummary:fid-:sid-:btid',
+          component: resolve => require(['../components/page/StatisticsSummary.vue'], resolve)
+        },
+        {
+          path: '/StatisticsSummary:fid-:btid',
+          component: resolve => require(['../components/page/StatisticsSummary.vue'], resolve)
+        }
       ]
     },
     {

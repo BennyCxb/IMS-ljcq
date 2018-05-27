@@ -549,35 +549,25 @@ export default {
       }
       this.$confirm('上报信息将无法修改，确定上报信息？')
         .then(_ => {
-          this.$axios.post('Flow/SubmitApply', {
-            FBillTypeID: self.form.FBillTypeID,
-            FID: self.form.FID
+          this.$axios.get('OldCity/SubmitOldCityExtend12', {
+            params: {
+              FID: form.FID
+            }
           })
             .then(response => {
-              this.$axios.get('OldCity/SubmitOldCityExtend12', {
-                params: {
-                  FID: form.FID
-                }
-              })
-                .then(response => {
-                  let data = response.data
-                  if (data.code === 1) {
-                    self.getInfo()
-                    self.$message({
-                      message: '上报成功',
-                      type: 'success'
-                    })
-                  } else {
-                    self.$message({
-                      message: data.message,
-                      type: 'warning'
-                    })
-                  }
+              let data = response.data
+              if (data.code === 1) {
+                self.getInfo()
+                self.$message({
+                  message: '上报成功',
+                  type: 'success'
                 })
-                .catch(error => {
-                  // console.log(error)
-                  self.$message.error(error.message)
+              } else {
+                self.$message({
+                  message: data.message,
+                  type: 'warning'
                 })
+              }
             })
             .catch(error => {
               // console.log(error)
