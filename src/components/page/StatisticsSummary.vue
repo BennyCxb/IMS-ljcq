@@ -13,7 +13,7 @@
         align="right"
         type="year"
         value-format="yyyy"
-        placeholder="起始年度"
+        placeholder="年度"
         :blur="search"
         size="small">
       </el-date-picker>
@@ -178,7 +178,7 @@ export default {
         .then(function (response) {
           // self.download(response.data)
           // let fileName = response.headers['content-disposition'].match(/fushun(\S*)xls/)[0]
-          let fileName = '老旧工业区块' + Number(self.FYear) + '-' + (Number(self.FYear) + 2) + '三年改造汇总表.xls'
+          let fileName = '老旧工业区块' + Number(self.FYear) + '改造汇总表.xls'
           fileDownload(response.data, fileName)
         })
         .catch(function (error) {
