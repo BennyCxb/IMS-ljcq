@@ -142,6 +142,13 @@ export default {
     },
     getList () {
       let self = this
+      if (!this.FYear) {
+        self.$message({
+          message: '请选择起始年份',
+          type: 'warning'
+        })
+        return false
+      }
       this.loading = true
       this.$axios.get('Statistical/GetOldCityChangeProgressDataByAgency', {
         params: {
