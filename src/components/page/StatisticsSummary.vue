@@ -31,6 +31,13 @@
         width="50">
       </el-table-column>
       <el-table-column
+        prop="FAreaName"
+        label="区块名称"
+        align="center"
+        header-align="center"
+        width="150">
+      </el-table-column>
+      <el-table-column
         prop="FAgencyName"
         label="县(市区)"
         align="center"
