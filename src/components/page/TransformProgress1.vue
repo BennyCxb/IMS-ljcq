@@ -100,7 +100,7 @@
                         <el-button size="small" icon="el-icon-download" title="下载"
                                    @click="download(scope.$index, scope.row)">
                         </el-button>
-                        <el-button size="small" icon="el-icon-delete" type="danger" title="删除" v-if="form.isDisabled && (index >= state || FLevel === 1 || FLevel === 2)"
+                        <el-button size="small" icon="el-icon-delete" type="danger" title="删除" v-if="!form.isDisabled && (index >= state || FLevel === 1 || FLevel === 2)"
                                    @click="deleteFiles(scope.row.id, scope.$index, item.fileList)">
                         </el-button>
                       </template>
@@ -613,7 +613,9 @@ export default {
         .then(response => {
           let data = response.data
           if (data.code === 1) {
-            fileList.splice(index, 1)
+            if (index) {
+              fileList.splice(index, 1)
+            }
             self.$message({
               message: '删除附件成功',
               type: 'success'
