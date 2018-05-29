@@ -100,6 +100,9 @@
                         <el-button size="small" icon="el-icon-download" title="下载"
                                    @click="download(scope.$index, scope.row)">
                         </el-button>
+                        <el-button size="small" icon="el-icon-delete" type="danger" title="删除" v-if="form.isDisabled && (index >= state || FLevel === 1 || FLevel === 2)"
+                                   @click="deleteFiles(scope.row.id, scope.$index, item.fileList)">
+                        </el-button>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -598,15 +601,19 @@ export default {
       return extension && isLt2M
     },
     handleRemove (file, fileList) {
+      this.deleteFiles(file.id)
+    },
+    deleteFiles (id, index, fileList) {
       let self = this
       this.$axios.get('Files/DeleteFile', {
         params: {
-          FID: file.id
+          FID: id
         }
       })
         .then(response => {
           let data = response.data
           if (data.code === 1) {
+            fileList.splice(index, 1)
             self.$message({
               message: '删除附件成功',
               type: 'success'
