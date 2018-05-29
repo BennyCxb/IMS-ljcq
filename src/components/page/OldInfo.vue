@@ -148,6 +148,7 @@
               :auto-upload="false"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
+              :on-remove="handleRemove"
               :data="item.data"
               :file-list="item.fileList"
               :beforeUpload="beforeAvatarUpload"
@@ -259,6 +260,8 @@
             <el-date-picker
               v-model="form.FChangeBeginDate"
               type="month"
+              value-format="yyyy-MM"
+              :picker-options="pickerOptions1"
               placeholder="请选择">
             </el-date-picker>
           </el-form-item>
@@ -268,6 +271,8 @@
             <el-date-picker
               v-model="form.FChangeEndDate"
               type="month"
+              value-format="yyyy-MM"
+              :picker-options="pickerOptions2"
               placeholder="请选择">
             </el-date-picker>
           </el-form-item>
@@ -293,6 +298,7 @@
               :auto-upload="false"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
+              :on-remove="handleRemove"
               :data="item.data"
               :file-list="item.fileList"
               :beforeUpload="beforeAvatarUpload"
@@ -381,6 +387,7 @@ export default {
     }
   },
   data () {
+    let self = this
     return {
       breadcrumb: [],
       formLabelWidth: '130px',
@@ -517,7 +524,17 @@ export default {
       countyTypeOptions: [],
       purposeOptions: [],
       dialogImageUrl: '',
-      dialogVisible: false
+      dialogVisible: false,
+      pickerOptions1: {
+        disabledDate (time) {
+          return time.getTime() > new Date(self.form.FChangeEndDate)
+        }
+      },
+      pickerOptions2: {
+        disabledDate (time) {
+          return time.getTime() < new Date(self.form.FChangeBeginDate)
+        }
+      }
     }
   },
   methods: {
@@ -895,6 +912,7 @@ export default {
             files.fileList = []
             _.each(data.object, function (obj) {
               files.fileList.push({
+                id: obj.FID,
                 name: obj.FileName,
                 url: obj.FileUrl
               })
@@ -959,7 +977,30 @@ export default {
       }
     },
     handleRemove (file, fileList) {
-      // console.log(file, fileList)
+      let self = this
+      this.$axios.get('Files/DeleteFile', {
+        params: {
+          FID: file.id
+        }
+      })
+        .then(response => {
+          let data = response.data
+          if (data.code === 1) {
+            self.$message({
+              message: '删除附件成功',
+              type: 'success'
+            })
+          } else {
+            self.$message({
+              message: data.message,
+              type: 'warning'
+            })
+          }
+        })
+        .catch(error => {
+          // console.log(error)
+          self.$message.error(error.message)
+        })
     },
     handlePictureCardPreview (file) {
       this.dialogImageUrl = file.url
