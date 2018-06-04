@@ -35,23 +35,13 @@
           {{ item.label }}
         </el-option>
       </el-select>
-      <el-select v-model="FCityChangeType" placeholder="市级整改方式" clearable size="small">
+      <el-select v-model="FCityChangeType" placeholder="市级改造方式" clearable size="small">
         <el-option v-for="(item, i) in cityTypeOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>
       </el-select>
-      <!--<el-date-picker-->
-        <!--v-model="FChangeDate"-->
-        <!--type="daterange"-->
-        <!--align="right"-->
-        <!--size="small"-->
-        <!--unlink-panels-->
-        <!--range-separator="至"-->
-        <!--start-placeholder="拟开始日期"-->
-        <!--end-placeholder="拟结束日期"-->
-        <!--:picker-options="pickerOptions2">-->
-      <!--</el-date-picker>-->
-      <!--<el-select v-model="FStatus" placeholder="状态" class="handle-select mr10" clearable size="small">-->
-        <!--<el-option v-for="(item, i) in statusOptions" :key="i" :label="item.FName" :value="item.FValue"></el-option>-->
-      <!--</el-select>-->
+      <el-select v-model="FDemonstration" class="handle-select" placeholder="示范项目" clearable size="small">
+        <el-option label="是" value="1"></el-option>
+        <el-option label="否" value="0"></el-option>
+      </el-select>
       <el-input v-model="FAreaName" placeholder="区块名称" class="handle-input mr10" size="small"></el-input>
       <el-button type="primary" icon="el-icon-search" @click="search" size="small">搜索</el-button>
       <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2" size="small">新增改造</el-button>
@@ -67,9 +57,11 @@
       </el-table-column>
       <el-table-column prop="FTownName" label="乡镇街道">
       </el-table-column>
-      <el-table-column prop="FCityChangeType" label="整改方式" width="280">
+      <el-table-column prop="FCityChangeType" label="市级改造方式" width="280">
       </el-table-column>
       <el-table-column prop="FAfterChange" label="改造后用途">
+      </el-table-column>
+      <el-table-column prop="FDemonstration" label="示范项目">
       </el-table-column>
       <!--<el-table-column prop="FStatus" label="状态">-->
       <!--</el-table-column>-->
@@ -131,6 +123,7 @@ export default {
       FChangeDate: [],
       FChangeBeginDate: '',
       FChangeEndDate: '',
+      FDemonstration: '',
       FAreaName: '',
       FStatus: '',
       del_list: [],
@@ -357,6 +350,7 @@ export default {
         FTownChangeType: this.FTownChangeType,
         // FChangeBeginDate: beginDate,
         // FChangeEndDate: endDate,
+        FDemonstration: this.FDemonstration,
         FAreaName: this.FAreaName,
         FStatus: this.FStatus,
         FYear: this.FYear,
