@@ -18,7 +18,7 @@
         size="small">
       </el-date-picker>
       <el-button type="primary" icon="el-icon-search" @click="search" size="small">查询</el-button>
-      <el-button type="primary" icon="el-icon-download" @click="getExcel" size="small">下载</el-button>
+      <el-button type="primary" icon="el-icon-download" @click="getExcel" size="small">导出并下载</el-button>
     </div>
     <el-table
       :data="tableData"
@@ -35,7 +35,7 @@
         label="区块名称"
         align="center"
         header-align="center"
-        width="150">
+        min-width="120">
       </el-table-column>
       <el-table-column
         prop="FAgencyName"
@@ -98,13 +98,15 @@
         prop="FChangeBeginDate"
         label="拟启动时间"
         align="center"
-        header-align="center">
+        header-align="center"
+        width="100">
       </el-table-column>
       <el-table-column
         prop="FChangeEndDate"
         label="拟完成时间"
         align="center"
-        header-align="center">
+        header-align="center"
+        width="100">
       </el-table-column>
       <el-table-column
         prop="FProgress"
@@ -112,6 +114,13 @@
         align="center"
         header-align="center"
         width="100">
+      </el-table-column>
+      <el-table-column
+        prop="FDemonstration"
+        label="是否是示范项目"
+        align="center"
+        header-align="center"
+        width="80">
       </el-table-column>
     </el-table>
   </div>

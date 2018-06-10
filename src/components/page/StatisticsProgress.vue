@@ -18,7 +18,7 @@
         size="small">
       </el-date-picker>
       <el-button type="primary" icon="el-icon-search" @click="search" size="small">查询</el-button>
-      <el-button type="primary" icon="el-icon-download" @click="getExcel" size="small">下载</el-button>
+      <el-button type="primary" icon="el-icon-download" @click="getExcel" size="small">导出并下载</el-button>
     </div>
     <el-table
       :data="tableData"
