@@ -34,9 +34,9 @@
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8" v-if="form.label1">
+            <el-col :span="8" v-if="form.label2">
               <el-form-item :label="form.label2" :label-width="formLabelWidth">
-                <el-input v-model="form.FArea1" :disabled="form.isDisabled">
+                <el-input v-model="form.FArea2" :disabled="form.isDisabled">
                   <template slot="suffix">万㎡</template>
                 </el-input>
               </el-form-item>
