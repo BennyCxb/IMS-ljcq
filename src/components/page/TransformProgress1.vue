@@ -375,6 +375,9 @@ export default {
     },
     cancelEdit (obj) {
       obj.isDisabled = true
+      obj.FArea1 = ''
+      obj.FArea2 = ''
+      obj.FTime = ''
       this.getInfo()
     },
     /**
