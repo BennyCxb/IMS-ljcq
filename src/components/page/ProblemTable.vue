@@ -42,14 +42,15 @@
         <el-option label="是" value="1"></el-option>
         <el-option label="否" value="0"></el-option>
       </el-select>
-      <el-input v-model="FAreaName" placeholder="区块名称" class="handle-input mr10" size="small"></el-input>
+      <el-input v-model="FAreaName" placeholder="区块名称" class="handle-input mr10" size="small" clearable></el-input>
       <el-button type="primary" icon="el-icon-search" @click="search" size="small">搜索</el-button>
+      <el-button type="primary" @click="backButtonToggle" size="small" v-if="FLevel === 1 || FLevel === 2">批量退回</el-button>
       <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2" size="small">新增改造</el-button>
     </div>
     <el-table v-loading="loading" :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange"
               stripe size="mini">
-      <!--<el-table-column type="selection" width="55"></el-table-column>-->
-      <el-table-column prop="FYear" label="年度" sortable width="120">
+      <el-table-column type="selection" width="40"></el-table-column>
+      <el-table-column prop="FYear" label="年度" sortable>
       </el-table-column>
       <el-table-column prop="FAreaName" label="区块名称">
       </el-table-column>
@@ -63,12 +64,23 @@
       </el-table-column>
       <el-table-column prop="FDemonstration" label="示范项目">
       </el-table-column>
-      <!--<el-table-column prop="FStatus" label="状态">-->
-      <!--</el-table-column>-->
-      <el-table-column label="操作" width="150">
+      <el-table-column prop="FStatus" label="状态">
+      </el-table-column>
+      <el-table-column
+        prop="FStatus"
+        label="状态">
         <template slot-scope="scope">
-          <el-button size="small"
+          <el-tag type="primary" v-if="scope.row.FStatus === '待整改'" disable-transitions>未上报</el-tag>
+          <el-tag type="success" v-else disable-transitions>已上报</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="220">
+        <template slot-scope="scope">
+          <el-button size="small" type="primary"
                      @click="handleEdit(scope.$index, scope.row)">查看
+          </el-button>
+          <el-button size="small" type="warning" v-if="((FLevel === 1 || FLevel === 2) && scope.row.FStatus === '待审核')"
+                     @click="handleBack(scope.$index, scope.row)">退回
           </el-button>
           <el-button size="small" type="danger" v-if="((FLevel === 3 || FLevel === 4) && scope.row.FStatus === '待整改') || FLevel === 1 || FLevel === 2"
                      @click="handleDelete(scope.$index, scope.row)">删除
@@ -395,11 +407,19 @@ export default {
       this.$router.push({path: this.$route.fullPath + '/info-' + row.FID})
     },
     /**
+     * 退回信息触发
+     */
+    handleBack (index, row) {
+      let list = []
+      list.push(row.FID)
+      this.backInfo(list)
+    },
+    /**
      * 删除信息触发
      */
     handleDelete (index, row) {
       let self = this
-      this.$confirm('确认删除？')
+      this.$confirm('确认删除？', '提示')
         .then(_ => {
           self.$axios.get('OldCity/DeleteOldCity', {
             params: {
@@ -455,6 +475,52 @@ export default {
     closePro: function (msg) {
       this.proAddShow = msg
       this.getData()
+    },
+    /**
+     * 批量退回按钮触发
+     */
+    backButtonToggle () {
+      let list = []
+      _.each(this.multipleSelection, function (obj) {
+        list.push(obj.FID)
+      })
+      this.backInfo(list)
+    },
+    /**
+     * 退回
+     * @param list
+     */
+    backInfo (list) {
+      let self = this
+      this.$confirm('退回后需要重新上报，确认退回？', '提示')
+        .then(_ => {
+          this.$axios.post('OldCity/ReturnOldCity', {
+            ApplyIds: list
+          })
+            .then(response => {
+              let data = response.data
+              if (data.code === 1) {
+                self.$message({
+                  message: '退回成功',
+                  type: 'success'
+                })
+                self.getData()
+              } else {
+                self.$message({
+                  message: data.message || '退回失败',
+                  type: 'warning'
+                })
+              }
+            })
+            .catch(error => {
+              // console.log(error)
+              self.$message.error(error.message)
+            })
+        })
+        .catch(error => {
+          console.log(error)
+          self.$message.error(error.message)
+        })
     }
   },
   watch: {
