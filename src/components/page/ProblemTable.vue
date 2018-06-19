@@ -64,8 +64,6 @@
       </el-table-column>
       <el-table-column prop="FDemonstration" label="示范项目">
       </el-table-column>
-      <el-table-column prop="FStatus" label="状态">
-      </el-table-column>
       <el-table-column
         prop="FStatus"
         label="状态">
