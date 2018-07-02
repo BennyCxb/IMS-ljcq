@@ -38,71 +38,83 @@
         header-align="center"
         width="120">
       </el-table-column>
-      <el-table-column label="整体（或大部分）拆除退出工业用途" header-align="center">
+      <el-table-column label="整体(或大部分)拆除退出工业用途" header-align="center">
         <el-table-column
           prop="Change1Status1"
-          label="已启动（个）"
+          label="已启动(个)"
           align="center"
           header-align="center">
         </el-table-column>
         <el-table-column
           prop="Change1Status2"
-          label="已签约（个）"
+          label="已签约(个)"
           align="center"
           header-align="center">
         </el-table-column>
         <el-table-column
           prop="Change1Status3"
-          label="已拆除（个）"
+          label="已拆除(个)"
           align="center"
           header-align="center">
         </el-table-column>
         <el-table-column
           prop="Change1Area1"
-          label="已拆除面积（万平方米）"
+          label="已拆除面积(万㎡)"
           align="center"
           header-align="center">
         </el-table-column>
         <el-table-column
           prop="Change1Area2"
-          label="其中违法建筑面积（万平方米）"
+          label="其中违法建筑面积(万㎡)"
           align="center"
           header-align="center">
         </el-table-column>
       </el-table-column>
-      <el-table-column label="整体（或大部分）拆除重建用于工业" header-align="center">
+      <el-table-column label="整体(或大部分)拆除重建用于工业" header-align="center">
         <el-table-column
           prop="Change2Status1"
-          label="已启动（个）"
+          label="已启动(个)"
           align="center"
           header-align="center">
         </el-table-column>
         <el-table-column
           prop="Change2Status2"
-          label="已签约（个）"
+          label="已签约(个)"
           align="center"
           header-align="center">
         </el-table-column>
         <el-table-column
           prop="Change2Status3"
-          label="已拆除（个）"
+          label="已拆除(个)"
           align="center"
           header-align="center">
         </el-table-column>
         <el-table-column
           prop="Change2Status4"
-          label="已开工"
+          label="已开工(个)"
           align="center"
           header-align="center">
         </el-table-column>
         <el-table-column
           prop="Change2Status5"
-          label="已完工"
+          label="已完工(个)"
+          align="center"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          prop="Change2Area1"
+          label="拆除面积(万㎡)"
+          align="center"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          prop="Change2Area2"
+          label="整治面积(万㎡)"
           align="center"
           header-align="center">
         </el-table-column>
       </el-table-column>
-      <el-table-column label="综合整治（含部分拆除）用于产业提升或转型" header-align="center">
+      <el-table-column label="综合整治(含部分拆除)用于产业提升或转型" header-align="center">
         <el-table-column
           prop="Change3Status0"
           label="整治中"
