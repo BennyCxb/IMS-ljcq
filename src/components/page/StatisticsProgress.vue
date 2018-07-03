@@ -57,18 +57,18 @@
           align="center"
           header-align="center">
         </el-table-column>
-        <!--<el-table-column-->
-          <!--prop="Change1Status4"-->
-          <!--label="已开工(个)"-->
-          <!--align="center"-->
-          <!--header-align="center">-->
-        <!--</el-table-column>-->
-        <!--<el-table-column-->
-          <!--prop="Change1Status5"-->
-          <!--label="已完工(个)"-->
-          <!--align="center"-->
-          <!--header-align="center">-->
-        <!--</el-table-column>-->
+        <el-table-column
+          prop="Change1Status4"
+          label="已开工(个)"
+          align="center"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          prop="Change1Status5"
+          label="已完工(个)"
+          align="center"
+          header-align="center">
+        </el-table-column>
         <el-table-column
           prop="Change1Area1"
           label="已拆除面积(万㎡)"
