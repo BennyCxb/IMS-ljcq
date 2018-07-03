@@ -57,6 +57,18 @@
           align="center"
           header-align="center">
         </el-table-column>
+        <!--<el-table-column-->
+          <!--prop="Change1Status4"-->
+          <!--label="已开工(个)"-->
+          <!--align="center"-->
+          <!--header-align="center">-->
+        <!--</el-table-column>-->
+        <!--<el-table-column-->
+          <!--prop="Change1Status5"-->
+          <!--label="已完工(个)"-->
+          <!--align="center"-->
+          <!--header-align="center">-->
+        <!--</el-table-column>-->
         <el-table-column
           prop="Change1Area1"
           label="已拆除面积(万㎡)"
@@ -103,13 +115,13 @@
         </el-table-column>
         <el-table-column
           prop="Change2Area1"
-          label="拆除面积(万㎡)"
+          label="已拆除面积(万㎡)"
           align="center"
           header-align="center">
         </el-table-column>
         <el-table-column
           prop="Change2Area2"
-          label="整治面积(万㎡)"
+          label="其中违法建筑面积(万㎡)"
           align="center"
           header-align="center">
         </el-table-column>
@@ -124,6 +136,18 @@
         <el-table-column
           prop="Change3Status2"
           label="已整治"
+          align="center"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          prop="Change3Area1"
+          label="已拆除面积(万㎡)"
+          align="center"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          prop="Change3Area2"
+          label="已整治面积(万㎡)"
           align="center"
           header-align="center">
         </el-table-column>
