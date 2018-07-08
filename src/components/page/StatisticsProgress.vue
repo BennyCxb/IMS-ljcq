@@ -27,6 +27,7 @@
       <el-table-column
         prop="FAgencyName"
         label="县(市区)"
+        fixed
         align="center"
         header-align="center"
         width="100">
@@ -34,6 +35,7 @@
       <el-table-column
         prop="TotalCount"
         label="三年改造任务数（个）"
+        fixed
         align="center"
         header-align="center"
         width="120">
@@ -229,7 +231,7 @@ export default {
         })
         .catch(function (error) {
           console.log(error)
-          self.$alert(error.message, '温馨提示', {
+          self.$alert('导出失败', '温馨提示', {
             confirmButtonText: '确定'
           })
         })

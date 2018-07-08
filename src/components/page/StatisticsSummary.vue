@@ -45,6 +45,13 @@
         width="80">
       </el-table-column>
       <el-table-column
+        prop="FTownName"
+        label="乡镇街道"
+        align="center"
+        header-align="center"
+        width="100">
+      </el-table-column>
+      <el-table-column
         prop="FOccupy"
         label="总占地"
         align="center"

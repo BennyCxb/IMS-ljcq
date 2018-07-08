@@ -256,7 +256,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="启动时间" :label-width="formLabelWidth" prop="FChangeBeginDate">
+          <el-form-item label="拟启动时间" :label-width="formLabelWidth" prop="FChangeBeginDate">
             <el-date-picker
               v-model="form.FChangeBeginDate"
               type="month"
@@ -267,7 +267,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="完成时间" :label-width="formLabelWidth" prop="FChangeEndDate">
+          <el-form-item label="拟完成时间" :label-width="formLabelWidth" prop="FChangeEndDate">
             <el-date-picker
               v-model="form.FChangeEndDate"
               type="month"

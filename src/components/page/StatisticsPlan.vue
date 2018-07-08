@@ -25,77 +25,178 @@
       v-loading="loading"
       style="width: 100%">
       <el-table-column
-        prop="县（市区）"
+        prop="FAgencyName"
         label="县(市区)"
+        fixed
         align="center"
         header-align="center"
         width="100">
       </el-table-column>
       <el-table-column
-        prop="三年改造任务数"
+        prop="FSumCount"
         label="三年改造任务数"
+        fixed
         align="center"
         header-align="center"
         width="120">
       </el-table-column>
       <el-table-column :label="Number(FYear) + '年'" header-align="center">
         <el-table-column
-          :prop="'Task' + Number(FYear) + 'Type1'"
           label="整体(或大部分)拆除退出工业用途"
           align="center"
           header-align="center">
+          <el-table-column
+            prop="Type1BeginFirst"
+            label="拟启动"
+            align="center"
+            header-align="center">
+          </el-table-column>
+          <el-table-column
+            prop="Type1EndFirst"
+            label="拟完成"
+            align="center"
+            header-align="center">
+          </el-table-column>
         </el-table-column>
         <el-table-column
-          :prop="'Task' + Number(FYear) + 'Type2'"
           label="整体(或大部分)拆除重建用于工业"
           align="center"
           header-align="center">
+          <el-table-column
+            prop="Type1BeginSecond"
+            label="拟启动"
+            align="center"
+            header-align="center">
+          </el-table-column>
+          <el-table-column
+            prop="Type1EndSecond"
+            label="拟完成"
+            align="center"
+            header-align="center">
+          </el-table-column>
         </el-table-column>
         <el-table-column
-          :prop="'Task' + Number(FYear) + 'Type3'"
           label="综合整治(含部分拆除)用于产业提升或转型"
           align="center"
           header-align="center">
+          <el-table-column
+            prop="Type1BeginThree"
+            label="拟启动"
+            align="center"
+            header-align="center">
+          </el-table-column>
+          <el-table-column
+            prop="Type1EndThree"
+            label="拟完成"
+            align="center"
+            header-align="center">
+          </el-table-column>
         </el-table-column>
       </el-table-column>
       <el-table-column :label="Number(FYear) + 1 + '年'" header-align="center">
         <el-table-column
-          :prop="'Task' + (Number(FYear) + 1) + 'Type1'"
           label="整体(或大部分)拆除退出工业用途"
           align="center"
           header-align="center">
+          <el-table-column
+            prop="Type2BeginFirst"
+            label="拟启动"
+            align="center"
+            header-align="center">
+          </el-table-column>
+          <el-table-column
+            prop="Type2EndFirst"
+            label="拟完成"
+            align="center"
+            header-align="center">
+          </el-table-column>
         </el-table-column>
         <el-table-column
-          :prop="'Task' + (Number(FYear) + 1) + 'Type2'"
           label="整体(或大部分)拆除重建用于工业"
           align="center"
           header-align="center">
+          <el-table-column
+            prop="Type2BeginSecond"
+            label="拟启动"
+            align="center"
+            header-align="center">
+          </el-table-column>
+          <el-table-column
+            prop="Type2EndSecond"
+            label="拟完成"
+            align="center"
+            header-align="center">
+          </el-table-column>
         </el-table-column>
         <el-table-column
-          :prop="'Task' + (Number(FYear) + 1) + 'Type3'"
           label="综合整治(含部分拆除)用于产业提升或转型"
           align="center"
           header-align="center">
+          <el-table-column
+            prop="Type2BeginThree"
+            label="拟启动"
+            align="center"
+            header-align="center">
+          </el-table-column>
+          <el-table-column
+            prop="Type2EndThree"
+            label="拟完成"
+            align="center"
+            header-align="center">
+          </el-table-column>
         </el-table-column>
       </el-table-column>
       <el-table-column :label="Number(FYear) + 2 + '年'" header-align="center">
         <el-table-column
-          :prop="'Task' + (Number(FYear) + 2) + 'Type1'"
           label="整体(或大部分)拆除退出工业用途"
           align="center"
           header-align="center">
+          <el-table-column
+            prop="Type3BeginFirst"
+            label="拟启动"
+            align="center"
+            header-align="center">
+          </el-table-column>
+          <el-table-column
+            prop="Type3EndFirst"
+            label="拟完成"
+            align="center"
+            header-align="center">
+          </el-table-column>
         </el-table-column>
         <el-table-column
-          :prop="'Task' + (Number(FYear) + 2) + 'Type2'"
           label="整体(或大部分)拆除重建用于工业"
           align="center"
           header-align="center">
+          <el-table-column
+            prop="Type3BeginSecond"
+            label="拟启动"
+            align="center"
+            header-align="center">
+          </el-table-column>
+          <el-table-column
+            prop="Type3EndSecond"
+            label="拟完成"
+            align="center"
+            header-align="center">
+          </el-table-column>
         </el-table-column>
         <el-table-column
-          :prop="'Task' + (Number(FYear) + 2) + 'Type3'"
           label="综合整治(含部分拆除)用于产业提升或转型"
           align="center"
           header-align="center">
+          <el-table-column
+            prop="Type3BeginThree"
+            label="拟启动"
+            align="center"
+            header-align="center">
+          </el-table-column>
+          <el-table-column
+            prop="Type3EndThree"
+            label="拟完成"
+            align="center"
+            header-align="center">
+          </el-table-column>
         </el-table-column>
       </el-table-column>
     </el-table>
