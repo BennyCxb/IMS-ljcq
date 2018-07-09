@@ -63,13 +63,13 @@
           align="center"
           header-align="center">
           <el-table-column
-            prop="Type1BeginSecond"
+            prop="Type2BeginFirst"
             label="拟启动"
             align="center"
             header-align="center">
           </el-table-column>
           <el-table-column
-            prop="Type1EndSecond"
+            prop="Type2EndFirst"
             label="拟完成"
             align="center"
             header-align="center">
@@ -80,13 +80,13 @@
           align="center"
           header-align="center">
           <el-table-column
-            prop="Type1BeginThree"
+            prop="Type3BeginFirst"
             label="拟启动"
             align="center"
             header-align="center">
           </el-table-column>
           <el-table-column
-            prop="Type1EndThree"
+            prop="Type3EndFirst"
             label="拟完成"
             align="center"
             header-align="center">
@@ -99,13 +99,13 @@
           align="center"
           header-align="center">
           <el-table-column
-            prop="Type2BeginFirst"
+            prop="Type1BeginSecond"
             label="拟启动"
             align="center"
             header-align="center">
           </el-table-column>
           <el-table-column
-            prop="Type2EndFirst"
+            prop="Type1EndSecond"
             label="拟完成"
             align="center"
             header-align="center">
@@ -133,13 +133,13 @@
           align="center"
           header-align="center">
           <el-table-column
-            prop="Type2BeginThree"
+            prop="Type3BeginSecond"
             label="拟启动"
             align="center"
             header-align="center">
           </el-table-column>
           <el-table-column
-            prop="Type2EndThree"
+            prop="Type3EndSecond"
             label="拟完成"
             align="center"
             header-align="center">
@@ -152,13 +152,13 @@
           align="center"
           header-align="center">
           <el-table-column
-            prop="Type3BeginFirst"
+            prop="Type1BeginThree"
             label="拟启动"
             align="center"
             header-align="center">
           </el-table-column>
           <el-table-column
-            prop="Type3EndFirst"
+            prop="Type1EndThree"
             label="拟完成"
             align="center"
             header-align="center">
@@ -169,13 +169,13 @@
           align="center"
           header-align="center">
           <el-table-column
-            prop="Type3BeginSecond"
+            prop="Type2BeginThree"
             label="拟启动"
             align="center"
             header-align="center">
           </el-table-column>
           <el-table-column
-            prop="Type3EndSecond"
+            prop="Type2EndThree"
             label="拟完成"
             align="center"
             header-align="center">
