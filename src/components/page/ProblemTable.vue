@@ -72,6 +72,8 @@
           <el-tag type="success" v-else disable-transitions>已上报</el-tag>
         </template>
       </el-table-column>
+      <el-table-column prop="FProgress" label="进度">
+      </el-table-column>
       <el-table-column label="操作" width="220">
         <template slot-scope="scope">
           <el-button size="small" type="primary"
