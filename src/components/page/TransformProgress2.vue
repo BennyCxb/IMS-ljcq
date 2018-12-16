@@ -20,6 +20,7 @@
                         :name="index + 1"
                         v-else>
         <el-form :model="form"
+                 :rules="rules"
                  class="demo-form-inline demo-ruleForm">
           <el-row>
             <el-col :span="8">
@@ -28,7 +29,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="改造类型" :label-width="formLabelWidth" prop="date">
+              <el-form-item label="改造类型" :label-width="formLabelWidth" required>
                 <el-select v-model="form.FReadyType" placeholder="请选择" :disabled="form.isDisabled || !(form.FStatus === 0 || form.FStatus === null)" @change="changeReadyType(form)">
                   <el-option
                     v-for="item in btOptions"
@@ -40,7 +41,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item :label="form.FReadyType ? '整治建筑面积': '拆除建筑面积'" :label-width="formLabelWidth" prop="date">
+              <el-form-item :label="form.FReadyType ? '整治建筑面积': '拆除建筑面积'" :label-width="formLabelWidth">
                 <el-input v-model="form.FReadyArea" placeholder="请输入改造建筑面积" :disabled="form.isDisabled || !(form.FStatus === 0 || form.FStatus === null)">
                   <template slot="suffix">万㎡</template>
                 </el-input>
@@ -49,7 +50,7 @@
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item :label="form.FReadyType ? '整治开始时间': '拆除开始时间'" :label-width="formLabelWidth" prop="date">
+              <el-form-item :label="form.FReadyType ? '整治开始时间': '拆除开始时间'" :label-width="formLabelWidth">
                 <el-date-picker
                   v-model="form.FDoingTime"
                   type="date"
@@ -74,7 +75,8 @@
                 <el-button type="danger" @click="cancelEdit" v-if="!form.isDisabled">取消编辑</el-button>
                 <el-button type="primary" @click="form.isDisabled = !form.isDisabled" v-if="form.isDisabled && (form.FStatus != 2)">编 辑</el-button>
                 <el-button type="success" @click="enterpriseUpdate(form)" v-if="!form.isDisabled">保 存</el-button>
-                <el-button type="success" @click="submitProgress(form)" v-if="form.isDisabled && (form.FStatus != 2) && FLevel != 2 && FLevel !== 4">上报信息</el-button>
+                <el-button type="success" @click="submitProgress(form)" v-if="form.isDisabled && (form.FStatus == 0) && FLevel != 2 && FLevel !== 4">上报{{form.FReadyType ? '整治前': '拆除前'}}信息</el-button>
+                <el-button type="success" @click="submitProgress(form)" v-if="form.isDisabled && (form.FStatus == 1) && FLevel != 2 && FLevel !== 4">上报{{form.FReadyType ? '整治后': '拆除后'}}信息</el-button>
               </div>
             </el-col>
           </el-row>
@@ -178,7 +180,12 @@ export default {
       attachTypeList: [null, null],
       formLabelWidth: '120px',
       dialogImageUrl: '',
-      dialogVisible: false
+      dialogVisible: false,
+      rules: {
+        FCompanyName: [
+          { required: true, message: '请输入企业名称', trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
@@ -338,6 +345,20 @@ export default {
       if (!this.FStatus) {
         self.$message({
           message: '请先上报改造前基本信息和改造信息',
+          type: 'warning'
+        })
+        return false
+      }
+      if (!form.FStatus && !form.FDoingTime) {
+        self.$message({
+          message: '请选择开始时间',
+          type: 'warning'
+        })
+        return false
+      }
+      if (form.FStatus === 1 && !form.FDoneTime) {
+        self.$message({
+          message: '请选择完成时间',
           type: 'warning'
         })
         return false
