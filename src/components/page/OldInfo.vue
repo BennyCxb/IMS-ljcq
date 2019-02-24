@@ -256,11 +256,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="拟启动时间" :label-width="formLabelWidth" prop="FChangeBeginDate">
+          <el-form-item label="年度" :label-width="formLabelWidth">
             <el-date-picker
               v-model="form.FChangeBeginDate"
-              type="month"
-              value-format="yyyy-MM"
+              type="year"
+              :disabled="FLevel === 3 || FLevel === 4"
+              value-format="yyyy-MM-dd"
               :picker-options="pickerOptions1"
               placeholder="请选择">
             </el-date-picker>
