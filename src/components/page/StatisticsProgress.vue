@@ -178,8 +178,8 @@
         </el-date-picker>
         <el-button type="primary" icon="el-icon-search" @click="searchNew" size="small">查询</el-button>
         <el-button type="primary" icon="el-icon-download" @click="getExcelNew" size="small">导出并下载</el-button>
-        <el-button type="primary" icon="el-icon-document" @click="saveProcessData" size="small">保存进度表</el-button>
-        <el-button type="primary" icon="el-icon-view" @click="historyVisible = true" size="small">查看历史进度表</el-button>
+        <el-button type="primary" icon="el-icon-document" @click="saveProcessData" size="small" v-if="FLevel === 1 || FLevel === 2">保存进度表</el-button>
+        <el-button type="primary" icon="el-icon-view" @click="historyVisible = true" size="small" v-if="FLevel === 1 || FLevel === 2">查看历史进度表</el-button>
       </div>
       <el-table
         :data="tableNewData"
@@ -330,6 +330,7 @@ export default {
   },
   data () {
     return {
+      FLevel: Number(localStorage.getItem('FLevel')),
       historyVisible: false,
       breadcrumb: [],
       tableData: [],
@@ -488,7 +489,7 @@ export default {
         responseType: 'blob'
       })
         .then((response) => {
-          console.log(response)
+          // console.log(response)
           this.$message({
             message: '保存成功',
             type: 'succese'

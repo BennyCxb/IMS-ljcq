@@ -183,7 +183,7 @@ export default {
         pageSize: 20
       })
         .then((response) => {
-          console.log(response.data)
+          // console.log(response.data)
           this.options = [].concat(response.data.object)
         })
     },
@@ -196,7 +196,7 @@ export default {
       })
         .then((response) => {
           this.loading = false
-          console.log(response.data)
+          // console.log(response.data)
           this.tableData = [].concat(response.data.object)
         })
     }
