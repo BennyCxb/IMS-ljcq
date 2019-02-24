@@ -79,6 +79,19 @@ export default new Router({
         {
           path: '/StatisticsSummary:fid-:btid',
           component: resolve => require(['../components/page/StatisticsSummary.vue'], resolve)
+        },
+        // 统计-历史进度表
+        {
+          path: '/HistoryProgress:fid-:sid-:tid-:btid',
+          component: resolve => require(['../components/page/HistoryProgress.vue'], resolve)
+        },
+        {
+          path: '/HistoryProgress:fid-:sid-:btid',
+          component: resolve => require(['../components/page/HistoryProgress.vue'], resolve)
+        },
+        {
+          path: '/HistoryProgress:fid-:btid',
+          component: resolve => require(['../components/page/HistoryProgress.vue'], resolve)
         }
       ]
     },
