@@ -123,6 +123,13 @@
         width="100">
       </el-table-column>
       <el-table-column
+        prop="FChangeStatusTimeNow"
+        label="最新进度时间"
+        align="center"
+        header-align="center"
+        width="110">
+      </el-table-column>
+      <el-table-column
         prop="FDemonstration"
         label="是否是示范项目"
         align="center"
