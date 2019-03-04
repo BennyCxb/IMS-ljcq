@@ -23,6 +23,7 @@
     <el-table
       :data="tableData"
       v-loading="loading"
+      height="calc(100% - 96px)"
       border
       style="width: 100%">
       <el-table-column
@@ -102,8 +103,15 @@
         header-align="center">
       </el-table-column>
       <el-table-column
+        prop="FChangeYear"
+        label="年度"
+        align="center"
+        header-align="center"
+        width="100">
+      </el-table-column>
+      <el-table-column
         prop="FChangeBeginDate"
-        label="拟启动时间"
+        label="拟开始时间"
         align="center"
         header-align="center"
         width="100">
@@ -247,5 +255,10 @@ export default {
   .handle-input {
     width: 200px;
     display: inline-block;
+  }
+
+  .table {
+    height: 100%;
+    overflow: hidden;
   }
 </style>
