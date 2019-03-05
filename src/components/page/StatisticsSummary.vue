@@ -102,18 +102,19 @@
         align="center"
         header-align="center">
       </el-table-column>
+      <!--<el-table-column-->
+        <!--prop="FChangeYear"-->
+        <!--label="年度"-->
+        <!--align="center"-->
+        <!--header-align="center"-->
+        <!--width="100">-->
+      <!--</el-table-column>-->
       <el-table-column
-        prop="FChangeYear"
+        prop="FChangeBeginDate"
         label="年度"
         align="center"
         header-align="center"
-        width="100">
-      </el-table-column>
-      <el-table-column
-        prop="FChangeBeginDate"
-        label="拟开始时间"
-        align="center"
-        header-align="center"
+        :formatter="yearFormat"
         width="100">
       </el-table-column>
       <el-table-column
@@ -167,6 +168,10 @@ export default {
     getBreadcrumb () {
       let blist = JSON.parse(sessionStorage.getItem('breadcrumb'))
       this.breadcrumb = [].concat(blist)
+    },
+    yearFormat (row, column, cellValue, index) {
+      // console.log(row, column, cellValue, index)
+      return new Date(cellValue).getFullYear()
     },
     getList () {
       let self = this

@@ -258,7 +258,7 @@
         <el-col :span="6">
           <el-form-item label="年度" :label-width="formLabelWidth">
             <el-date-picker
-              v-model="form.FChangeYear"
+              v-model="form.FChangeBeginDate"
               type="year"
               :disabled="FLevel === 3 || FLevel === 4"
               value-format="yyyy"
@@ -267,17 +267,17 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
-          <el-form-item label="拟启动时间" :label-width="formLabelWidth">
-            <el-date-picker
-              v-model="form.FChangeBeginDate"
-              type="month"
-              value-format="yyyy-MM"
-              :picker-options="pickerOptions1"
-              placeholder="请选择">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
+        <!--<el-col :span="6">-->
+          <!--<el-form-item label="拟启动时间" :label-width="formLabelWidth">-->
+            <!--<el-date-picker-->
+              <!--v-model="form.FChangeBeginDate"-->
+              <!--type="month"-->
+              <!--value-format="yyyy-MM"-->
+              <!--:picker-options="pickerOptions1"-->
+              <!--placeholder="请选择">-->
+            <!--</el-date-picker>-->
+          <!--</el-form-item>-->
+        <!--</el-col>-->
         <el-col :span="6">
           <el-form-item label="拟完成时间" :label-width="formLabelWidth" prop="FChangeEndDate">
             <el-date-picker
@@ -438,7 +438,7 @@ export default {
         FAfterChange: '',
         FTotalInvestAmount: '',
         FAfterChangeArea: '',
-        FChangeYear: '',
+        // FChangeYear: '',
         FChangeBeginDate: '',
         FChangeEndDate: '',
         FChangeRemark: ''
@@ -512,11 +512,8 @@ export default {
         FTownChangeType: [
           {required: false, message: '请选择县级改造方式', trigger: 'change'}
         ],
-        FChangeYear: [
-          {required: true, message: '请选择年度', trigger: 'change'}
-        ],
         FChangeBeginDate: [
-          {required: true, message: '请选择拟启动日期', trigger: 'change'}
+          {required: true, message: '请选择年度', trigger: 'change'}
         ],
         FChangeEndDate: [
           {required: true, message: '请选择拟完成日期', trigger: 'change'}
@@ -798,7 +795,7 @@ export default {
             self.getAttachTypeList(obj.FID)
             self.getCounty()
             self.form.FTownValue = FTownValue
-            self.form.FChangeYear = self.form.FChangeYear.toString()
+            // self.form.FChangeYear = self.form.FChangeYear.toString()
             self.getSubmitPossession()
             self.getAuditPossession()
             self.progressShow()
@@ -838,7 +835,7 @@ export default {
                 let data = response.data
                 if (data.code === 1) {
                   self.form.FID = data.object
-                  self.form.FChangeYear = data.object
+                  // self.form.FChangeYear = data.object
                   self.isSubmited = true
                   self.getAttachTypeList(self.form.FID, true)
                   if (!self.filesChange) {
