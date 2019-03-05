@@ -256,12 +256,13 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="年度" :label-width="formLabelWidth">
+          <el-form-item label="年度" :label-width="formLabelWidth" prop="FChangeBeginDate">
             <el-date-picker
               v-model="form.FChangeBeginDate"
               type="year"
               :disabled="FLevel === 3 || FLevel === 4"
-              value-format="yyyy"
+              value-format="yyyy-MM-dd"
+              :clearable="false"
               :picker-options="pickerOptions1"
               placeholder="请选择">
             </el-date-picker>
@@ -284,6 +285,7 @@
               v-model="form.FChangeEndDate"
               type="month"
               value-format="yyyy-MM"
+              :clearable="false"
               :picker-options="pickerOptions2"
               placeholder="请选择">
             </el-date-picker>
@@ -439,8 +441,8 @@ export default {
         FTotalInvestAmount: '',
         FAfterChangeArea: '',
         // FChangeYear: '',
-        FChangeBeginDate: '',
-        FChangeEndDate: '',
+        FChangeBeginDate: this.$moment().format('YYYY-01-01'),
+        FChangeEndDate: this.$moment().format('YYYY-MM-DD'),
         FChangeRemark: ''
       },
       zoom: 14,
@@ -540,7 +542,7 @@ export default {
       dialogVisible: false,
       pickerOptions1: {
         disabledDate (time) {
-          return time.getTime() > new Date(self.form.FChangeEndDate)
+          return time.getTime() > new Date(self.form.FChangeEndDate) || time.getFullYear() < 2019
         }
       },
       pickerOptions2: {
