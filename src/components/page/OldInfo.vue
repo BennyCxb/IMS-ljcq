@@ -542,7 +542,7 @@ export default {
       dialogVisible: false,
       pickerOptions1: {
         disabledDate (time) {
-          return time.getTime() > new Date(self.form.FChangeEndDate) || time.getFullYear() < 2019
+          return time.getTime() > new Date(self.form.FChangeEndDate)
         }
       },
       pickerOptions2: {
