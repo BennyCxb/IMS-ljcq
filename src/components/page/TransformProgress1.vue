@@ -13,6 +13,7 @@
     <el-collapse v-model="activeNames" accordion>
       <el-collapse-item :title="form.title" :name="index" v-for="(form, index) in forms" :key="index">
         <el-form :model="form"
+                 :rules="rules"
                  size="small"
                  class="demo-form-inline demo-ruleForm">
           <el-row>
@@ -22,6 +23,7 @@
                   v-model="form.FTime"
                   type="date"
                   value-format="yyyy-MM-dd"
+                  :clearable="false"
                   :disabled="form.isDisabled"
                   placeholder="请选择时间">
                 </el-date-picker>
@@ -348,7 +350,12 @@ export default {
       },
       formLabelWidth: '120px',
       dialogImageUrl: '',
-      dialogVisible: false
+      dialogVisible: false,
+      rules: {
+        FTime: [
+          {required: true, message: '请选择时间', trigger: 'blur'}
+        ]
+      }
     }
   },
   methods: {

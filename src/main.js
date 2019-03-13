@@ -12,6 +12,8 @@ import VueLodash from 'vue-lodash'
 import VueCookies from 'vue-cookies'
 // 引入vue-amap
 import VueAMap from 'vue-amap'
+// 引入moment
+import moment from 'moment'
 
 Vue.use(ElementUI)
 Vue.use(VueCookies)
@@ -28,6 +30,7 @@ VueAMap.initAMapApiLoader({
 })
 /* eslint-disable no-new */
 Vue.prototype.$axios = axios
+Vue.prototype.$moment = moment
 Vue.prototype.$axios.defaults.baseURL = process.env.API_ROOT
 // 添加请求拦截器
 const self = Vue.prototype
