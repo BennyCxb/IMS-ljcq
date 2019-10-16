@@ -145,6 +145,24 @@
         header-align="center"
         width="80">
       </el-table-column>
+      <el-table-column
+        prop="FEntrepreneurCount"
+        label="企业家数"
+        align="center"
+        header-align="center">
+      </el-table-column>
+      <el-table-column
+        prop="DemolishArea"
+        label="拆除总建筑面积"
+        align="center"
+        header-align="center">
+      </el-table-column>
+      <el-table-column
+        prop="NonConformingArea"
+        label="拆除违建面积"
+        align="center"
+        header-align="center">
+      </el-table-column>
     </el-table>
   </div>
 </template>
